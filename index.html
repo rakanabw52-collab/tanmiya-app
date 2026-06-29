@@ -4916,9 +4916,18 @@ function showProj(id){
   // ===== القيمة والتحصيل والمتبقي (بدون / مع الضريبة) =====
   {
     const rinvs=pinvs.filter(i=>i.type==='revenue');
-    const recvNet=rinvs.reduce((s,i)=>s+(i.subtotal||0),0);
-    const recvVat=rinvs.reduce((s,i)=>s+(i.vat||0),0);
-    const recvGross=rinvs.reduce((s,i)=>s+(i.total||0),0);
+    // المبلغ اليدوي (المسلّم من العميل) يستبدل فواتير الإيرادات — مطابقةً لمنطق projPL والبطاقة
+    const manualRecv=p.paidAmount||0;
+    let recvNet,recvVat,recvGross;
+    if(manualRecv>0){
+      recvNet=manualRecv;
+      recvGross=+(manualRecv*1.15).toFixed(2);
+      recvVat=+(recvGross-recvNet).toFixed(2);
+    }else{
+      recvNet=rinvs.reduce((s,i)=>s+(i.subtotal||0),0);
+      recvVat=rinvs.reduce((s,i)=>s+(i.vat||0),0);
+      recvGross=rinvs.reduce((s,i)=>s+(i.total||0),0);
+    }
     const cNet=p.contractValue||0;
     const cVat=+(cNet*0.15).toFixed(2);
     const cGross=+(cNet*1.15).toFixed(2);
@@ -4929,7 +4938,7 @@ function showProj(id){
       const taxRow=(lbl,net,vat,gross,col)=>'<tr style="border-top:1px solid var(--bd)"><td style="padding:7px 4px;color:var(--t2);font-weight:700">'+lbl+'</td><td style="padding:7px 4px;text-align:left;font-family:Cairo,sans-serif;font-weight:700">'+fmt(net)+'</td><td style="padding:7px 4px;text-align:left;font-family:Cairo,sans-serif;color:#B45309;font-size:11px">'+fmt(vat)+'</td><td style="padding:7px 4px;text-align:left;font-family:Cairo,sans-serif;font-weight:800;color:'+col+'">'+fmt(gross)+'</td></tr>';
       html+='<div class="card" style="padding:12px;margin-bottom:12px">';
       html+='<div style="font-family:Cairo,sans-serif;font-weight:800;font-size:13px;margin-bottom:3px">💵 القيمة والتحصيل (بالضريبة وبدونها)</div>';
-      html+='<div style="font-size:10.5px;color:var(--t3);margin-bottom:9px">قيمة العقد بدون ضريبة • التحصيل من الدفعات المسجّلة</div>';
+      html+='<div style="font-size:10.5px;color:var(--t3);margin-bottom:9px">قيمة العقد بدون ضريبة • '+(manualRecv>0?'المُحصّل من المبلغ المسلّم يدوياً':'التحصيل من الدفعات المسجّلة')+'</div>';
       html+='<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr><th></th><th style="text-align:left;padding:0 4px 7px;color:var(--t2);font-weight:700;font-size:10px">بدون ضريبة</th><th style="text-align:left;padding:0 4px 7px;color:var(--t2);font-weight:700;font-size:10px">الضريبة</th><th style="text-align:left;padding:0 4px 7px;color:var(--t2);font-weight:700;font-size:10px">بالضريبة</th></tr></thead><tbody>';
       html+=taxRow('قيمة العقد',cNet,cVat,cGross,'#2771ab');
       html+=taxRow('المُحصّل',recvNet,recvVat,recvGross,'#15803D');
