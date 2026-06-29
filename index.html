@@ -838,7 +838,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
         </div>
         <div id="cv-vatbreak" class="qe-vbrk" style="display:none"></div>
       </div>
-      <div class="field"><label>المسلّم من العميل (ر.س)</label><input type="text" inputmode="decimal" id="pe-pa" placeholder="0.00"></div>
+      <div class="field full"><label>دفعة مُحصّلة يدوياً (ر.س)</label><input type="text" inputmode="decimal" id="pe-pa" placeholder="0.00"><div style="font-size:11px;color:var(--t2);margin-top:4px;line-height:1.5">مبلغ مُحصّل من العميل (شامل الضريبة). يُضاف إلى دفعات الإيرادات المسجّلة، وتقدر تعدّله من هنا في أي وقت.</div></div>
       <div class="field full" style="background:#F0F9FF;border:1.5px dashed #BAE6FD;border-radius:9px;padding:10px;margin-top:3px">
         <label style="color:#0369A1;font-weight:800;font-size:12.5px;display:block;margin-bottom:5px">📐 حجم المشروع (لدراسة الجدوى)</label>
         <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px">
@@ -2374,8 +2374,8 @@ function projPL(pid){
   const contract=proj?(proj.contractValue||0):0;
   const paidManual=proj?(proj.paidAmount||0):0;
   const paidInvoices=pinvs.filter(i=>i.type==='revenue').reduce((s,i)=>s+(i.total||0),0);
-  // المبلغ اليدوي يستبدل (لا يضاف على) فواتير الإيرادات
-  const paid=paidManual>0?paidManual:paidInvoices;
+  // المُحصّل = الدفعة اليدوية + مجموع دفعات الإيرادات المسجّلة (تتراكم معاً)
+  const paid=paidManual+paidInvoices;
   const pur=pinvs.filter(i=>i.type==='purchase').reduce((s,i)=>s+(i.total||0),0);
   const exp=pinvs.filter(i=>i.type==='expense').reduce((s,i)=>s+(i.total||0),0);
   const invoicesTotal=pur+exp;
@@ -2385,8 +2385,10 @@ function projPL(pid){
   const rev=contract>0?contract:paidInvoices;
   const profit=rev-cost;
   const margin=rev>0?(profit/rev)*100:0;
-  const outstanding=contract>0?Math.max(0,contract-paid):0;
-  const paidPct=contract>0?(paid/contract)*100:0;
+  // قيمة العقد مخزّنة بدون ضريبة — والتحصيل/المتبقي يُحسبان بالضريبة (المبلغ الفعلي)
+  const contractGross=+(contract*1.15).toFixed(2);
+  const outstanding=contract>0?Math.max(0,+(contractGross-paid).toFixed(2)):0;
+  const paidPct=contractGross>0?(paid/contractGross)*100:0;
   const recv=paidInvoices,remaining=outstanding;
   const qty=proj?(proj.quantity||0):0;
   const unit=proj?(proj.unit||'م.ط'):'م.ط';
@@ -2398,7 +2400,7 @@ function projPL(pid){
     const c=migrateCat(i.category||'other');
     byCat[c]=(byCat[c]||0)+(i.total||0);
   });
-  return {rev,pur,exp,cost,profit,margin,byCat,count:pinvs.length,contract,recv,remaining,paid,outstanding,paidPct,siteTotal,invoicesTotal,qty,unit,costPerUnit,valuePerUnit,profitPerUnit};
+  return {rev,pur,exp,cost,profit,margin,byCat,count:pinvs.length,contract,contractGross,recv,remaining,paid,paidManual,paidInvoices,outstanding,paidPct,siteTotal,invoicesTotal,qty,unit,costPerUnit,valuePerUnit,profitPerUnit};
 }
 
 /* المبالغ المتبقية لكل مشروع - تحت ملخص المستحقات */
@@ -4915,30 +4917,21 @@ function showProj(id){
 
   // ===== القيمة والتحصيل والمتبقي (بدون / مع الضريبة) =====
   {
-    const rinvs=pinvs.filter(i=>i.type==='revenue');
-    // المبلغ اليدوي (المسلّم من العميل) يستبدل فواتير الإيرادات — مطابقةً لمنطق projPL والبطاقة
-    const manualRecv=p.paidAmount||0;
-    let recvNet,recvVat,recvGross;
-    if(manualRecv>0){
-      recvNet=manualRecv;
-      recvGross=+(manualRecv*1.15).toFixed(2);
-      recvVat=+(recvGross-recvNet).toFixed(2);
-    }else{
-      recvNet=rinvs.reduce((s,i)=>s+(i.subtotal||0),0);
-      recvVat=rinvs.reduce((s,i)=>s+(i.vat||0),0);
-      recvGross=rinvs.reduce((s,i)=>s+(i.total||0),0);
-    }
-    const cNet=p.contractValue||0;
-    const cVat=+(cNet*0.15).toFixed(2);
-    const cGross=+(cNet*1.15).toFixed(2);
-    const remNet=Math.max(0,cNet-recvNet);
-    const remGross=Math.max(0,cGross-recvGross);
-    const remVat=+(remGross-remNet).toFixed(2);
+    // المُحصّل (بالضريبة) = pl.paid = الدفعة اليدوية + مجموع دفعات الإيرادات — مطابق تماماً للبطاقة
+    const recvGross=pl.paid;
+    const recvNet=+(recvGross/1.15).toFixed(2);
+    const recvVat=+(recvGross-recvNet).toFixed(2);
+    const cNet=pl.contract;
+    const cGross=pl.contractGross;
+    const cVat=+(cGross-cNet).toFixed(2);
+    const remGross=pl.outstanding;            // = max(0, cGross - recvGross) — يطابق المتبقي بالبطاقة
+    const remNet=Math.max(0,+(cNet-recvNet).toFixed(2));
+    const remVat=+(Math.max(0,remGross-remNet)).toFixed(2);
     if(cNet>0||recvGross>0){
       const taxRow=(lbl,net,vat,gross,col)=>'<tr style="border-top:1px solid var(--bd)"><td style="padding:7px 4px;color:var(--t2);font-weight:700">'+lbl+'</td><td style="padding:7px 4px;text-align:left;font-family:Cairo,sans-serif;font-weight:700">'+fmt(net)+'</td><td style="padding:7px 4px;text-align:left;font-family:Cairo,sans-serif;color:#B45309;font-size:11px">'+fmt(vat)+'</td><td style="padding:7px 4px;text-align:left;font-family:Cairo,sans-serif;font-weight:800;color:'+col+'">'+fmt(gross)+'</td></tr>';
       html+='<div class="card" style="padding:12px;margin-bottom:12px">';
       html+='<div style="font-family:Cairo,sans-serif;font-weight:800;font-size:13px;margin-bottom:3px">💵 القيمة والتحصيل (بالضريبة وبدونها)</div>';
-      html+='<div style="font-size:10.5px;color:var(--t3);margin-bottom:9px">قيمة العقد بدون ضريبة • '+(manualRecv>0?'المُحصّل من المبلغ المسلّم يدوياً':'التحصيل من الدفعات المسجّلة')+'</div>';
+      html+='<div style="font-size:10.5px;color:var(--t3);margin-bottom:9px">المُحصّل بالضريبة = الدفعة اليدوية + الدفعات المسجّلة'+(pl.paidManual>0&&pl.paidInvoices>0?' (يدوي '+fmtI(pl.paidManual)+' + دفعات '+fmtI(pl.paidInvoices)+')':'')+'</div>';
       html+='<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr><th></th><th style="text-align:left;padding:0 4px 7px;color:var(--t2);font-weight:700;font-size:10px">بدون ضريبة</th><th style="text-align:left;padding:0 4px 7px;color:var(--t2);font-weight:700;font-size:10px">الضريبة</th><th style="text-align:left;padding:0 4px 7px;color:var(--t2);font-weight:700;font-size:10px">بالضريبة</th></tr></thead><tbody>';
       html+=taxRow('قيمة العقد',cNet,cVat,cGross,'#2771ab');
       html+=taxRow('المُحصّل',recvNet,recvVat,recvGross,'#15803D');
