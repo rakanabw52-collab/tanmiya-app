@@ -1,5 +1,5 @@
-// Service Worker - نظام هدف التنمية v4 (مع دعم المزامنة)
-const CACHE_NAME = 'hadaf-v4-cloud';
+// Service Worker - نظام هدف التنمية v5 (مع دعم المزامنة)
+const CACHE_NAME = 'hadaf-v5-cloud';
 const ASSETS = [
   './','./index.html','./manifest.json',
   './icon-192.png','./icon-512.png','./apple-touch-icon.png',
