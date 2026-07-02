@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-02-1009">
+<meta name="app-build" content="2026-07-02-1010">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -1197,7 +1197,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="openDupCheck()">🔍 افحص الآن</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1009</bdi> · <bdi>SW v11</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1010</bdi> · <bdi>SW v12</bdi></span></div>
   </div>
 </div>
 
@@ -2257,6 +2257,22 @@ function setCvVat(m){cvVatMode=m;document.querySelectorAll('#cv-vatmode .qe-vbtn
 function cvNetFromInput(){const raw=toNum(document.getElementById('pe-cv').value);return cvVatMode==='incl'?+(raw/1.15).toFixed(2):+raw.toFixed(2);}
 function updateCvBreak(){const box=document.getElementById('cv-vatbreak');if(!box)return;const raw=toNum(document.getElementById('pe-cv').value);if(raw<=0){box.style.display='none';if(typeof checkPaidWarn==='function')checkPaidWarn();return;}const net=cvVatMode==='incl'?+(raw/1.15).toFixed(2):+raw.toFixed(2);const vat=+(net*0.15).toFixed(2);const gross=+(net+vat).toFixed(2);box.style.display='block';box.innerHTML='<div class="vb-row"><span>قيمة العقد بدون ضريبة</span><b>'+fmt(net)+' ر.س</b></div><div class="vb-row"><span>ضريبة القيمة المضافة (15%)</span><b style="color:#B45309">'+fmt(vat)+' ر.س</b></div><div class="vb-row" style="border-top:1px solid var(--bd);margin-top:3px;padding-top:5px"><span>قيمة العقد بالضريبة</span><b style="color:#15803D">'+fmt(gross)+' ر.س</b></div>';if(typeof checkPaidWarn==='function')checkPaidWarn();}
 function resetCvVat(m){cvVatMode=m||'excl';document.querySelectorAll('#cv-vatmode .qe-vbtn').forEach(b=>b.classList.toggle('on',b.dataset.mode===cvVatMode));updateCvBreak();}
+/* زر جماعي: تحديد كل المشاريع كمحصّلة بالكامل (المتبقي = 0)، ثم يعدّل المستخدم الاستثناءات يدوياً */
+async function markAllCollected(){
+  const targets=projs.filter(p=>(p.contractValue||0)>0);
+  if(!targets.length){toast('لا توجد مشاريع بقيمة عقد','er');return;}
+  const ok=await confirm2({title:'تحديد الكل كمحصّل بالكامل',msg:'سيتم ضبط «الدفعة» في <b>'+targets.length+'</b> مشروع لتساوي قيمة العقد بالضريبة (المتبقي = 0).<br><br>بعدها عدّل يدوياً المشاريع التي لا تزال غير محصّلة بالكامل (الفرسان، الأنوار، العثيم).',ok:'تطبيق',danger:false});
+  if(!ok)return;
+  targets.forEach(p=>{
+    const gross=+((p.contractValue||0)*1.15).toFixed(2);
+    const invRev=invs.filter(i=>i.projectId===p.id&&i.type==='revenue').reduce((s,i)=>s+(i.total||0),0);
+    p.paidAmount=Math.max(0,+(gross-invRev).toFixed(2));
+  });
+  await svP();
+  if(typeof renderProjList==='function')renderProjList();
+  renderDB();
+  toast('تم تحديد '+targets.length+' مشروع كمحصّل بالكامل ✓','ok');
+}
 /* زر: تحديد المشروع كمحصّل بالكامل — يملأ الدفعة بقيمة العقد بالضريبة (ناقص دفعات الإيرادات المسجّلة) */
 function markFullyCollected(){
   const net=cvNetFromInput();
@@ -2443,6 +2459,7 @@ function renderReceivablesByProject(){
   if(!rows.length){w.innerHTML='';return;}
   
   let html='<div style="font-family:Cairo,sans-serif;font-weight:800;font-size:12px;color:var(--t2);margin-bottom:7px;padding-top:10px;border-top:1px dashed var(--bd)">📋 المتبقي لكل مشروع</div>';
+  html+='<button type="button" onclick="markAllCollected()" style="width:100%;background:#DCFCE7;color:#15803D;border:1px solid #86EFAC;border-radius:9px;padding:9px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12px;cursor:pointer;margin-bottom:9px">✅ تحديد كل المشاريع كمحصّلة بالكامل</button>';
   
   rows.forEach(({p,contract,paid,outstanding})=>{
     const pct=contract>0?(paid/contract*100):0;
