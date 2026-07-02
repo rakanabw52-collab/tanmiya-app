@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-02-1006">
+<meta name="app-build" content="2026-07-02-1007">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -1197,7 +1197,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="openDupCheck()">🔍 افحص الآن</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1006</bdi> · <bdi>SW v8</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1007</bdi> · <bdi>SW v9</bdi></span></div>
   </div>
 </div>
 
@@ -4110,16 +4110,15 @@ function renderProjDash(){
   h+='<div style="background:#fff;border:1px solid var(--bd);border-radius:12px;padding:11px"><div style="font-size:10.5px;color:var(--t2);font-weight:700;margin-bottom:6px">🎯 متوسط الإنجاز (النشطة)</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:20px;color:'+apCol+';line-height:1;margin-bottom:6px">'+avgProg.toFixed(0)+'%</div><div style="background:#E5E7EB;border-radius:99px;height:7px;overflow:hidden"><div style="width:'+avgProg.toFixed(0)+'%;height:100%;background:'+apCol+';border-radius:99px"></div></div></div>';
   h+='</div>';
 
-  // بطاقة المبالغ المتبقية (لم تُحصّل) — بدون / مع الضريبة (قيمة العقد قبل الضريبة)
+  // بطاقة المبالغ المتبقية (لم تُحصّل) — بدون / مع الضريبة
+  // المُحصّل = الدفعة اليدوية + دفعات الإيرادات (pl.paid) — مطابق تماماً للبطاقات وملخص المستحقات
   let totOutNet=0,totOutGross=0;
   rows.forEach(r=>{
-    if(!(r.p.contractValue>0))return;
-    const ri=invs.filter(i=>i.projectId===r.p.id&&i.type==='revenue');
-    const rNet=ri.reduce((a,i)=>a+(i.subtotal||0),0);
-    const rGr=ri.reduce((a,i)=>a+(i.total||0),0);
-    const cNet=r.p.contractValue||0;
-    totOutNet+=Math.max(0,cNet-rNet);
-    totOutGross+=Math.max(0,cNet*1.15-rGr);
+    const pl=r.pl;
+    if(!(pl.contract>0))return;
+    const recvNet=+(pl.paid/1.15).toFixed(2);      // صافي المُحصّل (بالضريبة ÷ 1.15)
+    totOutNet+=Math.max(0,+(pl.contract-recvNet).toFixed(2));
+    totOutGross+=pl.outstanding;                    // = max(0, العقد بالضريبة - المُحصّل)
   });
   const outCol=totOutNet>0?'#B45309':'#15803D';
   h+='<div style="background:#fff;border:1px solid var(--bd);border-radius:12px;padding:11px;margin-bottom:11px">';
