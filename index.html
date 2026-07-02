@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-02-1007">
+<meta name="app-build" content="2026-07-02-1008">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -838,7 +838,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
         </div>
         <div id="cv-vatbreak" class="qe-vbrk" style="display:none"></div>
       </div>
-      <div class="field full"><label>دفعة مُحصّلة يدوياً (ر.س)</label><input type="text" inputmode="decimal" id="pe-pa" placeholder="0.00"><div style="font-size:11px;color:var(--t2);margin-top:4px;line-height:1.5">مبلغ مُحصّل من العميل (شامل الضريبة). يُضاف إلى دفعات الإيرادات المسجّلة، وتقدر تعدّله من هنا في أي وقت.</div></div>
+      <div class="field full"><label>دفعة مُحصّلة يدوياً (ر.س)</label><input type="text" inputmode="decimal" id="pe-pa" placeholder="0.00" oninput="checkPaidWarn()"><div style="font-size:11px;color:var(--t2);margin-top:4px;line-height:1.5">مبلغ مُحصّل من العميل (شامل الضريبة). يُضاف إلى دفعات الإيرادات المسجّلة، وتقدر تعدّله من هنا في أي وقت.</div><div id="pe-pa-warn" style="display:none;background:#FEF2F2;border:1.5px solid #FCA5A5;color:#B91C1C;border-radius:9px;padding:9px 11px;font-size:11.5px;font-weight:700;margin-top:6px;line-height:1.6"></div></div>
       <div class="field full" style="background:#F0F9FF;border:1.5px dashed #BAE6FD;border-radius:9px;padding:10px;margin-top:3px">
         <label style="color:#0369A1;font-weight:800;font-size:12.5px;display:block;margin-bottom:5px">📐 حجم المشروع (لدراسة الجدوى)</label>
         <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px">
@@ -1197,7 +1197,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="openDupCheck()">🔍 افحص الآن</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1007</bdi> · <bdi>SW v9</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1008</bdi> · <bdi>SW v10</bdi></span></div>
   </div>
 </div>
 
@@ -2255,8 +2255,23 @@ function resetQeVat(mode){qeVatMode=mode||'';document.querySelectorAll('#qe-vatm
 let cvVatMode='excl';
 function setCvVat(m){cvVatMode=m;document.querySelectorAll('#cv-vatmode .qe-vbtn').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));updateCvBreak();}
 function cvNetFromInput(){const raw=toNum(document.getElementById('pe-cv').value);return cvVatMode==='incl'?+(raw/1.15).toFixed(2):+raw.toFixed(2);}
-function updateCvBreak(){const box=document.getElementById('cv-vatbreak');if(!box)return;const raw=toNum(document.getElementById('pe-cv').value);if(raw<=0){box.style.display='none';return;}const net=cvVatMode==='incl'?+(raw/1.15).toFixed(2):+raw.toFixed(2);const vat=+(net*0.15).toFixed(2);const gross=+(net+vat).toFixed(2);box.style.display='block';box.innerHTML='<div class="vb-row"><span>قيمة العقد بدون ضريبة</span><b>'+fmt(net)+' ر.س</b></div><div class="vb-row"><span>ضريبة القيمة المضافة (15%)</span><b style="color:#B45309">'+fmt(vat)+' ر.س</b></div><div class="vb-row" style="border-top:1px solid var(--bd);margin-top:3px;padding-top:5px"><span>قيمة العقد بالضريبة</span><b style="color:#15803D">'+fmt(gross)+' ر.س</b></div>';}
+function updateCvBreak(){const box=document.getElementById('cv-vatbreak');if(!box)return;const raw=toNum(document.getElementById('pe-cv').value);if(raw<=0){box.style.display='none';if(typeof checkPaidWarn==='function')checkPaidWarn();return;}const net=cvVatMode==='incl'?+(raw/1.15).toFixed(2):+raw.toFixed(2);const vat=+(net*0.15).toFixed(2);const gross=+(net+vat).toFixed(2);box.style.display='block';box.innerHTML='<div class="vb-row"><span>قيمة العقد بدون ضريبة</span><b>'+fmt(net)+' ر.س</b></div><div class="vb-row"><span>ضريبة القيمة المضافة (15%)</span><b style="color:#B45309">'+fmt(vat)+' ر.س</b></div><div class="vb-row" style="border-top:1px solid var(--bd);margin-top:3px;padding-top:5px"><span>قيمة العقد بالضريبة</span><b style="color:#15803D">'+fmt(gross)+' ر.س</b></div>';if(typeof checkPaidWarn==='function')checkPaidWarn();}
 function resetCvVat(m){cvVatMode=m||'excl';document.querySelectorAll('#cv-vatmode .qe-vbtn').forEach(b=>b.classList.toggle('on',b.dataset.mode===cvVatMode));updateCvBreak();}
+/* تنبيه وقائي: المُحصّل (الدفعة اليدوية + دفعات الإيرادات) يتجاوز قيمة العقد بالضريبة */
+function checkPaidWarn(){
+  const box=document.getElementById('pe-pa-warn');if(!box)return;
+  const paidManual=toNum(document.getElementById('pe-pa').value);
+  const net=cvNetFromInput();
+  const gross=+(net*1.15).toFixed(2);
+  let invRev=0;
+  if(typeof editId!=='undefined'&&editId){invRev=invs.filter(i=>i.projectId===editId&&i.type==='revenue').reduce((s,i)=>s+(i.total||0),0);}
+  const totalPaid=+(paidManual+invRev).toFixed(2);
+  if(net>0&&totalPaid>gross+1){
+    const over=+(totalPaid-gross).toFixed(2);
+    box.style.display='block';
+    box.innerHTML='⚠️ المُحصّل الإجمالي <b>'+fmt(totalPaid)+'</b> ر.س يتجاوز قيمة العقد بالضريبة <b>'+fmt(gross)+'</b> ر.س بمقدار <b>'+fmt(over)+'</b> ر.س.'+(invRev>0?'<br>يوجد دفعات إيرادات مسجّلة ('+fmt(invRev)+' ر.س) تُضاف تلقائياً لهذه الدفعة — تأكد أنك لم تُدخل المبلغ مرتين.':' تأكد أن المبلغ غير مُدخل مرتين.');
+  }else{box.style.display='none';}
+}
 let qeNewType='expense';
 async function saveQe(){
   const vnd=document.getElementById('qe-vnd').value.trim();
@@ -4360,6 +4375,7 @@ function newProj(){
   document.getElementById('pe-cv').value='';
   resetCvVat('excl');
   document.getElementById('pe-pa').value='';
+  if(typeof checkPaidWarn==='function')checkPaidWarn();
   document.getElementById('pe-se').value='';
   const peq=document.getElementById('pe-qty');if(peq)peq.value='';
   const peu=document.getElementById('pe-unit');if(peu)peu.value='م.ط';
@@ -4482,6 +4498,7 @@ function editProj(){
   document.getElementById('pe-cv').value=p.contractValue||'';
   resetCvVat('excl');
   document.getElementById('pe-pa').value=p.paidAmount||'';
+  if(typeof checkPaidWarn==='function')checkPaidWarn();
   document.getElementById('pe-se').value=p.siteExpensesTotal||'';
   const peq2=document.getElementById('pe-qty');if(peq2)peq2.value=p.quantity||'';
   const peu2=document.getElementById('pe-unit');if(peu2)peu2.value=p.unit||'م.ط';
