@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-05-1013">
+<meta name="app-build" content="2026-07-05-1014">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -1203,7 +1203,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="openDupCheck()">🔍 افحص الآن</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1013</bdi> · <bdi>SW v13</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1014</bdi> · <bdi>SW v14</bdi></span></div>
   </div>
 </div>
 
@@ -4173,14 +4173,20 @@ function renderProjDash(){
     if(p.status==='active'){sumProg+=pr.overall;progN++;}
     return {p,pl,pr};
   });
+  // مطابقة الداش بورد: تضمين المصاريف والإيرادات غير المرتبطة بمشروع في الإجماليات
+  const _saCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!i.projectId).reduce((s,i)=>s+(i.total||0),0);
+  const _saRev=invs.filter(i=>i.type==='revenue'&&!i.projectId).reduce((s,i)=>s+(i.total||0),0);
+  const totRevenue=totContract+_saRev;
+  totCost+=_saCost;
+  totProfit=totRevenue-totCost;
   const avgProg=progN>0?(sumProg/progN):0;
-  const overallMargin=totContract>0?(totProfit/totContract*100):0;
+  const overallMargin=totRevenue>0?(totProfit/totRevenue*100):0;
 
   let h='';
   // بطاقات KPI
   h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:11px">';
   const cards=[
-    {lbl:'إجمالي العقود',val:fmtI(totContract),sub:'ر.س',bg:'linear-gradient(135deg,#2771AB,#1A4D7D)',col:'#fff'},
+    {lbl:'إجمالي الإيرادات',val:fmtI(totRevenue),sub:'ر.س',bg:'linear-gradient(135deg,#2771AB,#1A4D7D)',col:'#fff'},
     {lbl:'إجمالي المصروفات',val:fmtI(totCost),sub:'ر.س',bg:'linear-gradient(135deg,#B45309,#92400E)',col:'#fff'},
     {lbl:'صافي الربح'+(overallMargin?' ('+overallMargin.toFixed(1)+'%)':''),val:(totProfit>=0?'':'-')+fmtI(Math.abs(totProfit)),sub:'ر.س',bg:totProfit>=0?'linear-gradient(135deg,#15803D,#166534)':'linear-gradient(135deg,#B91C1C,#7F1D1D)',col:'#fff'}
   ];
