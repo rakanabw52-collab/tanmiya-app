@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-05-1016">
+<meta name="app-build" content="2026-07-05-1017">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -50,6 +50,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{--pr:#2771ab;--pd:#1a4d7d;--pk:#143b62;--bg:#F8FAFC;--card:#fff;--bd:#E2E8F0;--t1:#0F172A;--t2:#475569;--t3:#94A3B8;--r:14px;--gr:#15803D;--rd:#B91C1C;--am:#B45309;--gd:#CA8A04}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -1203,7 +1204,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="openDupCheck()">🔍 افحص الآن</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1016</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1017</bdi></span></div>
   </div>
 </div>
 
@@ -7008,6 +7009,44 @@ async function shareLetterImg(){
     if(b){b.disabled=false;b.innerHTML='📲 مشاركة عبر واتساب';}
   }
 }
+async function shareLetterPDF(){
+  const l=lets.find(x=>x.id===letPrevId);if(!l)return;
+  if(typeof html2canvas==='undefined'||!(window.jspdf&&window.jspdf.jsPDF)){toast('تعذّر تحميل أداة PDF — تحقّق من الإنترنت','er');return;}
+  const btn=document.getElementById('pdfShareBtn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ جاري تجهيز PDF...';}
+  const holder=document.createElement('div');
+  holder.style.cssText='position:fixed;left:-10000px;top:0;background:#fff';
+  holder.innerHTML=buildLSheet(l);
+  document.body.appendChild(holder);
+  const sheet=holder.querySelector('.lsheet');
+  try{
+    const canvas=await html2canvas(sheet,{scale:2,backgroundColor:'#ffffff',useCORS:true});
+    holder.remove();
+    const img=canvas.toDataURL('image/jpeg',0.95);
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF('p','mm','a4');
+    const pw=pdf.internal.pageSize.getWidth(), ph=pdf.internal.pageSize.getHeight();
+    const iw=pw, ih=canvas.height*(pw/canvas.width);
+    pdf.addImage(img,'JPEG',0,0,iw,ih);
+    let remaining=ih-ph, pos=-ph;
+    while(remaining>0.5){ pdf.addPage(); pdf.addImage(img,'JPEG',0,pos,iw,ih); remaining-=ph; pos-=ph; }
+    const fname='خطاب-'+String(l.ref||'').replace(/[\\/:*?"<>|]/g,'-')+'.pdf';
+    const blob=pdf.output('blob');
+    const file=new File([blob],fname,{type:'application/pdf'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      try{await navigator.share({files:[file],title:'خطاب '+(l.ref||''),text:(l.subject||'')});}catch(e){}
+    }else{
+      pdf.save(fname);
+      toast('💾 نُزّل الخطاب PDF — أرفقه في واتساب','ok');
+    }
+  }catch(e){
+    holder.remove();
+    toast('فشل إنشاء PDF: '+(e.message||'').substring(0,50),'er');
+  }finally{
+    const b=document.getElementById('pdfShareBtn');
+    if(b){b.disabled=false;b.innerHTML='📄 تصدير / مشاركة PDF';}
+  }
+}
 window.addEventListener('afterprint',()=>document.body.classList.remove('lprinting'));
 async function delLet(id){const l=lets.find(x=>x.id===id);if(!l)return;const ok=await confirm2({title:'\u062d\u0630\u0641 \u0627\u0644\u062e\u0637\u0627\u0628',msg:'<strong>'+esc(l.ref)+'</strong>',ok:'\u062d\u0630\u0641'});if(!ok)return;lets=lets.filter(x=>x.id!==id);await svL();renderLetters();toast('\u062a\u0645 \u0627\u0644\u062d\u0630\u0641','ok');}
 function renderLetters(){
@@ -7316,7 +7355,8 @@ if('serviceWorker' in navigator){
     <div class="lov-hdr"><div class="lov-ttl">معاينة الخطاب</div><button class="lov-x" onclick="closeLetPrev()">✕</button></div>
     <div class="lprev-wrap"><div class="lprev-scale" id="lprev-scale"></div></div>
     <button class="lf-print" onclick="doLetPrint()">🖨️ طباعة / حفظ PDF</button>
-    <button class="lf-wa" id="waShareBtn" onclick="shareLetterImg()">📲 مشاركة عبر واتساب</button>
+    <button class="lf-wa" id="pdfShareBtn" onclick="shareLetterPDF()" style="background:#B91C1C">📄 تصدير / مشاركة PDF</button>
+    <button class="lf-wa" id="waShareBtn" onclick="shareLetterImg()">📲 مشاركة صورة عبر واتساب</button>
   </div>
 </div>
 <div id="lprintRoot"></div>
