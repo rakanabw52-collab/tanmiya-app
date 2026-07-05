@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-02-1012">
+<meta name="app-build" content="2026-07-05-1013">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -1203,7 +1203,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="openDupCheck()">🔍 افحص الآن</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1012</bdi> · <bdi>SW v12</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1013</bdi> · <bdi>SW v13</bdi></span></div>
   </div>
 </div>
 
@@ -1320,10 +1320,23 @@ async function cloudPull(table,recId){
 }
 
 // رفع كل البيانات المحلية للسحابة
+// دمج ذكي بالمعرّف id: يوحّد سجلات الجهازين، والنسخة المحلية تفوز عند التعارض — لا يُحذف أي سجل
+function _hdMergeById(local,cloud){
+  const map={};
+  (Array.isArray(cloud)?cloud:[]).forEach(r=>{if(r&&r.id!=null)map[r.id]=r;});
+  (Array.isArray(local)?local:[]).forEach(r=>{if(r&&r.id!=null)map[r.id]=r;});
+  return Object.values(map);
+}
 async function cloudPushAll(){
   if(!_cloudOn||!window.HD_AUTHED||!cloudInit())return;
   setSyncBadge('syncing','جاري الرفع');
   try{
+    // دمج مع السحابة قبل الرفع حتى لا نمسح سجلات جهاز آخر (منع فقدان البيانات)
+    try{
+      const ci=await cloudPull('invoices','_all'); if(ci&&Array.isArray(ci.data)){invs=_hdMergeById(invs,ci.data);await _svRetry(SK,JSON.stringify(invs));}
+      const cp=await cloudPull('projects','_all'); if(cp&&Array.isArray(cp.data)){projs=_hdMergeById(projs,cp.data);await _svRetry(SP,JSON.stringify(projs));}
+      const cl=await cloudPull('letters','_all'); if(cl&&Array.isArray(cl.data)){lets=_hdMergeById(lets,cl.data);await _svRetry(SL,JSON.stringify(lets));}
+    }catch(_){}
     await cloudPush('invoices','_all',invs);
     await cloudPush('projects','_all',projs);
     await cloudPush('settings','main',sett);
@@ -1348,15 +1361,17 @@ async function cloudPullAll(opts){
     const cs=await cloudPull('settings','main');
     
     if(ci&&Array.isArray(ci.data)){
-      // ندمج: نأخذ السحابة لو فيها بيانات
-      if(JSON.stringify(ci.data)!==JSON.stringify(invs)){
-        invs=ci.data;changed=true;
+      // دمج ذكي: توحيد سجلات المحلي والسحابة (لا يُفقد شيء عند اختلاف الأجهزة)
+      const m=_hdMergeById(invs,ci.data);
+      if(JSON.stringify(m)!==JSON.stringify(invs)){
+        invs=m;changed=true;
         await _svRetry(SK,JSON.stringify(invs));
       }
     }
     if(cp&&Array.isArray(cp.data)){
-      if(JSON.stringify(cp.data)!==JSON.stringify(projs)){
-        projs=cp.data;changed=true;
+      const m=_hdMergeById(projs,cp.data);
+      if(JSON.stringify(m)!==JSON.stringify(projs)){
+        projs=m;changed=true;
         await _svRetry(SP,JSON.stringify(projs));
       }
     }
@@ -1368,8 +1383,9 @@ async function cloudPullAll(opts){
     }
     const cl=await cloudPull('letters','_all');
     if(cl&&Array.isArray(cl.data)){
-      if(JSON.stringify(cl.data)!==JSON.stringify(lets)){
-        lets=cl.data;changed=true;
+      const m=_hdMergeById(lets,cl.data);
+      if(JSON.stringify(m)!==JSON.stringify(lets)){
+        lets=m;changed=true;
         await _svRetry(SL,JSON.stringify(lets));
       }
     }
@@ -4367,6 +4383,12 @@ function renderProjDash(){
   });
 }
 
+// كشف التحصيل المزدوج: المشروع فيه دفعة يدوية + فاتورة إيراد لنفس المشروع (يُحسبان معاً فيتضاعف)
+function _projPayDup(pid){
+  const p=projs.find(x=>x.id===pid);
+  if(!p||!(p.paidAmount>0))return false;
+  return invs.some(i=>i.type==='revenue'&&i.projectId===pid);
+}
 function renderProjList(){
   renderProjDash();
   const list=filterProjs(),w=document.getElementById('proj-list');
@@ -4415,6 +4437,7 @@ function renderProjList(){
       <div class="pcard-bar-lbl"><span>المصروفات من العقد</span><span>${cvUsage.toFixed(1)}%</span></div>
       <div class="pcard-bar" style="margin-top:6px;background:#E0F2FE"><div class="pcard-fill" style="width:${Math.min(pl.paidPct,100)}%;background:linear-gradient(90deg,#0EA5E9,#0284C7)"></div></div>
       <div class="pcard-bar-lbl"><span>المسلّم: ${fmtI(pl.paid)}</span><span>المتبقي: ${fmtI(pl.outstanding)}</span></div>`:''}
+      ${_projPayDup(p.id)?`<div style="margin-top:6px;background:#FEF2F2;border:1px solid #FCA5A5;color:#B91C1C;border-radius:7px;padding:6px 9px;font-size:10.5px;font-weight:800;line-height:1.5">⚠️ تحصيل مزدوج محتمل: دفعة يدوية + فاتورة إيراد لنفس المشروع — احذف أحدهما</div>`:''}
     </div>`;
   }).join('')+'</div>';
 }
