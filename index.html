@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-05-1017">
+<meta name="app-build" content="2026-07-05-1018">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -1204,7 +1204,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="openDupCheck()">🔍 افحص الآن</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1017</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1018</bdi></span></div>
   </div>
 </div>
 
@@ -6990,7 +6990,7 @@ async function shareLetterImg(){
     const canvas=await html2canvas(sheet,{scale:2,backgroundColor:'#ffffff',useCORS:true});
     holder.remove();
     const blob=await new Promise(res=>canvas.toBlob(res,'image/png',0.95));
-    const fname='خطاب-'+String(l.ref||'').replace(/[\\/:*?"<>|]/g,'-')+'.png';
+    const fname=((l.subject&&l.subject.trim())?l.subject.trim():('خطاب-'+String(l.ref||''))).replace(/[\\/:*?"<>|]/g,'-')+'.png';
     const file=new File([blob],fname,{type:'image/png'});
     if(navigator.canShare&&navigator.canShare({files:[file]})){
       try{await navigator.share({files:[file],title:'خطاب '+(l.ref||''),text:(l.subject||'')});}catch(e){}
@@ -7030,7 +7030,7 @@ async function shareLetterPDF(){
     pdf.addImage(img,'JPEG',0,0,iw,ih);
     let remaining=ih-ph, pos=-ph;
     while(remaining>0.5){ pdf.addPage(); pdf.addImage(img,'JPEG',0,pos,iw,ih); remaining-=ph; pos-=ph; }
-    const fname='خطاب-'+String(l.ref||'').replace(/[\\/:*?"<>|]/g,'-')+'.pdf';
+    const fname=((l.subject&&l.subject.trim())?l.subject.trim():('خطاب-'+String(l.ref||''))).replace(/[\\/:*?"<>|]/g,'-')+'.pdf';
     const blob=pdf.output('blob');
     const file=new File([blob],fname,{type:'application/pdf'});
     if(navigator.canShare&&navigator.canShare({files:[file]})){
