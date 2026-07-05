@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-02-1010">
+<meta name="app-build" content="2026-07-02-1012">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -222,6 +222,11 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
 .ii-body{flex:1;min-width:0}
 .ii-vnd{font-weight:700;font-size:13.5px;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ii-meta{font-size:11px;color:var(--t3);display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
+.inv-grp-hdr{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:9px;padding:8px 12px;margin:14px 0 8px;font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;color:#1E40AF;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
+.inv-grp-cnt{font-family:'Tajawal',sans-serif;font-weight:700;font-size:11.5px;color:#64748B}
+.inv-grp-dup{color:#B91C1C;font-weight:800}
+.ii-dup{border:1.5px solid #FCA5A5!important;background:#FEF2F2!important}
+.ii-dupwarn{color:#B91C1C;font-weight:800;font-size:11px;margin-bottom:3px}
 .ii-amt{text-align:left;flex-shrink:0}
 .ii-tot{font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;color:var(--t1)}
 .ii-vat{font-size:10.5px;color:var(--t3);margin-top:1px}
@@ -603,10 +608,11 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       <div class="field"><label>التاريخ *</label><input type="date" id="f-dt"></div>
       <div class="field full"><label>المورد / العميل *</label><input type="text" id="f-vnd"></div>
       <div class="field full"><label>الرقم الضريبي</label><input type="text" id="f-vtx" placeholder="3000xxxxxx"></div>
-      <div class="field"><label>المبلغ قبل الضريبة *</label><input type="text" inputmode="decimal" id="f-sub" oninput="calcV()" placeholder="0.00"></div>
+      <div class="field full"><label>طريقة احتساب الضريبة</label><div id="f-vatmode" style="display:flex;gap:8px"><button type="button" class="qe-vbtn on" data-mode="excl" style="flex:1" onclick="setFVat('excl')">المبلغ بدون الضريبة (نضيف 15%)</button><button type="button" class="qe-vbtn" data-mode="incl" style="flex:1" onclick="setFVat('incl')">المبلغ شامل الضريبة (نستخرج 15%)</button></div></div>
+      <div class="field"><label id="f-sub-lbl">المبلغ قبل الضريبة *</label><input type="text" inputmode="decimal" id="f-sub" oninput="calcV()" placeholder="0.00"></div>
       <div class="field"><label>نسبة الضريبة %</label><input type="text" inputmode="decimal" id="f-vr" value="15" oninput="calcV()"></div>
-      <div class="field"><label>قيمة الضريبة</label><input type="text" inputmode="decimal" id="f-v" oninput="calcTot()" placeholder="0.00"></div>
-      <div class="field"><label>الإجمالي</label><input type="text" inputmode="decimal" id="f-tot" placeholder="0.00"></div>
+      <div class="field"><label>قيمة الضريبة (تلقائي)</label><input type="text" inputmode="decimal" id="f-v" placeholder="0.00" readonly style="background:#f1f5f9"></div>
+      <div class="field"><label>الإجمالي (تلقائي)</label><input type="text" inputmode="decimal" id="f-tot" placeholder="0.00" readonly style="background:#f1f5f9"></div>
       <div class="field full"><label>المشروع</label><select id="f-proj" class="proj-sel"><option value="">— بدون مشروع —</option></select></div>
       <div class="field full"><label>البند *</label><select id="f-cat"><option value="">— اختر البند —</option></select></div>
       <div class="field full"><label>ملاحظات</label><textarea id="f-nt"></textarea></div>
@@ -1197,7 +1203,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="openDupCheck()">🔍 افحص الآن</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1010</bdi> · <bdi>SW v12</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1012</bdi> · <bdi>SW v12</bdi></span></div>
   </div>
 </div>
 
@@ -2082,10 +2088,12 @@ function syncScanProj(){
   const fp=document.getElementById('f-proj');
   if(fp)fp.value=sp.value;
 }
-function calcV(){const s=toNum(document.getElementById('f-sub').value),r=toNum(document.getElementById('f-vr').value),v=+(s*r/100).toFixed(2);document.getElementById('f-v').value=v.toFixed(2);document.getElementById('f-tot').value=(s+v).toFixed(2);}
+let fVatMode='excl';
+function setFVat(m){fVatMode=m;document.querySelectorAll('#f-vatmode .qe-vbtn').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));const lbl=document.getElementById('f-sub-lbl');if(lbl)lbl.textContent=(m==='incl'?'المبلغ شامل الضريبة *':'المبلغ قبل الضريبة *');calcV();}
+function calcV(){const amt=toNum(document.getElementById('f-sub').value),r=toNum(document.getElementById('f-vr').value);let base,vat,tot;if(fVatMode==='incl'){tot=amt;base=+(amt/(1+r/100)).toFixed(2);vat=+(tot-base).toFixed(2);}else{base=amt;vat=+(amt*r/100).toFixed(2);tot=+(amt+vat).toFixed(2);}document.getElementById('f-v').value=vat.toFixed(2);document.getElementById('f-tot').value=tot.toFixed(2);}
 function calcTot(){const s=toNum(document.getElementById('f-sub').value),v=toNum(document.getElementById('f-v').value);document.getElementById('f-tot').value=(s+v).toFixed(2);}
 function getType(){const a=document.querySelector('.tp-pill.active');return a?a.dataset.t:'purchase';}
-function clrForm(){['f-no','f-dt','f-vnd','f-vtx','f-sub','f-v','f-tot','f-nt'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-vr').value=15;document.getElementById('f-cat').value='';document.getElementById('f-proj').value='';setType('purchase');rmPrev();cancelAS();document.getElementById('ai-s').classList.remove('show');editId=null;}
+function clrForm(){['f-no','f-dt','f-vnd','f-vtx','f-sub','f-v','f-tot','f-nt'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-vr').value=15;document.getElementById('f-cat').value='';document.getElementById('f-proj').value='';setType('purchase');rmPrev();cancelAS();document.getElementById('ai-s').classList.remove('show');editId=null;if(typeof setFVat==='function')setFVat('excl');}
 
 async function saveInv(){
   const no=document.getElementById('f-no').value.trim(),dt=document.getElementById('f-dt').value,vnd=document.getElementById('f-vnd').value.trim(),sub=toNum(document.getElementById('f-sub').value);
@@ -2094,7 +2102,8 @@ async function saveInv(){
   if(!vnd){document.getElementById('f-vnd').focus();return toast('اكتب اسم المورد/العميل','er');}
   if(sub<=0){document.getElementById('f-sub').focus();return toast('اكتب المبلغ (الأرقام يدوياً مدعومة عربي/إنجليزي)','er');}
   cancelAS();
-  const inv={id:editId||uid('inv'),type:getType(),number:no,date:dt,vendor:vnd,vendorVAT:document.getElementById('f-vtx').value.trim(),subtotal:sub,vatRate:toNum(document.getElementById('f-vr').value)||15,vat:toNum(document.getElementById('f-v').value),total:toNum(document.getElementById('f-tot').value),category:document.getElementById('f-cat').value,projectId:document.getElementById('f-proj').value||'',notes:document.getElementById('f-nt').value.trim(),createdAt:editId?(invs.find(i=>i.id===editId)?.createdAt||Date.now()):Date.now()};
+  const _vat=toNum(document.getElementById('f-v').value),_tot=toNum(document.getElementById('f-tot').value),_base=+(_tot-_vat).toFixed(2);
+  const inv={id:editId||uid('inv'),type:getType(),number:no,date:dt,vendor:vnd,vendorVAT:document.getElementById('f-vtx').value.trim(),subtotal:_base>0?_base:sub,vatRate:toNum(document.getElementById('f-vr').value)||15,vat:_vat,total:_tot>0?_tot:sub,category:document.getElementById('f-cat').value,projectId:document.getElementById('f-proj').value||'',notes:document.getElementById('f-nt').value.trim(),createdAt:editId?(invs.find(i=>i.id===editId)?.createdAt||Date.now()):Date.now()};
   const backup=invs.slice();
   if(editId){const idx=invs.findIndex(i=>i.id===editId);if(idx>=0)invs[idx]=inv;}else{invs.unshift(inv);}
   toast('💾 جاري الحفظ...','ok');
@@ -2214,10 +2223,26 @@ function renderProjView(){
 function renderList(){
   const list=filterInvs(),w=document.getElementById('inv-list');
   if(!list.length){w.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><h3 style="font-family:Cairo,sans-serif">لا توجد فواتير</h3></div>';return;}
-  w.innerHTML=list.map(i=>{
-    const pn=projName(i.projectId);
-    return `<div class="ii" onclick="showDet('${i.id}')"><div class="ii-ic ${i.type}">${TI[i.type]}</div><div class="ii-body"><div class="ii-vnd">${esc(i.vendor)}${i.auto?'<span class="tag auto" style="margin-right:5px">تلقائي</span>':''}</div><div class="ii-meta"><span>${esc(i.number)}</span><span>•</span><span>${fmtD(i.date)}</span>${i.category?`<span>•</span><span>${esc(catLabel(i))}</span>`:''}${pn?`<span>•</span><span class="tag proj">${esc(pn)}</span>`:''}</div></div><div class="ii-amt"><div class="ii-tot">${fmt(i.total)}</div><div class="ii-vat">VAT:${fmt(i.vat)}</div></div><div style="display:flex;flex-direction:column;gap:4px"><button class="ii-del" style="background:#DBEAFE;color:#1D4ED8" onclick="event.stopPropagation();qEditInv('${i.id}')" title="تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ii-del" onclick="event.stopPropagation();qDel('${i.id}')" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
-  }).join('');
+  const dupIds=new Set();
+  findDupInvoices().forEach(g=>g.forEach(i=>dupIds.add(i.id)));
+  const groups={},order=[];
+  list.forEach(i=>{const k=i.projectId||'__none__';if(!groups[k]){groups[k]=[];order.push(k);}groups[k].push(i);});
+  const projOrder=sortedProjs().map(p=>p.id);
+  order.sort((a,b)=>{if(a==='__none__')return 1;if(b==='__none__')return -1;const ia=projOrder.indexOf(a),ib=projOrder.indexOf(b);return (ia<0?999:ia)-(ib<0?999:ib);});
+  const card=i=>{
+    const isDup=dupIds.has(i.id);
+    return `<div class="ii${isDup?' ii-dup':''}" onclick="showDet('${i.id}')"><div class="ii-ic ${i.type}">${TI[i.type]}</div><div class="ii-body">${isDup?'<div class="ii-dupwarn">⚠️ أرجو التأكد — يُحتمل أنها مكررة</div>':''}<div class="ii-vnd">${esc(i.vendor)}${i.auto?'<span class="tag auto" style="margin-right:5px">تلقائي</span>':''}</div><div class="ii-meta"><span>${esc(i.number)}</span><span>•</span><span>${fmtD(i.date)}</span>${i.category?`<span>•</span><span>${esc(catLabel(i))}</span>`:''}</div></div><div class="ii-amt"><div class="ii-tot">${fmt(i.total)}</div><div class="ii-vat">VAT:${fmt(i.vat)}</div></div><div style="display:flex;flex-direction:column;gap:4px"><button class="ii-del" style="background:#DBEAFE;color:#1D4ED8" onclick="event.stopPropagation();qEditInv('${i.id}')" title="تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ii-del" onclick="event.stopPropagation();qDel('${i.id}')" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
+  };
+  let html='';
+  order.forEach(k=>{
+    const items=groups[k];
+    const pname=k==='__none__'?'بدون مشروع':(projName(k)||'مشروع');
+    const gTot=items.reduce((s,i)=>s+(i.total||0),0);
+    const gDup=items.filter(i=>dupIds.has(i.id)).length;
+    html+='<div class="inv-grp-hdr"><span>📁 '+esc(pname)+'</span><span class="inv-grp-cnt">'+items.length+' فاتورة • '+fmt(gTot)+' ر.س'+(gDup?' <span class="inv-grp-dup">⚠️ '+gDup+' مشتبه</span>':'')+'</span></div>';
+    html+=items.map(card).join('');
+  });
+  w.innerHTML=html;
 }
 let qeId=null;
 function qEditInv(id){
