@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-05-1014">
+<meta name="app-build" content="2026-07-05-1015">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -1203,7 +1203,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="openDupCheck()">🔍 افحص الآن</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1014</bdi> · <bdi>SW v14</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1015</bdi> · <bdi>SW v15</bdi></span></div>
   </div>
 </div>
 
@@ -2314,6 +2314,25 @@ async function markAllCollected(){
   renderDB();
   toast('تم تحديد '+targets.length+' مشروع كمحصّل بالكامل ✓','ok');
 }
+// زر جماعي: إزالة ازدواج التحصيل — تصفير الدفعة اليدوية للمشاريع المتجاوزة التي فيها فاتورة إيراد أيضاً
+async function fixPayDup(){
+  const affected=projs.filter(p=>{
+    if(!(p.paidAmount>0))return false;
+    const rev=invs.filter(i=>i.type==='revenue'&&i.projectId===p.id).reduce((s,i)=>s+(i.total||0),0);
+    if(rev<=0)return false;
+    return (p.paidAmount+rev)>((p.contractValue||0)*1.15)+1;
+  });
+  if(!affected.length){toast('لا يوجد ازدواج تحصيل','ok');return;}
+  let msg='سيتم تصفير «الدفعة اليدوية» في <b>'+affected.length+'</b> مشروع (مع إبقاء فواتير الإيراد كسجل رسمي):<br><br>';
+  affected.forEach(p=>{const rev=invs.filter(i=>i.type==='revenue'&&i.projectId===p.id).reduce((s,i)=>s+(i.total||0),0);msg+='• '+esc(p.name)+': دفعة '+fmtI(p.paidAmount)+' ← 0 (يبقى إيراد '+fmtI(rev)+')<br>';});
+  const ok=await confirm2({title:'إزالة ازدواج التحصيل',msg,ok:'تطبيق',danger:false});
+  if(!ok)return;
+  affected.forEach(p=>{p.paidAmount=0;});
+  await svP();
+  if(typeof renderProjList==='function')renderProjList();
+  renderDB();
+  toast('تم إزالة الازدواج من '+affected.length+' مشروع ✓','ok');
+}
 /* زر: تحديد المشروع كمحصّل بالكامل — يملأ الدفعة بقيمة العقد بالضريبة (ناقص دفعات الإيرادات المسجّلة) */
 function markFullyCollected(){
   const net=cvNetFromInput();
@@ -2501,6 +2520,7 @@ function renderReceivablesByProject(){
   
   let html='<div style="font-family:Cairo,sans-serif;font-weight:800;font-size:12px;color:var(--t2);margin-bottom:7px;padding-top:10px;border-top:1px dashed var(--bd)">📋 المتبقي لكل مشروع</div>';
   html+='<button type="button" onclick="markAllCollected()" style="width:100%;background:#DCFCE7;color:#15803D;border:1px solid #86EFAC;border-radius:9px;padding:9px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12px;cursor:pointer;margin-bottom:9px">✅ تحديد كل المشاريع كمحصّلة بالكامل</button>';
+  html+='<button type="button" onclick="fixPayDup()" style="width:100%;background:#FEF2F2;color:#B91C1C;border:1px solid #FCA5A5;border-radius:9px;padding:9px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12px;cursor:pointer;margin-bottom:9px">🧹 إزالة ازدواج التحصيل (تصفير الدفعة عند وجود فاتورة إيراد)</button>';
   
   rows.forEach(({p,contract,paid,outstanding})=>{
     const pct=contract>0?(paid/contract*100):0;
@@ -4393,7 +4413,10 @@ function renderProjDash(){
 function _projPayDup(pid){
   const p=projs.find(x=>x.id===pid);
   if(!p||!(p.paidAmount>0))return false;
-  return invs.some(i=>i.type==='revenue'&&i.projectId===pid);
+  const rev=invs.filter(i=>i.type==='revenue'&&i.projectId===pid).reduce((s,i)=>s+(i.total||0),0);
+  if(rev<=0)return false;
+  const gross=(p.contractValue||0)*1.15;
+  return (p.paidAmount+rev)>gross+1; // تنبيه فقط عند تجاوز قيمة العقد بالضريبة (ازدواج فعلي)
 }
 function renderProjList(){
   renderProjDash();

@@ -1,5 +1,5 @@
-// Service Worker - نظام هدف التنمية v14 (مع دعم المزامنة)
-const CACHE_NAME = 'hadaf-v14-cloud';
+// Service Worker - نظام هدف التنمية v15 (مع دعم المزامنة)
+const CACHE_NAME = 'hadaf-v15-cloud';
 const ASSETS = [
   './','./index.html','./manifest.json',
   './icon-192.png','./icon-512.png','./apple-touch-icon.png',
@@ -64,4 +64,4 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('message', (e) => {
   if (e.data?.type==='SKIP_WAITING') self.skipWaiting();
 });
-console.log('✓ SW v14 (cloud sync ready)');
+console.log('✓ SW v15 (cloud sync ready)');
