@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-05-1018">
+<meta name="app-build" content="2026-07-05-1019">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -535,6 +535,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1019</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -647,6 +648,8 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       <div class="fp" data-f="revenue">إيرادات</div>
       <div class="fp" data-f="purchase">مشتريات</div>
       <div class="fp" data-f="expense">مصروفات</div>
+      <div class="fp" data-f="tax">✅ بضريبة</div>
+      <div class="fp" data-f="notax">⚠️ بدون ضريبة</div>
       <div class="fp" data-f="m">هذا الشهر</div>
       <div class="fp" data-f="q">هذا الربع</div>
       <div class="fp" data-f="y">هذا العام</div>
@@ -1204,7 +1207,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="openDupCheck()">🔍 افحص الآن</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1018</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1019</bdi></span></div>
   </div>
 </div>
 
@@ -2140,6 +2143,8 @@ document.querySelectorAll('.fp').forEach(p=>p.addEventListener('click',()=>{
 function filterInvs(){
   const q=(document.getElementById('s-inp')?.value||'').trim().toLowerCase();let res=[...invs];
   if(['revenue','purchase','expense'].includes(flt))res=res.filter(i=>i.type===flt);
+  if(flt==='tax')res=res.filter(i=>(i.vat||0)>0);
+  if(flt==='notax')res=res.filter(i=>!((i.vat||0)>0));
   if(flt==='m'){const n=new Date();res=res.filter(i=>{const d=new Date(i.date);return d.getFullYear()===n.getFullYear()&&d.getMonth()===n.getMonth();});}
   if(flt==='q'){const n=new Date(),qq=Math.floor(n.getMonth()/3);res=res.filter(i=>{const d=new Date(i.date);return d.getFullYear()===n.getFullYear()&&Math.floor(d.getMonth()/3)===qq;});}
   if(flt==='y'){const y=new Date().getFullYear();res=res.filter(i=>new Date(i.date).getFullYear()===y);}
