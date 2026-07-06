@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-05-1022">
+<meta name="app-build" content="2026-07-05-1023">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -286,6 +286,8 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
 .st-active{background:#DBEAFE;color:#1E40AF}
 .st-done{background:#DCFCE7;color:#15803D}
 .st-hold{background:#F3F4F6;color:#4B5563}
+.st-study{background:#FEF3C7;color:#92400E}
+.st-late{background:#FEE2E2;color:#B91C1C}
 .st-late{background:#FEE2E2;color:#B91C1C}
 .pcard-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:9px}
 .pgi{text-align:center;padding:8px 4px;background:var(--bg);border-radius:8px}
@@ -535,7 +537,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1022</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1023</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -554,6 +556,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
   </div>
   <div class="fps">
     <div class="fp active" data-pf="all">الكل</div>
+    <div class="fp" data-pf="study">تحت الدراسة</div>
     <div class="fp" data-pf="active">نشط</div>
     <div class="fp" data-pf="done">منجز</div>
     <div class="fp" data-pf="hold">معلق</div>
@@ -870,6 +873,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <div class="field"><label>الحالة</label>
         <select id="pe-st">
+          <option value="study">تحت الدراسة</option>
           <option value="active">نشط</option>
           <option value="done">منجز</option>
           <option value="hold">معلق</option>
@@ -1226,7 +1230,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1022</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1023</bdi></span></div>
   </div>
 </div>
 
@@ -1555,7 +1559,7 @@ const KW_MAP={
 
 const TL={revenue:'إيرادات',purchase:'مشتريات',expense:'مصروفات'};
 const TI={revenue:'إير',purchase:'شراء',expense:'مصر'};
-const STL={active:'نشط',done:'منجز',hold:'معلق',late:'متأخر'};
+const STL={active:'نشط',done:'منجز',hold:'معلق',late:'متأخر',study:'تحت الدراسة'};
 const WORKTYPES=[
   {id:'excavate',name:'حفر',icon:'🚧',unit:'متر طولي'},
   {id:'concrete',name:'صب خرسانة',icon:'🏗️',unit:'م³'},
@@ -4282,12 +4286,12 @@ function renderProjDash(){
   if(!all.length){box.innerHTML='';return;}
 
   // إجماليات
-  let totContract=0,totCost=0,totProfit=0,activeN=0,doneN=0,holdN=0;
+  let totContract=0,totCost=0,totProfit=0,activeN=0,doneN=0,holdN=0,studyN=0;
   let sumProg=0,progN=0;
   const rows=all.map(p=>{
     const pl=projPL(p.id);
     totContract+=pl.contract||0;totCost+=pl.cost||0;totProfit+=pl.profit||0;
-    if(p.status==='active')activeN++;else if(p.status==='done')doneN++;else holdN++;
+    if(p.status==='active')activeN++;else if(p.status==='done')doneN++;else if(p.status==='study')studyN++;else holdN++;
     const pr=projProgress(p.id);
     if(p.status==='active'){sumProg+=pr.overall;progN++;}
     return {p,pl,pr};
@@ -4315,7 +4319,7 @@ function renderProjDash(){
   h+='</div>';
   // صف ثانٍ: نشط/منجز/معلق + متوسط الإنجاز
   h+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:11px">';
-  h+='<div style="background:#fff;border:1px solid var(--bd);border-radius:12px;padding:11px"><div style="font-size:10.5px;color:var(--t2);font-weight:700;margin-bottom:7px">📂 حالة المشاريع</div><div style="display:flex;gap:6px;flex-wrap:wrap"><span style="background:#DCFCE7;color:#15803D;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800">'+activeN+' نشط</span><span style="background:#DBEAFE;color:#1E40AF;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800">'+doneN+' منجز</span><span style="background:#F3F4F6;color:#6B7280;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800">'+holdN+' معلق</span></div></div>';
+  h+='<div style="background:#fff;border:1px solid var(--bd);border-radius:12px;padding:11px"><div style="font-size:10.5px;color:var(--t2);font-weight:700;margin-bottom:7px">📂 حالة المشاريع</div><div style="display:flex;gap:6px;flex-wrap:wrap"><span style="background:#DCFCE7;color:#15803D;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800">'+activeN+' نشط</span>'+(studyN?'<span style="background:#FEF3C7;color:#92400E;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800">'+studyN+' تحت الدراسة</span>':'')+'<span style="background:#DBEAFE;color:#1E40AF;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800">'+doneN+' منجز</span><span style="background:#F3F4F6;color:#6B7280;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800">'+holdN+' معلق</span></div></div>';
   const apCol=avgProg>=80?'#15803D':avgProg>=50?'#2771ab':'#B45309';
   h+='<div style="background:#fff;border:1px solid var(--bd);border-radius:12px;padding:11px"><div style="font-size:10.5px;color:var(--t2);font-weight:700;margin-bottom:6px">🎯 متوسط الإنجاز (النشطة)</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:20px;color:'+apCol+';line-height:1;margin-bottom:6px">'+avgProg.toFixed(0)+'%</div><div style="background:#E5E7EB;border-radius:99px;height:7px;overflow:hidden"><div style="width:'+avgProg.toFixed(0)+'%;height:100%;background:'+apCol+';border-radius:99px"></div></div></div>';
   h+='</div>';
@@ -4584,7 +4588,7 @@ function newProj(){
   document.getElementById('pe-se').value='';
   const peq=document.getElementById('pe-qty');if(peq)peq.value='';
   const peu=document.getElementById('pe-unit');if(peu)peu.value='م.ط';
-  document.getElementById('pe-st').value='active';
+  document.getElementById('pe-st').value='study';
   document.getElementById('pe-sd').value=new Date().toISOString().slice(0,10);
   document.getElementById('pe-ed').value='';
   const ped=document.getElementById('pe-dur');if(ped)ped.value='';
