@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-05-1024">
+<meta name="app-build" content="2026-07-06-1025">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -537,7 +537,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1024</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1025</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1232,7 +1232,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1024</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1025</bdi></span></div>
   </div>
 </div>
 
@@ -1843,7 +1843,7 @@ async function testApiKeyUI(){
   try{
     const rs=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',headers:aiHeaders(),
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:10,messages:[{role:'user',content:'مرحبا'}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:10,messages:[{role:'user',content:'مرحبا'}]})
     });
     const data=await rs.json();
     if(rs.ok&&data.content){
@@ -2059,7 +2059,7 @@ async function aiExtract(b64,mt,kb,isPdf){
   let log='';
   try{
     const docBlock=isPdf?{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}}:{type:'image',source:{type:'base64',media_type:mt,data:b64}};
-    const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:[docBlock,{type:'text',text:pr}]}]})});
+    const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:[docBlock,{type:'text',text:pr}]}]})});
     log='Status:'+rs.status+'\n';
     const raw=await rs.text();log+=raw.substring(0,800);
     let data;try{data=JSON.parse(raw);}catch(_){throw new Error('رد غير صالح');}
@@ -4825,7 +4825,7 @@ JSON فقط بدون شرح:
 ملاحظات: اتركها فارغة "" أو 0 إن لم تكن واضحة. لا تخمّن.`});
     const rs=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',headers:aiHeaders(),
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,messages:[{role:'user',content}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1500,messages:[{role:'user',content}]})
     });
     if(!rs.ok){
       const raw=await rs.text();
@@ -5664,7 +5664,7 @@ JSON فقط بهذا الهيكل:
     rs=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:aiHeaders(),
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,messages:[{role:'user',content}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:8000,messages:[{role:'user',content}]})
     });
     raw=await rs.text();
   }catch(e){
@@ -6574,7 +6574,7 @@ async function aiExtractDoc(){
   const pr='هذا مستند رسمي سعودي. صنّفه واستخرج بياناته وأرجع JSON فقط بلا أي نص إضافي:\n{"docType":"اختر id واحد من القائمة","name":"","number":"","issueDate":"YYYY-MM-DD","expireDate":"YYYY-MM-DD"}\nقائمة الأنواع (id=الاسم): '+typesList+'\nحوّل أي تاريخ هجري إلى ميلادي. إن كان النوع غير موجود استخدم custom واكتب اسمه في name. اترك الحقل "" إن لم يوجد.';
   try{
     const docBlock=isPdf?{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}}:{type:'image',source:{type:'base64',media_type:mt,data:b64}};
-    const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:[docBlock,{type:'text',text:pr}]}]})});
+    const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:500,messages:[{role:'user',content:[docBlock,{type:'text',text:pr}]}]})});
     const raw=await rs.text();let data;try{data=JSON.parse(raw);}catch(_){throw new Error('رد غير صالح');}
     if(data.error||data.type==='error')throw new Error((data.error||data).message||'خطأ');
     const tb=data.content&&data.content.find(c=>c.type==='text');if(!tb||!tb.text)throw new Error('لا يوجد نص');
