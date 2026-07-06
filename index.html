@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-05-1023">
+<meta name="app-build" content="2026-07-05-1024">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -537,7 +537,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1023</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1024</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -653,6 +653,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       <div class="fp" data-f="expense">مصروفات</div>
       <div class="fp" data-f="tax">✅ بضريبة</div>
       <div class="fp" data-f="notax">⚠️ بدون ضريبة</div>
+      <div class="fp" data-f="general">🧾 فواتير عامة</div>
       <div class="fp" data-f="m">هذا الشهر</div>
       <div class="fp" data-f="q">هذا الربع</div>
       <div class="fp" data-f="y">هذا العام</div>
@@ -1085,6 +1086,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
           <input type="file" id="doc-file" accept="image/*,application/pdf" style="display:none">
         </label>
         <div id="doc-file-status" style="font-size:11.5px;margin-top:6px;color:var(--t2)"></div>
+        <button type="button" class="btn btn-p btn-sm" onclick="aiExtractDoc()" style="width:100%;margin-top:7px;font-size:12px">🤖 قراءة وتصنيف تلقائي (نوع + تاريخ الانتهاء)</button>
       </div>
       <div class="field full"><label>ملاحظات</label><textarea id="doc-notes" rows="2" style="padding:10px;border:1.5px solid var(--bd);border-radius:9px;font-family:Tajawal,sans-serif;font-size:13px;width:100%;resize:vertical"></textarea></div>
     </div>
@@ -1230,7 +1232,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1023</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1024</bdi></span></div>
   </div>
 </div>
 
@@ -2176,6 +2178,7 @@ function filterInvs(){
   if(['revenue','purchase','expense'].includes(flt))res=res.filter(i=>i.type===flt);
   if(flt==='tax')res=res.filter(i=>(i.vat||0)>0);
   if(flt==='notax')res=res.filter(i=>!((i.vat||0)>0));
+  if(flt==='general')res=res.filter(i=>!i.projectId);
   if(flt==='m'){const n=new Date();res=res.filter(i=>{const d=new Date(i.date);return d.getFullYear()===n.getFullYear()&&d.getMonth()===n.getMonth();});}
   if(flt==='q'){const n=new Date(),qq=Math.floor(n.getMonth()/3);res=res.filter(i=>{const d=new Date(i.date);return d.getFullYear()===n.getFullYear()&&Math.floor(d.getMonth()/3)===qq;});}
   if(flt==='y'){const y=new Date().getFullYear();res=res.filter(i=>new Date(i.date).getFullYear()===y);}
@@ -2355,7 +2358,7 @@ function renderList(){
   let html='';
   order.forEach(k=>{
     const items=groups[k];
-    const pname=k==='__none__'?'بدون مشروع':(projName(k)||'مشروع');
+    const pname=k==='__none__'?'🧾 فواتير عامة (مصاريف يومية — للضريبة)':(projName(k)||'مشروع');
     const gTot=items.reduce((s,i)=>s+(i.total||0),0);
     const gDup=items.filter(i=>dupIds.has(i.id)).length;
     html+='<div class="inv-grp-hdr"><span>📁 '+esc(pname)+'</span><span class="inv-grp-cnt">'+items.length+' فاتورة • '+fmt(gTot)+' ر.س'+(gDup?' <span class="inv-grp-dup">⚠️ '+gDup+' مشتبه</span>':'')+'</span></div>';
@@ -6550,6 +6553,7 @@ document.getElementById('doc-file').addEventListener('change',async e=>{
       _docPendingFile={data:reader.result,mime:f.type,name:f.name};
       status.innerHTML='✅ تم تحميل: '+esc(f.name)+' ('+Math.round(f.size/1024)+' KB)';
       status.style.color='#15803D';
+      if(aiReady())aiExtractDoc();
     };
     reader.onerror=()=>{status.innerHTML='❌ فشل القراءة';status.style.color='#B91C1C';};
     reader.readAsDataURL(f);
@@ -6559,6 +6563,34 @@ document.getElementById('doc-file').addEventListener('change',async e=>{
   }
 });
 
+// قراءة وتصنيف المستند الرسمي بالذكاء الاصطناعي: النوع + الأرقام + تاريخ الإصدار والانتهاء
+async function aiExtractDoc(){
+  if(!aiReady()){toast('⚠️ أضف مفتاح الذكاء الاصطناعي من الإعدادات أولاً','er');return;}
+  if(!_docPendingFile||!_docPendingFile.data){toast('أرفق ملف الوثيقة أولاً','er');return;}
+  const status=document.getElementById('doc-file-status');
+  status.innerHTML='🤖 جاري قراءة المستند وتصنيفه...';status.style.color='var(--pr)';
+  const mt=_docPendingFile.mime||'',isPdf=mt.includes('pdf'),b64=String(_docPendingFile.data).split(',')[1]||'';
+  const typesList=DOC_TYPES.map(d=>d.id+'='+d.name).join(' | ');
+  const pr='هذا مستند رسمي سعودي. صنّفه واستخرج بياناته وأرجع JSON فقط بلا أي نص إضافي:\n{"docType":"اختر id واحد من القائمة","name":"","number":"","issueDate":"YYYY-MM-DD","expireDate":"YYYY-MM-DD"}\nقائمة الأنواع (id=الاسم): '+typesList+'\nحوّل أي تاريخ هجري إلى ميلادي. إن كان النوع غير موجود استخدم custom واكتب اسمه في name. اترك الحقل "" إن لم يوجد.';
+  try{
+    const docBlock=isPdf?{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}}:{type:'image',source:{type:'base64',media_type:mt,data:b64}};
+    const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:[docBlock,{type:'text',text:pr}]}]})});
+    const raw=await rs.text();let data;try{data=JSON.parse(raw);}catch(_){throw new Error('رد غير صالح');}
+    if(data.error||data.type==='error')throw new Error((data.error||data).message||'خطأ');
+    const tb=data.content&&data.content.find(c=>c.type==='text');if(!tb||!tb.text)throw new Error('لا يوجد نص');
+    let tx=tb.text.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();const m=tx.match(/\{[\s\S]*\}/);if(m)tx=m[0];
+    const p=JSON.parse(tx);
+    if(p.docType&&DOC_TYPE_BY_ID[p.docType]){document.getElementById('doc-type').value=p.docType;onDocTypeChange();}
+    if(p.name){const nm=document.getElementById('doc-name');if(nm)nm.value=p.name;}
+    if(p.number)document.getElementById('doc-number').value=p.number;
+    if(p.issueDate&&/^\d{4}-\d{2}-\d{2}$/.test(p.issueDate))document.getElementById('doc-issue').value=p.issueDate;
+    if(p.expireDate&&/^\d{4}-\d{2}-\d{2}$/.test(p.expireDate))document.getElementById('doc-expire').value=p.expireDate;else onDocIssueChange();
+    const tn=(DOC_TYPE_BY_ID[p.docType]||{}).name||'مستند';
+    status.innerHTML='🤖 تم التصنيف: <b>'+esc(tn)+'</b>'+(p.expireDate?(' • ينتهي: '+esc(p.expireDate)):'')+' — راجع واحفظ';status.style.color='#15803D';
+  }catch(err){
+    status.innerHTML='⚠️ تعذّرت القراءة التلقائية ('+esc((err.message||'').substring(0,40))+') — عبّئ يدوياً';status.style.color='#B45309';
+  }
+}
 async function saveDoc(){
   const type=document.getElementById('doc-type').value;
   const cfg=DOC_TYPE_BY_ID[type];
