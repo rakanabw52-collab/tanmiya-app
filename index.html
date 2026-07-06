@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-05-1020">
+<meta name="app-build" content="2026-07-05-1021">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -535,7 +535,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1020</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1021</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1207,7 +1207,14 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="openDupCheck()">🔍 افحص الآن</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1020</bdi></span></div>
+    <div class="card" style="background:linear-gradient(135deg,#FEF2F2,#FEE2E2);border:1px solid #FCA5A5;margin-top:10px">
+      <div style="font-family:'Cairo',sans-serif;font-weight:800;color:#B91C1C;font-size:14px;margin-bottom:6px">🧹 الفواتير اليتيمة</div>
+      <div style="font-size:11.5px;color:#B91C1C;line-height:1.7;margin-bottom:10px">
+        فواتير مرتبطة بمشروع <strong>محذوف</strong> — لا تظهر في أي مشروع ولا تُحتسب في الأرباح. احذفها لتنظيف بياناتك.
+      </div>
+      <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
+    </div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1021</bdi></span></div>
   </div>
 </div>
 
@@ -2242,6 +2249,25 @@ function renderProjView(){
   w.innerHTML=html;
 }
 
+// الفواتير اليتيمة: مرتبطة بمشروع محذوف (projectId لا يطابق أي مشروع موجود) — لا تظهر ولا تُحتسب
+function findOrphanInvs(){
+  const pids=new Set(projs.map(p=>p.id));
+  return invs.filter(i=>i.projectId&&!pids.has(i.projectId));
+}
+async function cleanOrphanInvs(){
+  const orph=findOrphanInvs();
+  if(!orph.length){toast('لا توجد فواتير يتيمة ✓','ok');return;}
+  const sum=orph.reduce((s,i)=>s+(i.total||0),0);
+  const msg='عدد الفواتير اليتيمة (مرتبطة بمشروع محذوف): <b>'+orph.length+'</b> بإجمالي <b>'+fmtI(sum)+'</b> ر.س.<br><br>هذه لا تظهر في أي مشروع ولا تُحتسب في أي ربح. حذفها نهائياً؟';
+  const ok=await confirm2({title:'حذف الفواتير اليتيمة',msg,ok:'حذف نهائي',danger:true});
+  if(!ok)return;
+  const ids=new Set(orph.map(i=>i.id));
+  invs=invs.filter(i=>!ids.has(i.id));
+  await sv();
+  if(typeof renderList==='function')renderList();
+  renderDB();
+  toast('تم حذف '+orph.length+' فاتورة يتيمة ✓','ok');
+}
 function renderList(){
   const list=filterInvs(),w=document.getElementById('inv-list');
   if(!list.length){w.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><h3 style="font-family:Cairo,sans-serif">لا توجد فواتير</h3></div>';return;}
