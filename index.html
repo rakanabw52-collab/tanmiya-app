@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-06-1025">
+<meta name="app-build" content="2026-07-07-1026">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -537,7 +537,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1025</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1026</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1232,7 +1232,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1025</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1026</bdi></span></div>
   </div>
 </div>
 
@@ -2616,8 +2616,8 @@ function projPL(pid){
 function renderReceivablesByProject(){
   const w=document.getElementById('r-projects');
   if(!w)return;
-  // كل المشاريع التي لها قيمة عقد
-  const rows=projs.filter(p=>(p.contractValue||0)>0).map(p=>{
+  // كل المشاريع التي لها قيمة عقد (باستثناء «تحت الدراسة»)
+  const rows=projs.filter(p=>(p.contractValue||0)>0&&p.status!=='study').map(p=>{
     const pl=projPL(p.id);
     return {p,contract:pl.contract,paid:pl.paid,outstanding:pl.outstanding};
   }).sort((a,b)=>b.outstanding-a.outstanding);
@@ -4293,11 +4293,13 @@ function renderProjDash(){
   let sumProg=0,progN=0;
   const rows=all.map(p=>{
     const pl=projPL(p.id);
-    totContract+=pl.contract||0;totCost+=pl.cost||0;totProfit+=pl.profit||0;
+    // المشاريع «تحت الدراسة» لا تدخل أرقامها في الإجماليات حتى تُحوّل إلى نشط
+    const isStudy=p.status==='study';
+    if(!isStudy){totContract+=pl.contract||0;totCost+=pl.cost||0;totProfit+=pl.profit||0;}
     if(p.status==='active')activeN++;else if(p.status==='done')doneN++;else if(p.status==='study')studyN++;else holdN++;
     const pr=projProgress(p.id);
     if(p.status==='active'){sumProg+=pr.overall;progN++;}
-    return {p,pl,pr};
+    return {p,pl,pr,isStudy};
   });
   // مطابقة الداش بورد: تضمين المصاريف والإيرادات غير المرتبطة بمشروع في الإجماليات
   const _saCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!i.projectId).reduce((s,i)=>s+(i.total||0),0);
@@ -4331,6 +4333,7 @@ function renderProjDash(){
   // المُحصّل = الدفعة اليدوية + دفعات الإيرادات (pl.paid) — مطابق تماماً للبطاقات وملخص المستحقات
   let totOutNet=0,totOutGross=0;
   rows.forEach(r=>{
+    if(r.isStudy)return;                              // استبعاد المشاريع تحت الدراسة
     const pl=r.pl;
     if(!(pl.contract>0))return;
     const recvNet=+(pl.paid/1.15).toFixed(2);      // صافي المُحصّل (بالضريبة ÷ 1.15)
@@ -6037,13 +6040,15 @@ function equalizeColumns(){
 
 function renderDB(){
   if(typeof renderDocsAlert==='function')renderDocsAlert();
-  const contractRev=projs.reduce((s,p)=>s+(p.contractValue||0),0);
+  // المشاريع «تحت الدراسة» لا تدخل أرقامها في الداش بورد حتى تُحوّل إلى نشط
+  const dashProjs=projs.filter(p=>p.status!=='study');
+  const contractRev=dashProjs.reduce((s,p)=>s+(p.contractValue||0),0);
   const standaloneRev=invs.filter(i=>i.type==='revenue'&&!i.projectId).reduce((s,i)=>s+(i.total||0),0);
   const trv=contractRev+standaloneRev;
   const rv=invs.filter(i=>i.type==='revenue');
   // التكاليف تستخدم projPL لكل مشروع (يحترم المبلغ اليدوي) + الفواتير بدون مشروع
   let projCost=0;
-  projs.forEach(p=>{projCost+=projPL(p.id).cost;});
+  dashProjs.forEach(p=>{projCost+=projPL(p.id).cost;});
   const standaloneCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!i.projectId).reduce((s,i)=>s+(i.total||0),0);
   const tcs=projCost+standaloneCost;
   const cs=invs.filter(i=>i.type==='purchase'||i.type==='expense');
@@ -6057,9 +6062,9 @@ function renderDB(){
   const mp=document.getElementById('m-projects');if(mp)mp.textContent=projs.length+'';
   const mi=document.getElementById('m-invoices');if(mi)mi.textContent=invs.length+'';
   // إجماليات المستحقات
-  const totalProjValue=projs.reduce((s,p)=>s+(p.contractValue||0),0);
-  const totalPaid=projs.reduce((s,p)=>s+projPL(p.id).paid,0);
-  const totalOutstanding=projs.reduce((s,p)=>s+projPL(p.id).outstanding,0);
+  const totalProjValue=dashProjs.reduce((s,p)=>s+(p.contractValue||0),0);
+  const totalPaid=dashProjs.reduce((s,p)=>s+projPL(p.id).paid,0);
+  const totalOutstanding=dashProjs.reduce((s,p)=>s+projPL(p.id).outstanding,0);
   const collPct=totalProjValue>0?(totalPaid/totalProjValue*100):0;
   // المؤشرات
   const mc=document.getElementById('m-collected');
