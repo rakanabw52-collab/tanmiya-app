@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-14-1033">
+<meta name="app-build" content="2026-07-15-1034">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -567,7 +567,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1033</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1034</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1154,6 +1154,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
   <div class="md">
     <div class="md-hdr"><div class="md-ttl">الإعدادات</div><button class="md-cl" onclick="closeSet()">✕</button></div>
     <button class="btn btn-o btn-sm" onclick="closeSet();openLogView('events')" style="width:100%;margin-bottom:10px;padding:9px;font-size:12.5px;font-weight:800;background:#EEF2FF;color:#1E40AF;border-color:#C7D2FE">📋 السجل والمحذوفات (دخول · أحداث · استرجاع)</button>
+    <button type="button" onclick="internalAuditAll()" style="width:100%;margin-bottom:10px;padding:12px;font-size:13px;font-weight:800;background:linear-gradient(135deg,#4F46E5,#3730A3);color:#fff;border:none;border-radius:10px;cursor:pointer">🔍 المدقق الداخلي الشامل — تدقيق كل المشاريع والفواتير</button>
     <div class="card" style="background:var(--bg);border:none">
       <div style="font-weight:700;margin-bottom:8px">بيانات المؤسسة</div>
       <div style="display:grid;gap:10px">
@@ -1273,7 +1274,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1033</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1034</bdi></span></div>
   </div>
 </div>
 
@@ -2673,7 +2674,30 @@ let _auditCtx=null;
 function _invText(i){
   return 'رقم '+(i.number||'—')+' | نوع '+(TL[i.type]||i.type)+' | تاريخ '+(i.date||'—')+' | الطرف '+(i.vendor||'—')+' | الرقم الضريبي للطرف '+(i.vendorVAT||'—')+' | قبل الضريبة '+fmtI(i.subtotal||0)+' | الضريبة '+fmtI(i.vat||0)+' ('+(i.vatRate||15)+'%) | الإجمالي '+fmtI(i.total||0)+' | البند '+(catLabel(i)||'—')+(i.status==='cancelled'?' | (ملغاة)':'')+(i.notes?' | ملاحظات: '+i.notes:'');
 }
+function _buildAuditDataAll(){
+  let s='نوع البيانات: تدقيق شامل لكامل النظام (كل المشاريع وكل الفواتير)\n\n=== الإجماليات العامة ===\n';
+  const contractRev=projs.reduce((a,p)=>a+(p.contractValue||0),0);
+  let totPaid=0,totOut=0,totCost=0;
+  projs.forEach(p=>{const pl=projPL(p.id);totPaid+=pl.paid;totOut+=pl.outstanding;totCost+=pl.cost;});
+  const canc=invs.filter(i=>i.status==='cancelled').length;
+  const outVat=invs.filter(i=>i.type==='revenue'&&i.status!=='cancelled').reduce((a,i)=>a+(i.vat||0),0);
+  const inVat=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&i.status!=='cancelled').reduce((a,i)=>a+(i.vat||0),0);
+  s+='عدد المشاريع: '+projs.length+'\n';
+  s+='عدد الفواتير: '+invs.length+' (منها '+canc+' ملغاة)\n';
+  s+='إجمالي قيمة العقود (بدون ضريبة): '+fmtI(contractRev)+' ر.س\n';
+  s+='إجمالي المُحصّل: '+fmtI(totPaid)+' ر.س | إجمالي المتبقي: '+fmtI(totOut)+' ر.س\n';
+  s+='إجمالي المصروفات: '+fmtI(totCost)+' ر.س\n';
+  s+='ضريبة المخرجات: '+fmtI(outVat)+' | ضريبة المدخلات: '+fmtI(inVat)+' | صافي الضريبة: '+fmtI(outVat-inVat)+' ر.س\n';
+  s+='بيانات المنشأة: الاسم='+(sett.name||'غير مُدخل')+' | الرقم الضريبي='+(sett.vn||'غير مُدخل')+' | السجل التجاري='+(sett.cr||'غير مُدخل')+'\n';
+  s+='\n=== المشاريع ('+projs.length+') ===\n';
+  projs.forEach((p,idx)=>{const pl=projPL(p.id);s+=(idx+1)+') '+p.name+' | الحالة '+(STL[p.status]||p.status)+' | كود '+(p.code||'—')+' | عميل '+(p.client||'—')+' | عقد '+fmtI(p.contractValue||0)+' | محصّل '+fmtI(pl.paid)+' | متبقي '+fmtI(pl.outstanding)+' | مصروفات '+fmtI(pl.cost)+' | ربح '+fmtI(pl.profit)+' ('+pl.margin.toFixed(1)+'%) | عدد الفواتير '+pl.count+' | محتجز '+(p.retentionPct||0)+'%'+((p.guarantees||[]).length?' | خطابات ضمان '+p.guarantees.length:'')+'\n';});
+  s+='\n=== كل الفواتير ('+invs.length+') ===\n';
+  const _sorted=invs.slice().sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
+  _sorted.forEach((i,idx)=>{s+=(idx+1)+') '+_invText(i)+' | مشروع: '+(i.projectId?projName(i.projectId):'عام')+'\n';});
+  return s;
+}
 function _buildAuditData(kind,id){
+  if(kind==='all')return _buildAuditDataAll();
   if(kind==='inv'){
     const i=invs.find(x=>x.id===id);if(!i)return '';
     const p=i.projectId?projs.find(x=>x.id===i.projectId):null;
@@ -2704,7 +2728,7 @@ async function internalAudit(kind,id){
   body.innerHTML='<div style="text-align:center;padding:34px 16px"><div class="spin" style="margin:0 auto 14px"></div><div style="font-weight:800;color:var(--t2)">جاري التدقيق الاحترافي...</div><div style="font-size:11.5px;color:var(--t3);margin-top:6px;line-height:1.7">يفحص المدقق الأرقام والعمليات الحسابية والتواريخ والبنود<br>والالتزام بالسياسات وجودة الصياغة</div></div>';
   try{
     const data=_buildAuditData(kind,id);
-    const pr=AUDIT_PROMPT+'\n\n=== البيانات المرسلة للتدقيق ===\n'+data+'\n\n=== صيغة المخرَج المطلوبة ===\nأعِد تقرير التدقيق حصراً بصيغة JSON صالحة فقط (بدون أي نص قبله أو بعده) بهذه المفاتيح بالعربية: {"errors":[],"violations":[],"conflicts":[],"shortages":[],"missingDocs":[],"unclearItems":[],"unjustifiedItems":[],"duplicates":[],"policyCompliance":"","draftingQuality":"","recommendations":[],"decision":"accepted","decisionReason":""}. كل عنصر في القوائم جملة عربية قصيرة محددة تذكر الملاحظة والرقم/التاريخ المعني إن وجد. اترك القائمة فارغة [] إن لم توجد ملاحظات. decision يكون واحداً من: accepted أو needs_revision أو rejected.';
+    const pr=AUDIT_PROMPT+'\n\n=== البيانات المرسلة للتدقيق ===\n'+data+'\n\n=== صيغة المخرَج المطلوبة ===\nأعِد تقرير التدقيق حصراً بصيغة JSON صالحة فقط (بدون أي نص قبله أو بعده) بالشكل: {"findings":[{"category":"نوع الملاحظة","severity":"red","note":"وصف الملاحظة مع الرقم/التاريخ المعني","solution":"الحل العملي المقترح","autoFixable":false}],"policyCompliance":"تقييم موجز","draftingQuality":"تقييم موجز","decision":"needs_revision","decisionReason":"سبب مختصر"}.\nقواعد إلزامية:\n- severity لكل ملاحظة: "red" لخطورة عالية جداً أو خطأ مالي حرج، "yellow" لخطورة متوسطة، "green" لملاحظة عادية أو تحسينية بسيطة.\n- category: نوع الملاحظة (خطأ حسابي / مخالفة سياسة / تعارض / نقص مستند / بند مكرر / بند غير مبرر / بند غير واضح / صياغة).\n- solution: حل عملي مختصر وواضح لكل ملاحظة.\n- autoFixable: true فقط إذا كان النظام يستطيع تصحيحها آلياً بالحساب (مثل خطأ في قيمة الضريبة = 15% من المبلغ، أو الإجمالي = المبلغ + الضريبة)، وfalse إذا تحتاج تدخلاً بشرياً (مستند ناقص، موافقة، مراجعة عقد، قرار إداري).\n- إن لم توجد أي ملاحظة اجعل findings مصفوفة فارغة [].\n- decision واحد من: accepted أو needs_revision أو rejected.';
     const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3000,messages:[{role:'user',content:[{type:'text',text:pr}]}]})});
     if(!rs.ok){const et=await rs.text();throw new Error('HTTP '+rs.status+' — '+et.slice(0,120));}
     const j=await rs.json();
@@ -2714,46 +2738,60 @@ async function internalAudit(kind,id){
     if(a>=0&&b>a){try{rep=JSON.parse(txt.slice(a,b+1));}catch(e){}}
     if(!rep){body.innerHTML='<div style="padding:14px;white-space:pre-wrap;font-size:13px;line-height:1.9">'+esc(txt||'لم يصل رد')+'</div>';return;}
     _renderAuditReport(rep,kind,id);
-    logEvent('تدقيق داخلي',(kind==='proj'?'مشروع: ':'فاتورة: ')+_auditTitle(kind,id));
+    logEvent('تدقيق داخلي',(kind==='all'?'شامل: ':kind==='proj'?'مشروع: ':'فاتورة: ')+_auditTitle(kind,id));
   }catch(e){
     body.innerHTML='<div style="padding:22px;text-align:center"><div style="font-size:36px">⚠️</div><div style="font-weight:800;margin-top:8px;color:#B91C1C">تعذّر التدقيق</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.6">'+esc((e.message||'').slice(0,160))+'</div><button onclick="internalAudit(\''+kind+'\',\''+id+'\')" style="margin-top:14px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:9px 16px;font-family:Tajawal,sans-serif;font-weight:800;cursor:pointer">🔄 إعادة المحاولة</button></div>';
   }
 }
-function _auditTitle(kind,id){if(kind==='inv'){const i=invs.find(x=>x.id===id);return i?(i.number||''):'';}const p=projs.find(x=>x.id===id);return p?p.name:'';}
+function _auditTitle(kind,id){if(kind==='all')return 'النظام بالكامل';if(kind==='inv'){const i=invs.find(x=>x.id===id);return i?(i.number||''):'';}const p=projs.find(x=>x.id===id);return p?p.name:'';}
+function internalAuditAll(){if(typeof closeSet==='function')closeSet();internalAudit('all','');}
 function _renderAuditReport(rep,kind,id){
   const body=document.getElementById('audit-body');
+  // توافق مع الصيغة القديمة إن رجعت قوائم منفصلة
+  if(!Array.isArray(rep.findings)){
+    const fb=[];const add=(cat,arr,sv)=>(arr||[]).forEach(x=>fb.push({category:cat,severity:sv,note:String(x),autoFixable:false}));
+    add('خطأ',rep.errors,'red');add('مخالفة',rep.violations,'red');add('تعارض',rep.conflicts,'yellow');add('نقص',rep.shortages,'yellow');add('مستند ناقص',rep.missingDocs,'yellow');add('بند غير واضح',rep.unclearItems,'green');add('بند غير مبرر',rep.unjustifiedItems,'yellow');add('بند مكرر',rep.duplicates,'yellow');(rep.recommendations||[]).forEach(x=>fb.push({category:'توصية',severity:'green',note:String(x),autoFixable:false}));
+    rep.findings=fb;
+  }
   const dmap={accepted:{t:'✅ مقبول',bg:'#DCFCE7',col:'#15803D',bd:'#86EFAC'},needs_revision:{t:'⚠️ يحتاج تعديل',bg:'#FEF3C7',col:'#92400E',bd:'#FDE68A'},rejected:{t:'⛔ مرفوض',bg:'#FEE2E2',col:'#B91C1C',bd:'#FCA5A5'}};
   const d=dmap[rep.decision]||dmap.needs_revision;
-  const list=(title,icon,arr,col)=>{
-    if(!arr||!arr.length)return '<div style="margin-bottom:9px"><div style="font-weight:800;font-size:12.5px;color:var(--t2);margin-bottom:4px">'+icon+' '+title+'</div><div style="font-size:12px;color:#15803D;background:#F0FDF4;border-radius:7px;padding:6px 10px">✓ لا توجد ملاحظات</div></div>';
-    let h='<div style="margin-bottom:9px"><div style="font-weight:800;font-size:12.5px;color:'+col+';margin-bottom:4px">'+icon+' '+title+' ('+arr.length+')</div>';
-    arr.forEach(x=>{h+='<div style="font-size:12px;background:#fff;border:1px solid var(--bd);border-right:3px solid '+col+';border-radius:7px;padding:7px 10px;margin-bottom:4px;line-height:1.6">'+esc(String(x))+'</div>';});
-    return h+'</div>';
-  };
-  let h='<div style="background:'+d.bg+';border:1.5px solid '+d.bd+';border-radius:12px;padding:14px;text-align:center;margin-bottom:14px"><div style="font-size:11px;color:'+d.col+';font-weight:700">القرار النهائي للمدقق</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:21px;color:'+d.col+';margin-top:4px">'+d.t+'</div>'+(rep.decisionReason?'<div style="font-size:12px;color:'+d.col+';margin-top:6px;line-height:1.6">'+esc(rep.decisionReason)+'</div>':'')+'</div>';
-  h+=list('الأخطاء','❌',rep.errors,'#B91C1C');
-  h+=list('المخالفات','🚫',rep.violations,'#B91C1C');
-  h+=list('التعارضات','⚡',rep.conflicts,'#C2410C');
-  h+=list('النواقص','📉',rep.shortages,'#C2410C');
-  h+=list('المستندات الناقصة','📎',rep.missingDocs,'#9A3412');
-  h+=list('بنود غير واضحة','❓',rep.unclearItems,'#92400E');
-  h+=list('بنود غير مبررة','🔎',rep.unjustifiedItems,'#92400E');
-  h+=list('بنود مكررة','🔁',rep.duplicates,'#B45309');
-  if(rep.policyCompliance)h+='<div style="margin-bottom:9px"><div style="font-weight:800;font-size:12.5px;color:var(--t2);margin-bottom:4px">📋 تقييم الالتزام بالسياسات</div><div style="font-size:12px;background:#F0F9FF;border-radius:7px;padding:8px 10px;line-height:1.7">'+esc(rep.policyCompliance)+'</div></div>';
-  if(rep.draftingQuality)h+='<div style="margin-bottom:9px"><div style="font-weight:800;font-size:12.5px;color:var(--t2);margin-bottom:4px">✍️ تقييم جودة الصياغة</div><div style="font-size:12px;background:#F0F9FF;border-radius:7px;padding:8px 10px;line-height:1.7">'+esc(rep.draftingQuality)+'</div></div>';
-  h+=list('توصيات تصحيحية','💡',rep.recommendations,'#2771ab');
+  const sev={red:{c:'#B91C1C',bg:'#FEF2F2',bd:'#FCA5A5',lbl:'خطورة عالية',dot:'🔴',o:0},yellow:{c:'#B45309',bg:'#FFFBEB',bd:'#FDE68A',lbl:'متوسطة',dot:'🟡',o:1},green:{c:'#15803D',bg:'#F0FDF4',bd:'#BBF7D0',lbl:'عادية',dot:'🟢',o:2}};
+  const finds=(rep.findings||[]).slice().sort((a,b)=>(sev[a.severity]?sev[a.severity].o:1)-(sev[b.severity]?sev[b.severity].o:1));
+  const cnt={red:0,yellow:0,green:0};finds.forEach(f=>{if(cnt[f.severity]!==undefined)cnt[f.severity]++;});
+  let h='<div style="background:'+d.bg+';border:1.5px solid '+d.bd+';border-radius:12px;padding:14px;text-align:center;margin-bottom:12px"><div style="font-size:11px;color:'+d.col+';font-weight:700">القرار النهائي للمدقق</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:21px;color:'+d.col+';margin-top:4px">'+d.t+'</div>'+(rep.decisionReason?'<div style="font-size:12px;color:'+d.col+';margin-top:6px;line-height:1.6">'+esc(rep.decisionReason)+'</div>':'')+'</div>';
+  h+='<div style="display:flex;gap:7px;margin-bottom:12px">';
+  h+='<div style="flex:1;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:9px;padding:8px;text-align:center"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:18px;color:#B91C1C">'+cnt.red+'</div><div style="font-size:10px;color:#B91C1C;font-weight:700">🔴 خطيرة جداً</div></div>';
+  h+='<div style="flex:1;background:#FFFBEB;border:1px solid #FDE68A;border-radius:9px;padding:8px;text-align:center"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:18px;color:#B45309">'+cnt.yellow+'</div><div style="font-size:10px;color:#B45309;font-weight:700">🟡 متوسطة</div></div>';
+  h+='<div style="flex:1;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:9px;padding:8px;text-align:center"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:18px;color:#15803D">'+cnt.green+'</div><div style="font-size:10px;color:#15803D;font-weight:700">🟢 عادية</div></div>';
+  h+='</div>';
+  if(!finds.length){
+    h+='<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:18px;text-align:center;color:#15803D;font-weight:800">✅ لا توجد ملاحظات — كل شيء سليم</div>';
+  }else{
+    finds.forEach(f=>{
+      const s=sev[f.severity]||sev.yellow;
+      h+='<div style="background:'+s.bg+';border:1px solid '+s.bd+';border-right:4px solid '+s.c+';border-radius:9px;padding:11px;margin-bottom:8px">';
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:6px"><span style="font-weight:800;font-size:11.5px;color:'+s.c+'">'+s.dot+' '+esc(f.category||'ملاحظة')+'</span><span style="font-size:10px;font-weight:700;color:'+s.c+';background:#fff;border-radius:6px;padding:2px 8px;white-space:nowrap">'+s.lbl+'</span></div>';
+      h+='<div style="font-size:12.5px;color:#1F2937;line-height:1.65;margin-bottom:6px">'+esc(f.note||'')+'</div>';
+      if(f.solution)h+='<div style="font-size:12px;background:#fff;border-radius:7px;padding:7px 9px;line-height:1.6;color:#374151"><b style="color:'+s.c+'">💡 الحل:</b> '+esc(f.solution)+'</div>';
+      h+='<div style="margin-top:6px;font-size:10.5px;font-weight:700;color:'+(f.autoFixable?'#15803D':'#6B7280')+'">'+(f.autoFixable?'🛠 يمكن للنظام تصحيحها تلقائياً':'✋ تحتاج تعديلاً يدوياً منك')+'</div>';
+      h+='</div>';
+    });
+  }
+  if(rep.policyCompliance)h+='<div style="margin:10px 0 6px"><div style="font-weight:800;font-size:12.5px;color:var(--t2);margin-bottom:4px">📋 تقييم الالتزام بالسياسات</div><div style="font-size:12px;background:#F0F9FF;border-radius:7px;padding:8px 10px;line-height:1.7">'+esc(rep.policyCompliance)+'</div></div>';
+  if(rep.draftingQuality)h+='<div style="margin:10px 0 6px"><div style="font-weight:800;font-size:12.5px;color:var(--t2);margin-bottom:4px">✍️ تقييم جودة الصياغة</div><div style="font-size:12px;background:#F0F9FF;border-radius:7px;padding:8px 10px;line-height:1.7">'+esc(rep.draftingQuality)+'</div></div>';
   h+='<div style="display:flex;gap:8px;margin-top:14px"><button onclick="copyAuditReport()" style="flex:1;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:10px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">📋 نسخ التقرير</button><button onclick="internalAudit(\''+kind+'\',\''+id+'\')" style="flex:1;background:#F0FDF4;color:#15803D;border:1px solid #86EFAC;border-radius:9px;padding:10px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">🔄 إعادة التدقيق</button></div>';
   body.innerHTML=h;
   window._lastAuditReport=rep;
 }
 function copyAuditReport(){
   const r=window._lastAuditReport;if(!r)return;
-  const sec=(t,arr)=>(arr&&arr.length)?('\n'+t+':\n'+arr.map(x=>'  - '+x).join('\n')):('\n'+t+': لا توجد ملاحظات');
-  let t='📋 تقرير المدقق الداخلي\n========================';
-  t+=sec('الأخطاء',r.errors)+sec('المخالفات',r.violations)+sec('التعارضات',r.conflicts)+sec('النواقص',r.shortages)+sec('المستندات الناقصة',r.missingDocs)+sec('بنود غير واضحة',r.unclearItems)+sec('بنود غير مبررة',r.unjustifiedItems)+sec('بنود مكررة',r.duplicates);
-  if(r.policyCompliance)t+='\n\nتقييم الالتزام بالسياسات: '+r.policyCompliance;
+  const sevL={red:'🔴 خطيرة جداً',yellow:'🟡 متوسطة',green:'🟢 عادية'};
+  let t='📋 تقرير المدقق الداخلي\n========================\n';
+  const finds=Array.isArray(r.findings)?r.findings:[];
+  if(!finds.length)t+='✅ لا توجد ملاحظات — كل شيء سليم.\n';
+  finds.forEach((f,i)=>{t+='\n'+(i+1)+') ['+(sevL[f.severity]||f.severity||'')+'] '+(f.category||'ملاحظة')+'\n   • الملاحظة: '+(f.note||'')+'\n   • الحل: '+(f.solution||'—')+'\n   • '+(f.autoFixable?'يمكن للنظام تصحيحها تلقائياً':'تحتاج تعديلاً يدوياً')+'\n';});
+  if(r.policyCompliance)t+='\nتقييم الالتزام بالسياسات: '+r.policyCompliance;
   if(r.draftingQuality)t+='\nتقييم جودة الصياغة: '+r.draftingQuality;
-  t+=sec('التوصيات التصحيحية',r.recommendations);
   const dm={accepted:'مقبول',needs_revision:'يحتاج تعديل',rejected:'مرفوض'};
   t+='\n\n⭐ القرار النهائي: '+(dm[r.decision]||r.decision)+(r.decisionReason?' — '+r.decisionReason:'');
   navigator.clipboard.writeText(t).then(()=>toast('تم نسخ التقرير','ok')).catch(()=>toast('تعذّر النسخ','er'));
