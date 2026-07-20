@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-11-1030">
+<meta name="app-build" content="2026-07-12-1031">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -566,7 +566,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1030</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1031</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -824,6 +824,13 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
   <div id="let-list"></div>
 </section>
 </main>
+<!-- مودال المدقق الداخلي -->
+<div class="mb" id="audit-mb" onclick="if(event.target===this)closeAudit()">
+  <div class="md" style="max-width:640px">
+    <div class="md-hdr"><div class="md-ttl">🔍 المدقق الداخلي</div><button class="md-cl" onclick="closeAudit()">✕</button></div>
+    <div id="audit-body"></div>
+  </div>
+</div>
 <!-- مودال تعديل سريع -->
 <div class="mb" id="qe-mb" onclick="if(event.target===this)closeQe()">
   <div class="md" style="max-width:480px">
@@ -1265,7 +1272,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1030</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1031</bdi></span></div>
   </div>
 </div>
 
@@ -2613,9 +2620,10 @@ function showDet(id){const inv=invs.find(i=>i.id===id);if(!inv)return;detId=id;
       _qr=`<div style="margin-top:12px;padding:10px;background:#FEF3C7;border:1px solid #FDE68A;border-radius:9px;font-size:11.5px;color:#92400E;text-align:center">⚠️ لإصدار رمز الفاتورة الإلكترونية (ZATCA) أضف <b>اسم المؤسسة</b> و<b>الرقم الضريبي</b> من الإعدادات.</div>`;
     }
   }
-  const _actBtn=_cancelled
+  const _auditBtn=`<button onclick="internalAudit('inv','${inv.id}')" style="width:100%;margin-top:10px;background:linear-gradient(135deg,#4F46E5,#3730A3);color:#fff;border:none;border-radius:9px;padding:10px;font-family:'Cairo',sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">🔍 المدقق الداخلي — تدقيق الفاتورة</button>`;
+  const _actBtn=(_cancelled
     ? `<button onclick="reactivateInv()" style="width:100%;margin-top:12px;background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:9px;padding:10px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">↩️ استعادة الفاتورة للحسابات</button>`
-    : `<button onclick="cancelInv()" style="width:100%;margin-top:12px;background:#FFF7ED;color:#9A3412;border:1px solid #FDBA74;border-radius:9px;padding:10px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">🚫 إلغاء الفاتورة (تبقى في السجل)</button>`;
+    : `<button onclick="cancelInv()" style="width:100%;margin-top:12px;background:#FFF7ED;color:#9A3412;border:1px solid #FDBA74;border-radius:9px;padding:10px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">🚫 إلغاء الفاتورة (تبقى في السجل)</button>`)+_auditBtn;
   document.getElementById('det-body').innerHTML=`<div style="display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap"><span class="tag ${inv.type}">${TL[inv.type]}</span>${_cancelled?'<span class="tag" style="background:#FEE2E2;color:#B91C1C">🚫 ملغاة</span>':''}${inv.auto?'<span class="tag auto">تلقائي ✓</span>':''}${inv.category?`<span class="tag" style="background:var(--bg);color:var(--t2)">${esc(catLabel(inv))}</span>`:''}${pn?`<span class="tag proj">📁 ${esc(pn)}</span>`:''}</div>${_cancelled?'<div style="background:#FEE2E2;border:1px solid #FCA5A5;border-radius:9px;padding:9px 11px;margin-bottom:10px;font-size:12px;color:#991B1B;font-weight:700;text-align:center">🚫 هذه الفاتورة ملغاة — مستبعدة من الحسابات والضريبة</div>':''}<div class="vr" style="${_cancelled?'opacity:.6':''}"><div class="vrow"><span class="lbl">المورد/العميل</span><span class="val" style="font-size:13px">${esc(inv.vendor)}</span></div>${inv.vendorVAT?`<div class="vrow"><span class="lbl">الرقم الضريبي</span><span class="val" style="font-size:12px">${esc(inv.vendorVAT)}</span></div>`:''}<div class="vrow"><span class="lbl">التاريخ</span><span class="val">${fmtD(inv.date)}</span></div><div class="vrow"><span class="lbl">قبل الضريبة</span><span class="val">${fmt(inv.subtotal)} ر.س</span></div><div class="vrow"><span class="lbl">الضريبة (${inv.vatRate}%)</span><span class="val a">${fmt(inv.vat)} ر.س</span></div><div class="vrow hi2"><span class="lbl">الإجمالي</span><span class="val g">${fmt(inv.total)} ر.س</span></div></div>${inv.notes?`<div style="margin-top:10px;padding:9px;background:var(--bg);border-radius:8px;font-size:13px"><strong>ملاحظات:</strong> ${esc(inv.notes)}</div>`:''}${_qr}${_actBtn}`;
   document.getElementById('det-mb').classList.add('show');
 }
@@ -2654,6 +2662,102 @@ async function reactivateInv(){
   await sv();logEvent('استعادة فاتورة',(inv.number||''));
   showDet(inv.id);renderList();renderDB();toast('أُعيدت الفاتورة للحسابات','ok');
 }
+
+/* ========== المدقق الداخلي (تدقيق احترافي بالذكاء الاصطناعي) ========== */
+const AUDIT_PROMPT=`أنت مراجع داخلي محترف بخبرة 30 سنة في تدقيق المشاريع والفواتير والوثائق المالية والإدارية. مهمتك تدقيق المعاملة/المشروع/الفاتورة التي سأرسلها لك تدقيقًا شاملًا ودقيقًا، واكتشاف أي خطأ أو نقص أو مخالفة أو تعارض أو عدم اتساق، وتقديم تقرير تدقيق احترافي جاهز للاعتماد.
+معايير التدقيق: (1) البيانات المالية: صحة الأرقام والعمليات الحسابية والإجماليات والضرائب، صحة التواريخ، صحة رقم العقد/المشروع، عدم تضارب البنود، وضوح وصف كل بند. (2) الالتزام بالسياسات: المشتريات والعقود والصرف وسقف الصلاحيات والمسارات المعتمدة ووجود الموافقات. (3) المستندات المرفقة: اكتمالها ووضوحها وتناسقها. (4) الوصف الفني: وضوحه وتناسق نطاق العمل مع التكلفة ومنطقية الكميات وتوافق الأسعار. (5) المخالفات المحتملة: تضارب أرقام/تواريخ/كميات/أسعار، بنود غير مبررة أو غير مفهومة أو مكررة أو غير متناسقة مع العقد. (6) الجودة: وضوح الصياغة وخلوّها من الأخطاء والتناقض والتكرار والغموض.
+ملاحظات المدير (تُطبّق دائمًا): أي مرجع غير صحيح يتم الإبلاغ عنه.
+قواعد العمل: لا تعدّل المعاملة بنفسك، فقط قدّم تقرير تدقيق. لا تخترع أرقامًا ولا تضف معلومات غير موجودة. اعتمد فقط على البيانات المُرسلة. الحكم المالي يُبنى على المنطق المحاسبي (مثال: الضريبة يجب أن تساوي 15% من المبلغ قبل الضريبة، والإجمالي = المبلغ + الضريبة).`;
+let _auditCtx=null;
+function _invText(i){
+  return 'رقم '+(i.number||'—')+' | نوع '+(TL[i.type]||i.type)+' | تاريخ '+(i.date||'—')+' | الطرف '+(i.vendor||'—')+' | الرقم الضريبي للطرف '+(i.vendorVAT||'—')+' | قبل الضريبة '+fmtI(i.subtotal||0)+' | الضريبة '+fmtI(i.vat||0)+' ('+(i.vatRate||15)+'%) | الإجمالي '+fmtI(i.total||0)+' | البند '+(catLabel(i)||'—')+(i.status==='cancelled'?' | (ملغاة)':'')+(i.notes?' | ملاحظات: '+i.notes:'');
+}
+function _buildAuditData(kind,id){
+  if(kind==='inv'){
+    const i=invs.find(x=>x.id===id);if(!i)return '';
+    const p=i.projectId?projs.find(x=>x.id===i.projectId):null;
+    return 'نوع البيانات: فاتورة مفردة\n'+_invText(i)+'\nالمشروع المرتبط: '+(p?p.name+' (قيمة العقد '+fmtI(p.contractValue||0)+' ر.س)':'غير مرتبطة بمشروع');
+  }
+  const p=projs.find(x=>x.id===id);if(!p)return '';
+  const pl=projPL(id);
+  const pinvs=invs.filter(x=>x.projectId===id);
+  let s='نوع البيانات: مشروع مع فواتيره\n';
+  s+='اسم المشروع: '+p.name+'\nالكود/رقم العقد: '+(p.code||'—')+'\nالعميل: '+(p.client||'—')+'\nالحالة: '+(STL[p.status]||p.status)+'\n';
+  s+='قيمة العقد (بدون ضريبة): '+fmtI(p.contractValue||0)+' ر.س\nقيمة العقد شاملة الضريبة (×1.15): '+fmtI(pl.contractGross)+' ر.س\n';
+  s+='المُحصّل من العميل: '+fmtI(pl.paid)+' ر.س\nالمتبقي على العميل: '+fmtI(pl.outstanding)+' ر.س\n';
+  s+='إجمالي المصروفات: '+fmtI(pl.cost)+' ر.س\nصافي الربح: '+fmtI(pl.profit)+' ر.س (هامش '+pl.margin.toFixed(1)+'%)\n';
+  s+='حجم المشروع: '+(p.quantity||0)+' '+(p.unit||'م.ط')+'\nنسبة المحتجز: '+(p.retentionPct||0)+'%\n';
+  s+='تاريخ البداية: '+(p.startDate||'—')+'\nتاريخ التسليم المتوقع: '+(p.endDate||'—')+'\nالمدة المخططة (أيام): '+(p.durationDays||0)+'\n';
+  s+='عدد المرفقات/الوثائق: '+((p.attachments||[]).length)+'\n';
+  if((p.guarantees||[]).length){s+='خطابات الضمان:\n';p.guarantees.forEach(g=>{s+='  - '+(g.kind||'ضمان')+' بقيمة '+fmtI(g.amount||0)+' ر.س'+(g.bank?' من '+g.bank:'')+(g.expireDate?' تنتهي بتاريخ '+g.expireDate:' (بدون تاريخ انتهاء)')+'\n';});}
+  s+='\nالفواتير المسجّلة ('+pinvs.length+'):\n';
+  if(pinvs.length)pinvs.forEach((i,idx)=>{s+=(idx+1)+') '+_invText(i)+'\n';});
+  else s+='لا توجد فواتير مسجّلة على المشروع.\n';
+  return s;
+}
+async function internalAudit(kind,id){
+  if(!aiReady()){toast('فعّل مفتاح الذكاء الاصطناعي من الإعدادات أولاً','er');return;}
+  _auditCtx={kind,id};
+  const body=document.getElementById('audit-body');
+  document.getElementById('audit-mb').classList.add('show');
+  body.innerHTML='<div style="text-align:center;padding:34px 16px"><div class="spin" style="margin:0 auto 14px"></div><div style="font-weight:800;color:var(--t2)">جاري التدقيق الاحترافي...</div><div style="font-size:11.5px;color:var(--t3);margin-top:6px;line-height:1.7">يفحص المدقق الأرقام والعمليات الحسابية والتواريخ والبنود<br>والالتزام بالسياسات وجودة الصياغة</div></div>';
+  try{
+    const data=_buildAuditData(kind,id);
+    const pr=AUDIT_PROMPT+'\n\n=== البيانات المرسلة للتدقيق ===\n'+data+'\n\n=== صيغة المخرَج المطلوبة ===\nأعِد تقرير التدقيق حصراً بصيغة JSON صالحة فقط (بدون أي نص قبله أو بعده) بهذه المفاتيح بالعربية: {"errors":[],"violations":[],"conflicts":[],"shortages":[],"missingDocs":[],"unclearItems":[],"unjustifiedItems":[],"duplicates":[],"policyCompliance":"","draftingQuality":"","recommendations":[],"decision":"accepted","decisionReason":""}. كل عنصر في القوائم جملة عربية قصيرة محددة تذكر الملاحظة والرقم/التاريخ المعني إن وجد. اترك القائمة فارغة [] إن لم توجد ملاحظات. decision يكون واحداً من: accepted أو needs_revision أو rejected.';
+    const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3000,messages:[{role:'user',content:[{type:'text',text:pr}]}]})});
+    if(!rs.ok){const et=await rs.text();throw new Error('HTTP '+rs.status+' — '+et.slice(0,120));}
+    const j=await rs.json();
+    let txt=(j.content&&j.content[0]&&j.content[0].text)||'';
+    const a=txt.indexOf('{'),b=txt.lastIndexOf('}');
+    let rep=null;
+    if(a>=0&&b>a){try{rep=JSON.parse(txt.slice(a,b+1));}catch(e){}}
+    if(!rep){body.innerHTML='<div style="padding:14px;white-space:pre-wrap;font-size:13px;line-height:1.9">'+esc(txt||'لم يصل رد')+'</div>';return;}
+    _renderAuditReport(rep,kind,id);
+    logEvent('تدقيق داخلي',(kind==='proj'?'مشروع: ':'فاتورة: ')+_auditTitle(kind,id));
+  }catch(e){
+    body.innerHTML='<div style="padding:22px;text-align:center"><div style="font-size:36px">⚠️</div><div style="font-weight:800;margin-top:8px;color:#B91C1C">تعذّر التدقيق</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.6">'+esc((e.message||'').slice(0,160))+'</div><button onclick="internalAudit(\''+kind+'\',\''+id+'\')" style="margin-top:14px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:9px 16px;font-family:Tajawal,sans-serif;font-weight:800;cursor:pointer">🔄 إعادة المحاولة</button></div>';
+  }
+}
+function _auditTitle(kind,id){if(kind==='inv'){const i=invs.find(x=>x.id===id);return i?(i.number||''):'';}const p=projs.find(x=>x.id===id);return p?p.name:'';}
+function _renderAuditReport(rep,kind,id){
+  const body=document.getElementById('audit-body');
+  const dmap={accepted:{t:'✅ مقبول',bg:'#DCFCE7',col:'#15803D',bd:'#86EFAC'},needs_revision:{t:'⚠️ يحتاج تعديل',bg:'#FEF3C7',col:'#92400E',bd:'#FDE68A'},rejected:{t:'⛔ مرفوض',bg:'#FEE2E2',col:'#B91C1C',bd:'#FCA5A5'}};
+  const d=dmap[rep.decision]||dmap.needs_revision;
+  const list=(title,icon,arr,col)=>{
+    if(!arr||!arr.length)return '<div style="margin-bottom:9px"><div style="font-weight:800;font-size:12.5px;color:var(--t2);margin-bottom:4px">'+icon+' '+title+'</div><div style="font-size:12px;color:#15803D;background:#F0FDF4;border-radius:7px;padding:6px 10px">✓ لا توجد ملاحظات</div></div>';
+    let h='<div style="margin-bottom:9px"><div style="font-weight:800;font-size:12.5px;color:'+col+';margin-bottom:4px">'+icon+' '+title+' ('+arr.length+')</div>';
+    arr.forEach(x=>{h+='<div style="font-size:12px;background:#fff;border:1px solid var(--bd);border-right:3px solid '+col+';border-radius:7px;padding:7px 10px;margin-bottom:4px;line-height:1.6">'+esc(String(x))+'</div>';});
+    return h+'</div>';
+  };
+  let h='<div style="background:'+d.bg+';border:1.5px solid '+d.bd+';border-radius:12px;padding:14px;text-align:center;margin-bottom:14px"><div style="font-size:11px;color:'+d.col+';font-weight:700">القرار النهائي للمدقق</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:21px;color:'+d.col+';margin-top:4px">'+d.t+'</div>'+(rep.decisionReason?'<div style="font-size:12px;color:'+d.col+';margin-top:6px;line-height:1.6">'+esc(rep.decisionReason)+'</div>':'')+'</div>';
+  h+=list('الأخطاء','❌',rep.errors,'#B91C1C');
+  h+=list('المخالفات','🚫',rep.violations,'#B91C1C');
+  h+=list('التعارضات','⚡',rep.conflicts,'#C2410C');
+  h+=list('النواقص','📉',rep.shortages,'#C2410C');
+  h+=list('المستندات الناقصة','📎',rep.missingDocs,'#9A3412');
+  h+=list('بنود غير واضحة','❓',rep.unclearItems,'#92400E');
+  h+=list('بنود غير مبررة','🔎',rep.unjustifiedItems,'#92400E');
+  h+=list('بنود مكررة','🔁',rep.duplicates,'#B45309');
+  if(rep.policyCompliance)h+='<div style="margin-bottom:9px"><div style="font-weight:800;font-size:12.5px;color:var(--t2);margin-bottom:4px">📋 تقييم الالتزام بالسياسات</div><div style="font-size:12px;background:#F0F9FF;border-radius:7px;padding:8px 10px;line-height:1.7">'+esc(rep.policyCompliance)+'</div></div>';
+  if(rep.draftingQuality)h+='<div style="margin-bottom:9px"><div style="font-weight:800;font-size:12.5px;color:var(--t2);margin-bottom:4px">✍️ تقييم جودة الصياغة</div><div style="font-size:12px;background:#F0F9FF;border-radius:7px;padding:8px 10px;line-height:1.7">'+esc(rep.draftingQuality)+'</div></div>';
+  h+=list('توصيات تصحيحية','💡',rep.recommendations,'#2771ab');
+  h+='<div style="display:flex;gap:8px;margin-top:14px"><button onclick="copyAuditReport()" style="flex:1;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:10px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">📋 نسخ التقرير</button><button onclick="internalAudit(\''+kind+'\',\''+id+'\')" style="flex:1;background:#F0FDF4;color:#15803D;border:1px solid #86EFAC;border-radius:9px;padding:10px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">🔄 إعادة التدقيق</button></div>';
+  body.innerHTML=h;
+  window._lastAuditReport=rep;
+}
+function copyAuditReport(){
+  const r=window._lastAuditReport;if(!r)return;
+  const sec=(t,arr)=>(arr&&arr.length)?('\n'+t+':\n'+arr.map(x=>'  - '+x).join('\n')):('\n'+t+': لا توجد ملاحظات');
+  let t='📋 تقرير المدقق الداخلي\n========================';
+  t+=sec('الأخطاء',r.errors)+sec('المخالفات',r.violations)+sec('التعارضات',r.conflicts)+sec('النواقص',r.shortages)+sec('المستندات الناقصة',r.missingDocs)+sec('بنود غير واضحة',r.unclearItems)+sec('بنود غير مبررة',r.unjustifiedItems)+sec('بنود مكررة',r.duplicates);
+  if(r.policyCompliance)t+='\n\nتقييم الالتزام بالسياسات: '+r.policyCompliance;
+  if(r.draftingQuality)t+='\nتقييم جودة الصياغة: '+r.draftingQuality;
+  t+=sec('التوصيات التصحيحية',r.recommendations);
+  const dm={accepted:'مقبول',needs_revision:'يحتاج تعديل',rejected:'مرفوض'};
+  t+='\n\n⭐ القرار النهائي: '+(dm[r.decision]||r.decision)+(r.decisionReason?' — '+r.decisionReason:'');
+  navigator.clipboard.writeText(t).then(()=>toast('تم نسخ التقرير','ok')).catch(()=>toast('تعذّر النسخ','er'));
+}
+function closeAudit(){document.getElementById('audit-mb').classList.remove('show');}
 
 /* ========== الفاتورة الإلكترونية (ZATCA) — رمز QR ========== */
 function _tlvField(tag,val){
@@ -5380,6 +5484,7 @@ function showProj(id){
   // P&L summary
   const pCls=pl.profit>=0?'prof':'prof neg';
   let html=`<div style="display:flex;gap:7px;margin-bottom:11px;flex-wrap:wrap;align-items:center"><span class="pcard-st st-${p.status}">${STL[p.status]||'نشط'}</span>${p.client?`<span style="color:var(--t2);font-size:12.5px">👤 ${esc(p.client)}</span>`:''}${p.code?`<span style="color:var(--t3);font-size:12px">${esc(p.code)}</span>`:''}</div>`;
+  html+=`<button onclick="internalAudit('proj','${id}')" style="width:100%;margin-bottom:9px;background:linear-gradient(135deg,#4F46E5,#3730A3);color:#fff;border:none;border-radius:10px;padding:11px;font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;cursor:pointer">🔍 المدقق الداخلي — تدقيق المشروع وإصدار تقرير</button>`;
   html+=`<div style="margin-bottom:11px"><button onclick="changeProjYear('${id}')" style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:8px;padding:8px 12px;font-family:Tajawal,sans-serif;font-weight:700;font-size:12px;cursor:pointer">📅 تعديل سنة كل فواتير المشروع</button></div>`;
 
   if(p.contractValue>0){
