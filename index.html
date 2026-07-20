@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-10-1029">
+<meta name="app-build" content="2026-07-11-1030">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -124,19 +124,8 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
 .sec{display:none}
 .sec:not(#sec-db):not(#sec-proj){max-width:760px;margin:0 auto}.sec.active{display:block;animation:fi .25s ease}
 #sec-proj{max-width:1400px;margin:0 auto}
-/* شاشات الكمبيوتر: استغلال المساحة الفاضية وتكبير الجداول والخطوط */
+/* شاشات الكمبيوتر: تكبير الداش بورد فقط لاستغلال المساحة (الصفحات الأخرى تبقى بأحجامها السابقة) */
 @media (min-width:1000px){
-  .sec:not(#sec-db):not(#sec-proj){max-width:1080px}
-  #pd-mb .md{max-width:900px!important}
-  #det-mb .md{max-width:680px!important}
-  .vr{padding:16px!important}
-  .vrow{padding:9px 0!important}
-  .vrow .lbl{font-size:15px!important}
-  .vrow .val{font-size:17px!important}
-  .vrow.hi2{padding:11px 9px!important}
-  #pd-body table,#det-body table{font-size:15px!important}
-  #pd-body table td,#pd-body table th{padding:10px 8px!important}
-  #pd-body table th{font-size:12.5px!important}
   /* الداش بورد: تكبير الأرقام والبطاقات لاستغلال المساحة */
   .kp{padding:13px 9px}
   .kp-l{font-size:12px}
@@ -280,8 +269,8 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
 .vr{background:#fff;border:1px solid var(--bd);border-radius:11px;padding:13px}
 .vrow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px dashed var(--bd)}
 .vrow:last-child{border-bottom:none}
-.vrow .lbl{font-size:13.5px;color:var(--t2);font-weight:600}
-.vrow .val{font-family:'Cairo',sans-serif;font-weight:800;font-size:15px;color:var(--t1)}
+.vrow .lbl{font-size:12.5px;color:var(--t2);font-weight:600}
+.vrow .val{font-family:'Cairo',sans-serif;font-weight:800;font-size:14px;color:var(--t1)}
 .vrow .val.g{color:#15803D}.vrow .val.r{color:#DC2626}.vrow .val.a{color:#D97706}
 .vrow.hi2{background:#FFFBEB;margin:5px -7px;padding:9px 7px;border-radius:8px;border:none}
 .tag{display:inline-block;padding:2.5px 8px;border-radius:5px;font-size:11px;font-weight:700}
@@ -577,7 +566,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1029</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1030</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -639,7 +628,8 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
   <div class="prev" id="prev"><button class="prev-rm" onclick="rmPrev()">✕</button><img id="prev-img"></div>
   <div class="ai-s" id="ai-s"><div class="spin" id="ai-sp"></div><div class="ai-msg" id="ai-msg">جاري القراءة...</div></div>
   <div class="card" id="man-form">
-    <div style="font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;margin-bottom:12px;color:var(--t2)">✏️ إدخال يدوي</div>
+    <div style="font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;margin-bottom:10px;color:var(--t2)">✏️ إدخال يدوي</div>
+    <button type="button" onclick="startTaxInvoice()" style="width:100%;margin-bottom:12px;background:linear-gradient(135deg,#15803D,#166534);color:#fff;border:none;border-radius:10px;padding:12px;font-family:'Cairo',sans-serif;font-weight:800;font-size:13.5px;cursor:pointer">🧾 إصدار فاتورة ضريبية (مبيعات) — بالباركود</button>
     <div style="margin-bottom:12px">
       <label style="font-size:12px;font-weight:700;color:var(--t2);display:block;margin-bottom:7px">نوع الحركة *</label>
       <div class="tp">
@@ -649,7 +639,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
     <div class="fg">
-      <div class="field"><label>رقم الفاتورة *</label><input type="text" id="f-no" placeholder="INV-001"></div>
+      <div class="field"><label>رقم الفاتورة *</label><div style="display:flex;gap:6px"><input type="text" id="f-no" placeholder="INV-001" style="flex:1"><button type="button" onclick="autoInvNo()" style="white-space:nowrap;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:8px;padding:0 11px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:11.5px;cursor:pointer">🔢 تلقائي</button></div></div>
       <div class="field"><label>التاريخ *</label><input type="date" id="f-dt"></div>
       <div class="field full"><label>المورد / العميل *</label><input type="text" id="f-vnd"></div>
       <div class="field full"><label>الرقم الضريبي</label><input type="text" id="f-vtx" placeholder="3000xxxxxx"></div>
@@ -801,6 +791,8 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </optgroup>
     </select>
   </div>
+  <div id="vt-simple"></div>
+  <h3 style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;margin:16px 0 7px;color:var(--t2)">📊 التفاصيل المحاسبية</h3>
   <div class="vs"><h3>صافي ضريبة القيمة المضافة</h3><div class="plbl" id="vt-plbl">—</div><div class="net" id="vt-net">0 ر.س</div><div class="nlbl" id="vt-nlbl">—</div><div id="vt-cmp" style="font-size:11.5px;font-weight:700;margin-top:7px;opacity:.92"></div></div>
   <div id="vt-warn"></div>
   <h3 style="font-family:'Cairo',sans-serif;font-size:13.5px;font-weight:800;margin:14px 0 7px">ضريبة المخرجات (إيرادات)</h3>
@@ -1273,7 +1265,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1029</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1030</bdi></span></div>
   </div>
 </div>
 
@@ -2394,13 +2386,14 @@ function renderList(){
   order.sort((a,b)=>{if(a==='__none__')return 1;if(b==='__none__')return -1;const ia=projOrder.indexOf(a),ib=projOrder.indexOf(b);return (ia<0?999:ia)-(ib<0?999:ib);});
   const card=i=>{
     const isDup=dupIds.has(i.id);
-    return `<div class="ii${isDup?' ii-dup':''}" onclick="showDet('${i.id}')"><div class="ii-ic ${i.type}">${TI[i.type]}</div><div class="ii-body">${isDup?'<div class="ii-dupwarn">⚠️ أرجو التأكد — يُحتمل أنها مكررة</div>':''}<div class="ii-vnd">${esc(i.vendor)}${i.auto?'<span class="tag auto" style="margin-right:5px">تلقائي</span>':''}</div><div class="ii-meta"><span>${esc(i.number)}</span><span>•</span><span>${fmtD(i.date)}</span>${i.category?`<span>•</span><span>${esc(catLabel(i))}</span>`:''}</div></div><div class="ii-amt"><div class="ii-tot">${fmt(i.total)}</div><div class="ii-vat">VAT:${fmt(i.vat)}</div></div><div style="display:flex;flex-direction:column;gap:4px"><button class="ii-del" style="background:#DBEAFE;color:#1D4ED8" onclick="event.stopPropagation();qEditInv('${i.id}')" title="تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ii-del" onclick="event.stopPropagation();qDel('${i.id}')" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
+    const isCan=i.status==='cancelled';
+    return `<div class="ii${isDup?' ii-dup':''}"${isCan?' style="opacity:.5"':''} onclick="showDet('${i.id}')"><div class="ii-ic ${i.type}">${TI[i.type]}</div><div class="ii-body">${isDup?'<div class="ii-dupwarn">⚠️ أرجو التأكد — يُحتمل أنها مكررة</div>':''}<div class="ii-vnd">${esc(i.vendor)}${isCan?'<span class="tag" style="margin-right:5px;background:#FEE2E2;color:#B91C1C">🚫 ملغاة</span>':''}${i.auto?'<span class="tag auto" style="margin-right:5px">تلقائي</span>':''}</div><div class="ii-meta"><span>${esc(i.number)}</span><span>•</span><span>${fmtD(i.date)}</span>${i.category?`<span>•</span><span>${esc(catLabel(i))}</span>`:''}</div></div><div class="ii-amt"><div class="ii-tot">${fmt(i.total)}</div><div class="ii-vat">VAT:${fmt(i.vat)}</div></div><div style="display:flex;flex-direction:column;gap:4px"><button class="ii-del" style="background:#DBEAFE;color:#1D4ED8" onclick="event.stopPropagation();qEditInv('${i.id}')" title="تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ii-del" onclick="event.stopPropagation();qDel('${i.id}')" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
   };
   let html='';
   order.forEach(k=>{
     const items=groups[k];
     const pname=k==='__none__'?'🧾 فواتير عامة (مصاريف يومية — للضريبة)':(projName(k)||'مشروع');
-    const gTot=items.reduce((s,i)=>s+(i.total||0),0);
+    const gTot=items.reduce((s,i)=>s+(i.status==='cancelled'?0:(i.total||0)),0);
     const gDup=items.filter(i=>dupIds.has(i.id)).length;
     html+='<div class="inv-grp-hdr"><span>📁 '+esc(pname)+'</span><span class="inv-grp-cnt">'+items.length+' فاتورة • '+fmt(gTot)+' ر.س'+(gDup?' <span class="inv-grp-dup">⚠️ '+gDup+' مشتبه</span>':'')+'</span></div>';
     html+=items.map(card).join('');
@@ -2610,8 +2603,9 @@ async function qDel(id){const inv=invs.find(i=>i.id===id);if(!inv)return;const o
 function showDet(id){const inv=invs.find(i=>i.id===id);if(!inv)return;detId=id;
   const pn=projName(inv.projectId);
   document.getElementById('det-ttl').textContent=inv.number;
+  const _cancelled=inv.status==='cancelled';
   let _qr='';
-  if(inv.type==='revenue'){
+  if(inv.type==='revenue'&&!_cancelled){
     if(sett.vn&&sett.name){
       const q=zatcaQRDataURL(inv);
       if(q)_qr=`<div style="margin-top:12px;padding:12px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;text-align:center"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:12.5px;color:#15803D;margin-bottom:8px">🧾 فاتورة ضريبية — رمز الاستجابة (ZATCA)</div><img src="${q}" style="width:150px;height:150px;image-rendering:pixelated" alt="QR"><div style="font-size:10px;color:var(--t2);margin-top:6px">الرقم الضريبي: ${esc(sett.vn)}</div></div>`;
@@ -2619,12 +2613,47 @@ function showDet(id){const inv=invs.find(i=>i.id===id);if(!inv)return;detId=id;
       _qr=`<div style="margin-top:12px;padding:10px;background:#FEF3C7;border:1px solid #FDE68A;border-radius:9px;font-size:11.5px;color:#92400E;text-align:center">⚠️ لإصدار رمز الفاتورة الإلكترونية (ZATCA) أضف <b>اسم المؤسسة</b> و<b>الرقم الضريبي</b> من الإعدادات.</div>`;
     }
   }
-  document.getElementById('det-body').innerHTML=`<div style="display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap"><span class="tag ${inv.type}">${TL[inv.type]}</span>${inv.auto?'<span class="tag auto">تلقائي ✓</span>':''}${inv.category?`<span class="tag" style="background:var(--bg);color:var(--t2)">${esc(catLabel(inv))}</span>`:''}${pn?`<span class="tag proj">📁 ${esc(pn)}</span>`:''}</div><div class="vr"><div class="vrow"><span class="lbl">المورد/العميل</span><span class="val" style="font-size:13px">${esc(inv.vendor)}</span></div>${inv.vendorVAT?`<div class="vrow"><span class="lbl">الرقم الضريبي</span><span class="val" style="font-size:12px">${esc(inv.vendorVAT)}</span></div>`:''}<div class="vrow"><span class="lbl">التاريخ</span><span class="val">${fmtD(inv.date)}</span></div><div class="vrow"><span class="lbl">قبل الضريبة</span><span class="val">${fmt(inv.subtotal)} ر.س</span></div><div class="vrow"><span class="lbl">الضريبة (${inv.vatRate}%)</span><span class="val a">${fmt(inv.vat)} ر.س</span></div><div class="vrow hi2"><span class="lbl">الإجمالي</span><span class="val g">${fmt(inv.total)} ر.س</span></div></div>${inv.notes?`<div style="margin-top:10px;padding:9px;background:var(--bg);border-radius:8px;font-size:13px"><strong>ملاحظات:</strong> ${esc(inv.notes)}</div>`:''}${_qr}`;
+  const _actBtn=_cancelled
+    ? `<button onclick="reactivateInv()" style="width:100%;margin-top:12px;background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:9px;padding:10px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">↩️ استعادة الفاتورة للحسابات</button>`
+    : `<button onclick="cancelInv()" style="width:100%;margin-top:12px;background:#FFF7ED;color:#9A3412;border:1px solid #FDBA74;border-radius:9px;padding:10px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">🚫 إلغاء الفاتورة (تبقى في السجل)</button>`;
+  document.getElementById('det-body').innerHTML=`<div style="display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap"><span class="tag ${inv.type}">${TL[inv.type]}</span>${_cancelled?'<span class="tag" style="background:#FEE2E2;color:#B91C1C">🚫 ملغاة</span>':''}${inv.auto?'<span class="tag auto">تلقائي ✓</span>':''}${inv.category?`<span class="tag" style="background:var(--bg);color:var(--t2)">${esc(catLabel(inv))}</span>`:''}${pn?`<span class="tag proj">📁 ${esc(pn)}</span>`:''}</div>${_cancelled?'<div style="background:#FEE2E2;border:1px solid #FCA5A5;border-radius:9px;padding:9px 11px;margin-bottom:10px;font-size:12px;color:#991B1B;font-weight:700;text-align:center">🚫 هذه الفاتورة ملغاة — مستبعدة من الحسابات والضريبة</div>':''}<div class="vr" style="${_cancelled?'opacity:.6':''}"><div class="vrow"><span class="lbl">المورد/العميل</span><span class="val" style="font-size:13px">${esc(inv.vendor)}</span></div>${inv.vendorVAT?`<div class="vrow"><span class="lbl">الرقم الضريبي</span><span class="val" style="font-size:12px">${esc(inv.vendorVAT)}</span></div>`:''}<div class="vrow"><span class="lbl">التاريخ</span><span class="val">${fmtD(inv.date)}</span></div><div class="vrow"><span class="lbl">قبل الضريبة</span><span class="val">${fmt(inv.subtotal)} ر.س</span></div><div class="vrow"><span class="lbl">الضريبة (${inv.vatRate}%)</span><span class="val a">${fmt(inv.vat)} ر.س</span></div><div class="vrow hi2"><span class="lbl">الإجمالي</span><span class="val g">${fmt(inv.total)} ر.س</span></div></div>${inv.notes?`<div style="margin-top:10px;padding:9px;background:var(--bg);border-radius:8px;font-size:13px"><strong>ملاحظات:</strong> ${esc(inv.notes)}</div>`:''}${_qr}${_actBtn}`;
   document.getElementById('det-mb').classList.add('show');
 }
 function closeDet(){document.getElementById('det-mb').classList.remove('show');detId=null;}
 function editDet(){const inv=invs.find(i=>i.id===detId);if(!inv)return;closeDet();goTab('add');revInv(inv.id);}
 async function delDet(){if(!detId)return;const inv=invs.find(i=>i.id===detId);const ok=await confirm2({title:'حذف',msg:inv?'<strong>'+esc(inv.number)+'</strong>':'؟',ok:'حذف'});if(!ok)return;if(inv){toTrash('inv',inv);logEvent('حذف فاتورة',(inv.number||'')+' — '+(inv.vendor||''));}invs=invs.filter(i=>i.id!==detId);await sv();closeDet();renderList();renderDB();toast('تم الحذف','ok');}
+
+/* ========== إصدار الفاتورة الضريبية: ترقيم تلقائي + إلغاء ========== */
+function nextInvNumber(){
+  const yr=new Date().getFullYear();
+  const re=new RegExp('^INV-'+yr+'-(\\d+)$');
+  let max=0;
+  invs.forEach(i=>{const m=String(i.number||'').match(re);if(m){const n=parseInt(m[1],10);if(n>max)max=n;}});
+  return 'INV-'+yr+'-'+String(max+1).padStart(3,'0');
+}
+function autoInvNo(){const el=document.getElementById('f-no');if(el){el.value=nextInvNumber();el.focus();}}
+function startTaxInvoice(){
+  if(typeof setType==='function')setType('revenue');
+  const el=document.getElementById('f-no');if(el&&!el.value.trim())el.value=nextInvNumber();
+  const dt=document.getElementById('f-dt');if(dt&&!dt.value)dt.value=new Date().toISOString().slice(0,10);
+  if(!sett.vn||!sett.name)toast('⚠️ أضف اسم المؤسسة والرقم الضريبي من الإعدادات ليظهر الباركود','er');
+  else toast('عبّئ العميل والمبلغ ثم احفظ — يظهر باركود ZATCA في تفاصيل الفاتورة','ok');
+  const v=document.getElementById('f-vnd');if(v)v.focus();
+}
+async function cancelInv(){
+  const inv=invs.find(i=>i.id===detId);if(!inv||inv.status==='cancelled')return;
+  const ok=await confirm2({title:'إلغاء الفاتورة',msg:'ستُعلَّم الفاتورة <b>«ملغاة»</b> وتُستبعد من الحسابات والضريبة، لكن تبقى في السجل للمراجعة. متابعة؟',ok:'إلغاء الفاتورة',danger:true});
+  if(!ok)return;
+  inv.status='cancelled';inv.cancelledAt=Date.now();
+  await sv();logEvent('إلغاء فاتورة',(inv.number||'')+' — '+(inv.vendor||''));
+  showDet(inv.id);renderList();renderDB();toast('تم تعليم الفاتورة كملغاة','ok');
+}
+async function reactivateInv(){
+  const inv=invs.find(i=>i.id===detId);if(!inv)return;
+  inv.status='';delete inv.cancelledAt;
+  await sv();logEvent('استعادة فاتورة',(inv.number||''));
+  showDet(inv.id);renderList();renderDB();toast('أُعيدت الفاتورة للحسابات','ok');
+}
 
 /* ========== الفاتورة الإلكترونية (ZATCA) — رمز QR ========== */
 function _tlvField(tag,val){
@@ -2773,7 +2802,7 @@ async function monthlyReportPDF(){
 /* ========== PROJECTS ========== */
 function projPL(pid){
   const proj=projs.find(x=>x.id===pid);
-  const pinvs=invs.filter(i=>i.projectId===pid);
+  const pinvs=invs.filter(i=>i.projectId===pid&&i.status!=='cancelled');
   const contract=proj?(proj.contractValue||0):0;
   const paidManual=proj?(proj.paidAmount||0):0;
   const paidInvoices=pinvs.filter(i=>i.type==='revenue').reduce((s,i)=>s+(i.total||0),0);
@@ -4497,8 +4526,8 @@ function renderProjDash(){
     return {p,pl,pr,isStudy};
   });
   // مطابقة الداش بورد: تضمين المصاريف والإيرادات غير المرتبطة بمشروع في الإجماليات
-  const _saCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!i.projectId).reduce((s,i)=>s+(i.total||0),0);
-  const _saRev=invs.filter(i=>i.type==='revenue'&&!i.projectId).reduce((s,i)=>s+(i.total||0),0);
+  const _saCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!i.projectId&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
+  const _saRev=invs.filter(i=>i.type==='revenue'&&!i.projectId&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
   const totRevenue=totContract+_saRev;
   totCost+=_saCost;
   totProfit=totRevenue-totCost;
@@ -6268,15 +6297,15 @@ function renderDB(){
   // المشاريع «تحت الدراسة» لا تدخل أرقامها في الداش بورد حتى تُحوّل إلى نشط
   const dashProjs=projs.filter(p=>p.status!=='study');
   const contractRev=dashProjs.reduce((s,p)=>s+(p.contractValue||0),0);
-  const standaloneRev=invs.filter(i=>i.type==='revenue'&&!i.projectId).reduce((s,i)=>s+(i.total||0),0);
+  const standaloneRev=invs.filter(i=>i.type==='revenue'&&!i.projectId&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
   const trv=contractRev+standaloneRev;
-  const rv=invs.filter(i=>i.type==='revenue');
+  const rv=invs.filter(i=>i.type==='revenue'&&i.status!=='cancelled');
   // التكاليف تستخدم projPL لكل مشروع (يحترم المبلغ اليدوي) + الفواتير بدون مشروع
   let projCost=0;
   dashProjs.forEach(p=>{projCost+=projPL(p.id).cost;});
-  const standaloneCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!i.projectId).reduce((s,i)=>s+(i.total||0),0);
+  const standaloneCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!i.projectId&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
   const tcs=projCost+standaloneCost;
-  const cs=invs.filter(i=>i.type==='purchase'||i.type==='expense');
+  const cs=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&i.status!=='cancelled');
   const pft=trv-tcs;
   const ov=rv.reduce((s,i)=>s+(i.vat||0),0);
   const iv=cs.reduce((s,i)=>s+(i.vat||0),0);
@@ -6304,7 +6333,7 @@ function renderDB(){
   // بطاقة الربح البارزة
   renderHeroProfit(pft,trv,margin);
   const allByCat={};
-  invs.filter(i=>i.type==='purchase'||i.type==='expense').forEach(i=>{
+  invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&i.status!=='cancelled').forEach(i=>{
     const cid=migrateCat(i.category||'other');
     allByCat[cid]=(allByCat[cid]||0)+(i.total||0);
   });
@@ -6370,7 +6399,7 @@ function vatPrev(yr,sel){
 }
 function vatTotals(yr,sel){
   const r=vatRange(yr,sel);
-  const fl=invs.filter(i=>{if(!i.date)return false;const d=new Date(i.date);return d.getFullYear()===yr&&d.getMonth()>=r.sm&&d.getMonth()<=r.em;});
+  const fl=invs.filter(i=>{if(!i.date||i.status==='cancelled')return false;const d=new Date(i.date);return d.getFullYear()===yr&&d.getMonth()>=r.sm&&d.getMonth()<=r.em;});
   const rv=fl.filter(i=>i.type==='revenue');
   const cs=fl.filter(i=>i.type==='purchase'||i.type==='expense');
   const outBase=rv.reduce((s,i)=>s+(i.subtotal||0),0),outVat=rv.reduce((s,i)=>s+(i.vat||0),0);
@@ -6381,6 +6410,24 @@ function vatTotals(yr,sel){
 }
 function compVT(yr,q){
   const t=vatTotals(yr,q);
+  // ===== الملخص المبسّط لغير المحاسبين =====
+  const sm=document.getElementById('vt-simple');
+  if(sm){
+    const due=t.net>=0;
+    const row=(icon,ttl,sub,val,col)=>'<div style="background:#fff;border-radius:11px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:10px"><div><div style="font-weight:800;font-size:13.5px;color:'+col+'">'+icon+' '+ttl+'</div><div style="font-size:11px;color:var(--t2);margin-top:2px">'+sub+'</div></div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:17px;color:'+col+';white-space:nowrap">'+fmtI(val)+' <span style="font-size:11px">ر.س</span></div></div>';
+    let h='<div style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:1.5px solid #BFDBFE;border-radius:14px;padding:14px">';
+    h+='<div style="font-family:Cairo,sans-serif;font-weight:800;font-size:14.5px;color:#1E40AF;margin-bottom:4px">💡 باختصار — ضريبتك لفترة '+esc(t.label)+'</div>';
+    h+='<div style="font-size:11.5px;color:#3730A3;margin-bottom:11px;line-height:1.6">الضريبة اللي جمعتها من عملائك، ناقص اللي دفعتها لموردينك = المبلغ للهيئة.</div>';
+    h+='<div style="display:flex;flex-direction:column;gap:8px">';
+    h+=row('➕','ضريبة حصّلتها من عملائك','15% أضفتها على فواتير المبيعات/الإيراد',t.outVat,'#15803D');
+    h+=row('➖','ضريبة دفعتها لموردينك','15% على مشترياتك ومصاريفك',t.inVat,'#B45309');
+    h+='<div style="background:'+(due?'linear-gradient(135deg,#1e3a5f,#2771ab)':'linear-gradient(135deg,#15803D,#166534)')+';border-radius:11px;padding:13px;display:flex;justify-content:space-between;align-items:center;color:#fff"><div><div style="font-weight:800;font-size:14px">'+(due?'💳 تسدّده لهيئة الزكاة والضريبة':'💰 مبلغ لك (استرداد / يُرحّل)')+'</div><div style="font-size:11px;opacity:.9;margin-top:2px">'+(due?'ادفعه عبر منصة «ضريبة» عن هذه الفترة':'رصيد ضريبي لصالحك')+'</div></div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:20px;white-space:nowrap">'+fmtI(Math.abs(t.net))+' <span style="font-size:12px">ر.س</span></div></div>';
+    h+='</div>';
+    if(t.noVat.length)h+='<div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:9px;padding:9px 11px;margin-top:10px;font-size:11.5px;color:#92400E;line-height:1.6">⚠️ عندك '+t.noVat.length+' فاتورة مشتريات بدون رقم ضريبي للمورد — قد لا تُحتسب ضريبتها ('+fmtI(t.riskVat)+' ر.س). راجعها.</div>';
+    h+='<div style="font-size:11px;color:#1E40AF;margin-top:10px;line-height:1.7;background:#fff;border-radius:8px;padding:9px 11px">📌 <b>وش تسوي؟</b> ادخل منصة «ضريبة» (zatca.gov.sa) → الإقرارات → أدخل الأرقام أعلاه. أو اضغط «🖨️ إقرار رسمي» بالأسفل واطبعه للمحاسب.</div>';
+    h+='</div>';
+    sm.innerHTML=h;
+  }
   document.getElementById('vt-plbl').textContent=t.label;
   document.getElementById('vt-net').textContent=fmt(t.net)+' ر.س';
   document.getElementById('vt-nlbl').textContent=t.net>=0?'مستحقة الدفع لهيئة الزكاة والضريبة':'قابلة للاسترداد / مرحّلة';
