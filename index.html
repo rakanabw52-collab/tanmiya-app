@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-08-1027">
+<meta name="app-build" content="2026-07-09-1028">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -124,6 +124,20 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
 .sec{display:none}
 .sec:not(#sec-db):not(#sec-proj){max-width:760px;margin:0 auto}.sec.active{display:block;animation:fi .25s ease}
 #sec-proj{max-width:1400px;margin:0 auto}
+/* شاشات الكمبيوتر: استغلال المساحة الفاضية وتكبير الجداول والخطوط */
+@media (min-width:1000px){
+  .sec:not(#sec-db):not(#sec-proj){max-width:1080px}
+  #pd-mb .md{max-width:900px!important}
+  #det-mb .md{max-width:680px!important}
+  .vr{padding:16px!important}
+  .vrow{padding:9px 0!important}
+  .vrow .lbl{font-size:15px!important}
+  .vrow .val{font-size:17px!important}
+  .vrow.hi2{padding:11px 9px!important}
+  #pd-body table,#det-body table{font-size:15px!important}
+  #pd-body table td,#pd-body table th{padding:10px 8px!important}
+  #pd-body table th{font-size:12.5px!important}
+}
 .proj-cols{display:block}
 .pcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;align-items:start}
 .pcards.reorder{grid-template-columns:1fr;max-width:620px}
@@ -245,8 +259,8 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
 .vr{background:#fff;border:1px solid var(--bd);border-radius:11px;padding:13px}
 .vrow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px dashed var(--bd)}
 .vrow:last-child{border-bottom:none}
-.vrow .lbl{font-size:12.5px;color:var(--t2);font-weight:600}
-.vrow .val{font-family:'Cairo',sans-serif;font-weight:800;font-size:14px;color:var(--t1)}
+.vrow .lbl{font-size:13.5px;color:var(--t2);font-weight:600}
+.vrow .val{font-family:'Cairo',sans-serif;font-weight:800;font-size:15px;color:var(--t1)}
 .vrow .val.g{color:#15803D}.vrow .val.r{color:#DC2626}.vrow .val.a{color:#D97706}
 .vrow.hi2{background:#FFFBEB;margin:5px -7px;padding:9px 7px;border-radius:8px;border:none}
 .tag{display:inline-block;padding:2.5px 8px;border-radius:5px;font-size:11px;font-weight:700}
@@ -542,7 +556,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1027</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1028</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1238,7 +1252,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1027</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1028</bdi></span></div>
   </div>
 </div>
 
