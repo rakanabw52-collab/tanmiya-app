@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-22-1041">
+<meta name="app-build" content="2026-07-23-1042">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -565,7 +565,7 @@ main{padding:16px 14px 90px;max-width:1280px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1041</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1042</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1282,7 +1282,7 @@ main{padding:16px 14px 90px;max-width:1280px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1041</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1042</bdi></span></div>
   </div>
 </div>
 
@@ -2828,7 +2828,7 @@ function _renderAuditReport(rep,kind,id){
   if(finds.length)h+='<button onclick="saveAuditReport()" style="flex:1;min-width:130px;background:linear-gradient(135deg,#15803D,#166534);color:#fff;border:none;border-radius:9px;padding:11px;font-family:Cairo,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">💾 '+(kind==='saved'?'حفظ التعديلات':'حفظ التقرير مع الحلول')+'</button>';
   h+='<button onclick="copyAuditReport()" style="flex:1;min-width:90px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">📋 نسخ</button>';
   if(kind==='saved')h+='<button onclick="renderAuditsList()" style="flex:1;min-width:90px;background:#F1F5F9;color:var(--t2);border:1px solid var(--bd);border-radius:9px;padding:11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">← القائمة</button>';
-  else h+='<button onclick="internalAudit(\''+kind+'\',\''+id+'\')" style="flex:1;min-width:90px;background:#F0FDF4;color:#15803D;border:1px solid #86EFAC;border-radius:9px;padding:11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">🔄 إعادة</button>';
+  else h+='<button onclick="internalAudit(\''+kind+'\',\''+id+'\')" style="flex:1;min-width:110px;background:#F0FDF4;color:#15803D;border:1px solid #86EFAC;border-radius:9px;padding:11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">🔄 إعادة التدقيق</button>';
   h+='</div>';
   h+='<button onclick="openAudits()" style="width:100%;margin-top:8px;background:#fff;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:9px;font-family:Tajawal,sans-serif;font-weight:700;font-size:12px;cursor:pointer">📁 التقارير المحفوظة'+(audits.length?' ('+audits.length+')':'')+'</button>';
   body.innerHTML=h;
@@ -3032,7 +3032,7 @@ function _renderCFO(rep){
   h+=bullets('الفرص','🚀',rep.opportunities,'#15803D');
   h+=bullets('التوصيات التنفيذية (الربع القادم)','✅',rep.recommendations,'#6D28D9');
   if(rep._savedAt)h+='<div style="text-align:center;font-size:10.5px;color:var(--t3);margin-top:12px">💾 محفوظ بتاريخ '+esc(rep._savedAt)+'</div>';
-  h+='<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button onclick="saveCFOReport()" style="flex:1;min-width:120px;background:linear-gradient(135deg,#15803D,#166534);color:#fff;border:none;border-radius:9px;padding:11px;font-family:Cairo,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">💾 حفظ التقرير</button><button onclick="copyCFO()" style="flex:1;min-width:90px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">📋 نسخ</button><button onclick="cfoReview()" style="flex:1;min-width:90px;background:#F0FDF4;color:#15803D;border:1px solid #86EFAC;border-radius:9px;padding:11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">🔄 إعادة</button></div>';
+  h+='<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button onclick="saveCFOReport()" style="flex:1;min-width:120px;background:linear-gradient(135deg,#15803D,#166534);color:#fff;border:none;border-radius:9px;padding:11px;font-family:Cairo,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">💾 حفظ التقرير</button><button onclick="copyCFO()" style="flex:1;min-width:90px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">📋 نسخ</button><button onclick="cfoReview()" style="flex:1;min-width:110px;background:#F0FDF4;color:#15803D;border:1px solid #86EFAC;border-radius:9px;padding:11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">🔄 إعادة التحليل</button></div>';
   h+='<button onclick="openCFOReports()" style="width:100%;margin-top:8px;background:#fff;color:#0F766E;border:1px solid #99F6E4;border-radius:9px;padding:9px;font-family:Tajawal,sans-serif;font-weight:700;font-size:12px;cursor:pointer">📁 تقارير المدير المالي المحفوظة'+(cfoReports.length?' ('+cfoReports.length+')':'')+'</button>';
   body.innerHTML=h;
   window._lastCFO=rep;
