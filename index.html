@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-17-1036">
+<meta name="app-build" content="2026-07-18-1037">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -567,7 +567,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1036</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1037</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1274,7 +1274,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1036</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1037</bdi></span></div>
   </div>
 </div>
 
@@ -2728,8 +2728,8 @@ async function internalAudit(kind,id){
   body.innerHTML='<div style="text-align:center;padding:34px 16px"><div class="spin" style="margin:0 auto 14px"></div><div style="font-weight:800;color:var(--t2)">جاري التدقيق الاحترافي...</div><div style="font-size:11.5px;color:var(--t3);margin-top:6px;line-height:1.7">يفحص المدقق الأرقام والعمليات الحسابية والتواريخ والبنود<br>والالتزام بالسياسات وجودة الصياغة</div></div>';
   try{
     const data=_buildAuditData(kind,id);
-    const pr=AUDIT_PROMPT+'\n\n=== البيانات المرسلة للتدقيق ===\n'+data+'\n\n=== صيغة المخرَج المطلوبة ===\nأعِد تقرير التدقيق حصراً بصيغة JSON صالحة فقط (بدون أي نص قبله أو بعده) بالشكل: {"findings":[{"category":"نوع الملاحظة","severity":"red","note":"وصف الملاحظة مع الرقم/التاريخ المعني","solution":"الحل العملي المقترح","autoFixable":false}],"policyCompliance":"تقييم موجز","draftingQuality":"تقييم موجز","decision":"needs_revision","decisionReason":"سبب مختصر"}.\nقواعد إلزامية:\n- severity لكل ملاحظة: "red" لخطورة عالية جداً أو خطأ مالي حرج، "yellow" لخطورة متوسطة، "green" لملاحظة عادية أو تحسينية بسيطة.\n- category: نوع الملاحظة (خطأ حسابي / مخالفة سياسة / تعارض / نقص مستند / بند مكرر / بند غير مبرر / بند غير واضح / صياغة).\n- solution: حل عملي مختصر وواضح لكل ملاحظة.\n- autoFixable: true فقط إذا كان النظام يستطيع تصحيحها آلياً بالحساب (مثل خطأ في قيمة الضريبة = 15% من المبلغ، أو الإجمالي = المبلغ + الضريبة)، وfalse إذا تحتاج تدخلاً بشرياً (مستند ناقص، موافقة، مراجعة عقد، قرار إداري).\n- إن لم توجد أي ملاحظة اجعل findings مصفوفة فارغة [].\n- decision واحد من: accepted أو needs_revision أو rejected.\n- إن كثرت الملاحظات فاذكر أهمها فقط مرتّبةً حسب الخطورة (بحد أقصى 40 ملاحظة) لضمان اكتمال التقرير.\n- لا تستخدم أي أغلفة أو علامات markdown، أعِد JSON نقيّاً فقط.';
-    const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:8000,messages:[{role:'user',content:[{type:'text',text:pr}]}]})});
+    const pr=AUDIT_PROMPT+'\n\n=== البيانات المرسلة للتدقيق ===\n'+data+'\n\n=== صيغة المخرَج المطلوبة ===\nأعِد تقرير التدقيق حصراً بصيغة JSON صالحة فقط (بدون أي نص قبله أو بعده) بالشكل: {"findings":[{"category":"نوع الملاحظة","severity":"red","note":"وصف الملاحظة مع الرقم/التاريخ المعني","solution":"الحل العملي المقترح","autoFixable":false}],"policyCompliance":"تقييم موجز","draftingQuality":"تقييم موجز","decision":"needs_revision","decisionReason":"سبب مختصر"}.\nقواعد إلزامية:\n- severity لكل ملاحظة: "red" لخطورة عالية جداً أو خطأ مالي حرج، "yellow" لخطورة متوسطة، "green" لملاحظة عادية أو تحسينية بسيطة.\n- category: نوع الملاحظة (خطأ حسابي / مخالفة سياسة / تعارض / نقص مستند / بند مكرر / بند غير مبرر / بند غير واضح / صياغة).\n- solution: حل عملي مختصر وواضح لكل ملاحظة.\n- autoFixable: true فقط إذا كان النظام يستطيع تصحيحها آلياً بالحساب (مثل خطأ في قيمة الضريبة = 15% من المبلغ، أو الإجمالي = المبلغ + الضريبة)، وfalse إذا تحتاج تدخلاً بشرياً (مستند ناقص، موافقة، مراجعة عقد، قرار إداري).\n- إن لم توجد أي ملاحظة اجعل findings مصفوفة فارغة [].\n- decision واحد من: accepted أو needs_revision أو rejected.\n- اجعل note وsolution مختصرَين جداً (جملة واحدة قصيرة لكل منهما).\n- ادمج الملاحظات المتشابهة المتكررة في ملاحظة واحدة (مثال: عدة فواتير بنفس الخطأ = ملاحظة واحدة تذكر أرقامها).\n- اذكر أهم الملاحظات فقط مرتّبةً حسب الخطورة، وبحد أقصى 25 ملاحظة.\n- لا تستخدم أي أغلفة أو علامات markdown، أعِد JSON نقيّاً فقط.';
+    const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:16000,messages:[{role:'user',content:[{type:'text',text:pr}]}]})});
     if(!rs.ok){const et=await rs.text();throw new Error('HTTP '+rs.status+' — '+et.slice(0,120));}
     const j=await rs.json();
     let txt=(j.content&&j.content[0]&&j.content[0].text)||'';
