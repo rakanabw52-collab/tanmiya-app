@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-19-1038">
+<meta name="app-build" content="2026-07-20-1039">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -510,6 +510,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
   <h2 class="sec-ttl">داش بورد التحليل</h2>
   <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
     <button class="btn btn-o btn-sm" onclick="monthlyReportPDF()" style="flex:1;min-width:150px;font-size:12.5px;padding:9px;background:#EEF2FF;color:#3730A3;border-color:#C7D2FE;font-weight:800">📄 تقرير شهري PDF</button>
+    <button type="button" onclick="cfoReview()" style="flex:1;min-width:150px;font-size:12.5px;padding:9px;background:linear-gradient(135deg,#0F766E,#134E4A);color:#fff;border:none;border-radius:10px;font-weight:800;cursor:pointer">📊 انطباع المدير المالي (CFO)</button>
   </div>
   <div class="db-grid">
     <!-- العمود ١: Hero + المستحقات + التنبيهات -->
@@ -567,7 +568,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1038</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1039</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -830,6 +831,13 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
   <div class="md" style="max-width:640px">
     <div class="md-hdr"><div class="md-ttl">🔍 المدقق الداخلي</div><button class="md-cl" onclick="closeAudit()">✕</button></div>
     <div id="audit-body"></div>
+  </div>
+</div>
+<!-- مودال المدير المالي CFO -->
+<div class="mb" id="cfo-mb" onclick="if(event.target===this)closeCFO()">
+  <div class="md" style="max-width:640px">
+    <div class="md-hdr"><div class="md-ttl">📊 انطباع المدير المالي (CFO)</div><button class="md-cl" onclick="closeCFO()">✕</button></div>
+    <div id="cfo-body"></div>
   </div>
 </div>
 <!-- مودال تعديل سريع -->
@@ -1155,7 +1163,8 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
     <div class="md-hdr"><div class="md-ttl">الإعدادات</div><button class="md-cl" onclick="closeSet()">✕</button></div>
     <button class="btn btn-o btn-sm" onclick="closeSet();openLogView('events')" style="width:100%;margin-bottom:10px;padding:9px;font-size:12.5px;font-weight:800;background:#EEF2FF;color:#1E40AF;border-color:#C7D2FE">📋 السجل والمحذوفات (دخول · أحداث · استرجاع)</button>
     <button type="button" onclick="internalAuditAll()" style="width:100%;margin-bottom:8px;padding:12px;font-size:13px;font-weight:800;background:linear-gradient(135deg,#4F46E5,#3730A3);color:#fff;border:none;border-radius:10px;cursor:pointer">🔍 المدقق الداخلي الشامل — تدقيق كل المشاريع والفواتير</button>
-    <button type="button" onclick="closeSet();openAudits()" style="width:100%;margin-bottom:10px;padding:9px;font-size:12.5px;font-weight:800;background:#fff;color:#3730A3;border:1px solid #C7D2FE;border-radius:10px;cursor:pointer">📁 تقارير التدقيق المحفوظة (بالحلول والحالة)</button>
+    <button type="button" onclick="closeSet();openAudits()" style="width:100%;margin-bottom:8px;padding:9px;font-size:12.5px;font-weight:800;background:#fff;color:#3730A3;border:1px solid #C7D2FE;border-radius:10px;cursor:pointer">📁 تقارير التدقيق المحفوظة (بالحلول والحالة)</button>
+    <button type="button" onclick="cfoReview()" style="width:100%;margin-bottom:10px;padding:12px;font-size:13px;font-weight:800;background:linear-gradient(135deg,#0F766E,#134E4A);color:#fff;border:none;border-radius:10px;cursor:pointer">📊 انطباع المدير المالي (CFO) — تحليل تنفيذي شامل</button>
     <div class="card" style="background:var(--bg);border:none">
       <div style="font-weight:700;margin-bottom:8px">بيانات المؤسسة</div>
       <div style="display:grid;gap:10px">
@@ -1275,7 +1284,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1038</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1039</bdi></span></div>
   </div>
 </div>
 
@@ -2891,6 +2900,71 @@ async function delSavedAudit(id){
   if(!ok)return;
   audits=audits.filter(a=>a.id!==id);svAU();renderAuditsList();toast('تم الحذف','ok');
 }
+
+/* ========== زر المدير المالي (CFO Review) ========== */
+const CFO_PROMPT=`أنت رئيس تنفيذي مالي (CFO) بخبرة 30 سنة في الإدارة المالية والتحليل الاستراتيجي وإدارة المخاطر والتدفقات النقدية وكفاءة التشغيل وتقييم الأداء المالي للمؤسسات. حلّل جميع البيانات المالية والتشغيلية الظاهرة في النظام، وقدّم انطباعاً مالياً وتنفيذياً شاملاً كما يفعل CFO محترف.
+غطِّ: (1) التحليل المالي: الإيرادات، المصروفات، الربحية، التدفقات النقدية، الالتزامات، السيولة، الانحرافات، كفاءة الإنفاق. (2) التحليل الاستراتيجي: توافق الوضع المالي مع النمو والاستدامة وأثره على المخاطر التشغيلية وصحة القرارات المالية. (3) المخاطر: مالية، تشغيلية، تعاقدية، تدفق نقدي، تأخير مشاريع، عدم التزام موردين، نقص سيولة. (4) الفرص: تحسين الربحية، خفض التكلفة، تحسين التدفق النقدي، كفاءة التشغيل، إعادة هيكلة العقود، تحسين التسعير. (5) توصيات تنفيذية قابلة للتطبيق خلال الربع القادم.
+قواعد: لا تخترع أرقاماً ولا تضف بيانات غير موجودة. اعتمد فقط على البيانات الظاهرة. إن كان هناك تعارض أشِر إليه. استخدم لغة تنفيذية مختصرة وواضحة.`;
+async function cfoReview(){
+  if(typeof closeSet==='function')closeSet();
+  if(!aiReady()){toast('فعّل مفتاح الذكاء الاصطناعي من الإعدادات أولاً','er');return;}
+  const body=document.getElementById('cfo-body');
+  document.getElementById('cfo-mb').classList.add('show');
+  body.innerHTML='<div style="text-align:center;padding:34px 16px"><div class="spin" style="margin:0 auto 14px"></div><div style="font-weight:800;color:var(--t2)">جاري إعداد انطباع المدير المالي...</div><div style="font-size:11.5px;color:var(--t3);margin-top:6px;line-height:1.7">تحليل الأداء المالي والاستراتيجي والمخاطر<br>والفرص والتوصيات التنفيذية</div></div>';
+  try{
+    const data=_buildAuditDataAll();
+    const pr=CFO_PROMPT+'\n\n=== البيانات المالية والتشغيلية الظاهرة في النظام ===\n'+data+'\n\n=== صيغة المخرَج المطلوبة ===\nأعِد التقرير حصراً بصيغة JSON صالحة فقط (بدون أي نص أو أغلفة markdown) بالشكل: {"verdict":"good","verdictReason":"سطر مختصر","executiveSummary":"فقرة قصيرة","financialAnalysis":["نقطة"],"strategicAnalysis":["نقطة"],"risks":[{"title":"عنوان","severity":"red","note":"شرح مختصر"}],"opportunities":["نقطة"],"recommendations":["توصية"]}.\nقواعد: verdict واحد من: good (جيد) / medium (متوسط) / needs_action (يحتاج تدخل) / risk (خطر). severity للمخاطر: red/yellow/green. كل نقطة جملة تنفيذية قصيرة. ركّز على الأهم (بحد أقصى 6 نقاط لكل قسم).';
+    const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:8000,messages:[{role:'user',content:[{type:'text',text:pr}]}]})});
+    if(!rs.ok){const et=await rs.text();throw new Error('HTTP '+rs.status+' — '+et.slice(0,120));}
+    const j=await rs.json();
+    let txt=(j.content&&j.content[0]&&j.content[0].text)||'';
+    txt=txt.replace(/```json/gi,'').replace(/```/g,'').trim();
+    const a=txt.indexOf('{'),b=txt.lastIndexOf('}');
+    let rep=null;if(a>=0&&b>a){try{rep=JSON.parse(txt.slice(a,b+1));}catch(e){}}
+    if(!rep){body.innerHTML='<div style="padding:22px;text-align:center"><div style="font-size:36px">⚠️</div><div style="font-weight:800;margin-top:8px;color:#B45309">تعذّر قراءة تقرير المدير المالي</div><button onclick="cfoReview()" style="margin-top:14px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:9px 16px;font-family:Tajawal,sans-serif;font-weight:800;cursor:pointer">🔄 إعادة المحاولة</button></div>';return;}
+    _renderCFO(rep);
+    logEvent('مراجعة المدير المالي','CFO Review');
+  }catch(e){
+    body.innerHTML='<div style="padding:22px;text-align:center"><div style="font-size:36px">⚠️</div><div style="font-weight:800;margin-top:8px;color:#B91C1C">تعذّرت المراجعة</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.6">'+esc((e.message||'').slice(0,160))+'</div><button onclick="cfoReview()" style="margin-top:14px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:9px 16px;font-family:Tajawal,sans-serif;font-weight:800;cursor:pointer">🔄 إعادة المحاولة</button></div>';
+  }
+}
+function _renderCFO(rep){
+  const body=document.getElementById('cfo-body');
+  const vmap={good:{t:'🟢 جيد',bg:'#DCFCE7',col:'#15803D',bd:'#86EFAC'},medium:{t:'🟡 متوسط',bg:'#FEF9C3',col:'#92400E',bd:'#FDE68A'},needs_action:{t:'🟠 يحتاج تدخل',bg:'#FFEDD5',col:'#9A3412',bd:'#FDBA74'},risk:{t:'🔴 خطر',bg:'#FEE2E2',col:'#B91C1C',bd:'#FCA5A5'}};
+  const v=vmap[rep.verdict]||vmap.medium;
+  const sev={red:'#B91C1C',yellow:'#B45309',green:'#15803D'};
+  const bullets=(title,icon,arr,col)=>{
+    if(!arr||!arr.length)return '';
+    let x='<div style="margin-bottom:12px"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:13px;color:'+(col||'#1e3a5f')+';margin-bottom:6px">'+icon+' '+title+'</div>';
+    arr.forEach(t=>{x+='<div style="font-size:12.5px;line-height:1.65;color:#374151;padding:6px 10px;background:#fff;border:1px solid var(--bd);border-radius:8px;margin-bottom:5px">• '+esc(String(t))+'</div>';});
+    return x+'</div>';
+  };
+  let h='<div style="background:'+v.bg+';border:1.5px solid '+v.bd+';border-radius:12px;padding:15px;text-align:center;margin-bottom:14px"><div style="font-size:11px;color:'+v.col+';font-weight:700">الحكم المالي العام</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:23px;color:'+v.col+';margin-top:4px">'+v.t+'</div>'+(rep.verdictReason?'<div style="font-size:12.5px;color:'+v.col+';margin-top:6px;line-height:1.6">'+esc(rep.verdictReason)+'</div>':'')+'</div>';
+  if(rep.executiveSummary)h+='<div style="margin-bottom:12px"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:13px;color:#1e3a5f;margin-bottom:6px">📋 الملخص التنفيذي</div><div style="font-size:12.5px;line-height:1.75;background:#F0F9FF;border:1px solid #BAE6FD;border-radius:9px;padding:11px;color:#1F2937">'+esc(rep.executiveSummary)+'</div></div>';
+  h+=bullets('التحليل المالي','💰',rep.financialAnalysis,'#15803D');
+  h+=bullets('التحليل الاستراتيجي','🎯',rep.strategicAnalysis,'#2771ab');
+  if(rep.risks&&rep.risks.length){
+    h+='<div style="margin-bottom:12px"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:13px;color:#B91C1C;margin-bottom:6px">⚠️ المخاطر</div>';
+    rep.risks.forEach(r=>{const c=sev[r.severity]||'#B45309';h+='<div style="font-size:12.5px;line-height:1.6;background:#fff;border:1px solid var(--bd);border-right:4px solid '+c+';border-radius:8px;padding:8px 10px;margin-bottom:5px"><b style="color:'+c+'">'+esc(r.title||'خطر')+':</b> '+esc(r.note||'')+'</div>';});
+    h+='</div>';
+  }
+  h+=bullets('الفرص','🚀',rep.opportunities,'#15803D');
+  h+=bullets('التوصيات التنفيذية (الربع القادم)','✅',rep.recommendations,'#6D28D9');
+  h+='<div style="display:flex;gap:8px;margin-top:14px"><button onclick="copyCFO()" style="flex:1;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">📋 نسخ التقرير</button><button onclick="cfoReview()" style="flex:1;background:#F0FDF4;color:#15803D;border:1px solid #86EFAC;border-radius:9px;padding:11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">🔄 إعادة</button></div>';
+  body.innerHTML=h;
+  window._lastCFO=rep;
+}
+function copyCFO(){
+  const r=window._lastCFO;if(!r)return;
+  const vm={good:'جيد',medium:'متوسط',needs_action:'يحتاج تدخل',risk:'خطر'};
+  const sec=(t,arr)=>(arr&&arr.length)?('\n\n'+t+':\n'+arr.map(x=>'  - '+(typeof x==='object'?((x.title?x.title+': ':'')+(x.note||'')):x)).join('\n')):'';
+  let t='📊 انطباع المدير المالي (CFO)\n============================';
+  t+='\nالحكم المالي العام: '+(vm[r.verdict]||r.verdict)+(r.verdictReason?' — '+r.verdictReason:'');
+  if(r.executiveSummary)t+='\n\nالملخص التنفيذي:\n'+r.executiveSummary;
+  t+=sec('التحليل المالي',r.financialAnalysis)+sec('التحليل الاستراتيجي',r.strategicAnalysis)+sec('المخاطر',r.risks)+sec('الفرص',r.opportunities)+sec('التوصيات التنفيذية',r.recommendations);
+  navigator.clipboard.writeText(t).then(()=>toast('تم نسخ التقرير','ok')).catch(()=>toast('تعذّر النسخ','er'));
+}
+function closeCFO(){document.getElementById('cfo-mb').classList.remove('show');}
 
 /* ========== الفاتورة الإلكترونية (ZATCA) — رمز QR ========== */
 function _tlvField(tag,val){
