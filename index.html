@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-15-1034">
+<meta name="app-build" content="2026-07-16-1035">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -567,7 +567,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1034</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1035</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1274,7 +1274,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1034</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1035</bdi></span></div>
   </div>
 </div>
 
@@ -2767,15 +2767,26 @@ function _renderAuditReport(rep,kind,id){
   if(!finds.length){
     h+='<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:18px;text-align:center;color:#15803D;font-weight:800">✅ لا توجد ملاحظات — كل شيء سليم</div>';
   }else{
-    finds.forEach(f=>{
+    h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e5e7eb;border-radius:10px">';
+    h+='<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:540px">';
+    h+='<thead><tr style="background:#1e3a5f;color:#fff">'
+      +'<th style="padding:9px 6px;text-align:center;white-space:nowrap;border:1px solid #17324f">#</th>'
+      +'<th style="padding:9px 6px;text-align:center;white-space:nowrap;border:1px solid #17324f">الخطورة</th>'
+      +'<th style="padding:9px 8px;text-align:right;border:1px solid #17324f">الملاحظة</th>'
+      +'<th style="padding:9px 8px;text-align:right;border:1px solid #17324f">الحل / المقترح</th>'
+      +'<th style="padding:9px 6px;text-align:center;white-space:nowrap;border:1px solid #17324f">التعديل</th>'
+      +'</tr></thead><tbody>';
+    finds.forEach((f,idx)=>{
       const s=sev[f.severity]||sev.yellow;
-      h+='<div style="background:'+s.bg+';border:1px solid '+s.bd+';border-right:4px solid '+s.c+';border-radius:9px;padding:11px;margin-bottom:8px">';
-      h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:6px"><span style="font-weight:800;font-size:11.5px;color:'+s.c+'">'+s.dot+' '+esc(f.category||'ملاحظة')+'</span><span style="font-size:10px;font-weight:700;color:'+s.c+';background:#fff;border-radius:6px;padding:2px 8px;white-space:nowrap">'+s.lbl+'</span></div>';
-      h+='<div style="font-size:12.5px;color:#1F2937;line-height:1.65;margin-bottom:6px">'+esc(f.note||'')+'</div>';
-      if(f.solution)h+='<div style="font-size:12px;background:#fff;border-radius:7px;padding:7px 9px;line-height:1.6;color:#374151"><b style="color:'+s.c+'">💡 الحل:</b> '+esc(f.solution)+'</div>';
-      h+='<div style="margin-top:6px;font-size:10.5px;font-weight:700;color:'+(f.autoFixable?'#15803D':'#6B7280')+'">'+(f.autoFixable?'🛠 يمكن للنظام تصحيحها تلقائياً':'✋ تحتاج تعديلاً يدوياً منك')+'</div>';
-      h+='</div>';
+      h+='<tr style="background:'+(idx%2?'#ffffff':'#f7fafd')+'">';
+      h+='<td style="padding:8px 6px;text-align:center;border:1px solid #e5e7eb;font-family:Cairo,sans-serif;font-weight:800;color:'+s.c+'">'+(idx+1)+'</td>';
+      h+='<td style="padding:8px 6px;text-align:center;border:1px solid #e5e7eb;white-space:nowrap"><span style="display:inline-block;font-size:10.5px;font-weight:800;color:'+s.c+';background:'+s.bg+';border:1px solid '+s.bd+';border-radius:6px;padding:3px 8px">'+s.dot+' '+s.lbl+'</span></td>';
+      h+='<td style="padding:8px 8px;text-align:right;border:1px solid #e5e7eb;line-height:1.55"><b style="color:'+s.c+';font-size:11px">'+esc(f.category||'ملاحظة')+'</b><br>'+esc(f.note||'')+'</td>';
+      h+='<td style="padding:8px 8px;text-align:right;border:1px solid #e5e7eb;line-height:1.55;color:#374151">'+esc(f.solution||'—')+'</td>';
+      h+='<td style="padding:8px 6px;text-align:center;border:1px solid #e5e7eb;white-space:nowrap;font-size:10.5px;font-weight:700;color:'+(f.autoFixable?'#15803D':'#6B7280')+'">'+(f.autoFixable?'🛠 تلقائي':'✋ يدوي')+'</td>';
+      h+='</tr>';
     });
+    h+='</tbody></table></div>';
   }
   if(rep.policyCompliance)h+='<div style="margin:10px 0 6px"><div style="font-weight:800;font-size:12.5px;color:var(--t2);margin-bottom:4px">📋 تقييم الالتزام بالسياسات</div><div style="font-size:12px;background:#F0F9FF;border-radius:7px;padding:8px 10px;line-height:1.7">'+esc(rep.policyCompliance)+'</div></div>';
   if(rep.draftingQuality)h+='<div style="margin:10px 0 6px"><div style="font-weight:800;font-size:12.5px;color:var(--t2);margin-bottom:4px">✍️ تقييم جودة الصياغة</div><div style="font-size:12px;background:#F0F9FF;border-radius:7px;padding:8px 10px;line-height:1.7">'+esc(rep.draftingQuality)+'</div></div>';
