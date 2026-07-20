@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-25-1044">
+<meta name="app-build" content="2026-07-26-1045">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -139,10 +139,10 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
   .hp-val{font-size:38px}
   .hero-profit{padding:15px 20px}
   .receivables-card{padding:13px}
-  #sec-db .db-col{gap:6px}
+  #sec-db .db-col{gap:6px;min-width:0}
   #sec-db main,main{padding-bottom:30px}
   #sec-db .card{padding:10px}
-  #sec-db .db-grid{gap:6px}
+  #sec-db .db-grid{gap:14px}
   /* تكبير خطوط البطاقات الكثيفة في الداش بورد على الكمبيوتر (بدون كسر التسلسل) */
   #sec-db [style*="font-size:10px"]{font-size:11.5px!important}
   #sec-db [style*="font-size:10.5px"]{font-size:12px!important}
@@ -568,7 +568,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1044</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1045</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1285,7 +1285,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1044</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1045</bdi></span></div>
   </div>
 </div>
 
@@ -2817,7 +2817,7 @@ function _renderAuditReport(rep,kind,id){
       h+='<td style="padding:8px 6px;text-align:center;border:1px solid #e5e7eb;font-family:Cairo,sans-serif;font-weight:800;color:'+s.c+'">'+(idx+1)+'</td>';
       h+='<td style="padding:8px 6px;text-align:center;border:1px solid #e5e7eb;white-space:nowrap"><span style="display:inline-block;font-size:10.5px;font-weight:800;color:'+s.c+';background:'+s.bg+';border:1px solid '+s.bd+';border-radius:6px;padding:3px 8px">'+s.dot+' '+s.lbl+'</span></td>';
       h+='<td style="padding:8px 8px;text-align:right;border:1px solid #e5e7eb;line-height:1.55"><b style="color:'+s.c+';font-size:11px">'+esc(f.category||'ملاحظة')+'</b><br>'+esc(f.note||'')+'</td>';
-      h+='<td style="padding:6px;border:1px solid #e5e7eb"><textarea id="af-sol-'+idx+'" style="width:100%;min-width:170px;min-height:52px;border:1px solid #cbd5e1;border-radius:7px;padding:6px 8px;font-family:Tajawal,sans-serif;font-size:11.5px;line-height:1.5;resize:vertical;background:#fffef7">'+esc(f.solution||'')+'</textarea></td>';
+      h+='<td style="padding:6px;border:1px solid #e5e7eb"><textarea id="af-sol-'+idx+'" oninput="_auditSolEdited('+idx+')" style="width:100%;min-width:170px;min-height:52px;border:1px solid #cbd5e1;border-radius:7px;padding:6px 8px;font-family:Tajawal,sans-serif;font-size:11.5px;line-height:1.5;resize:vertical;background:#fffef7">'+esc(f.solution||'')+'</textarea></td>';
       h+='<td style="padding:6px;border:1px solid #e5e7eb;text-align:center"><select id="af-st-'+idx+'" onchange="_updateAuditProgress()" style="border:1px solid #cbd5e1;border-radius:7px;padding:5px 4px;font-family:Tajawal,sans-serif;font-size:10.5px;font-weight:700;background:#fff">'+stOpts.map(o=>'<option'+(o===cur?' selected':'')+'>'+o+'</option>').join('')+'</select></td>';
       h+='<td style="padding:8px 6px;text-align:center;border:1px solid #e5e7eb;white-space:nowrap;font-size:10.5px;font-weight:700;color:'+(f.autoFixable?'#15803D':'#6B7280')+'">'+(f.autoFixable?'🛠 تلقائي':'✋ يدوي')+'</td>';
       h+='</tr>';
@@ -2838,14 +2838,19 @@ function _renderAuditReport(rep,kind,id){
   window._lastAuditReport=rep;
   _updateAuditProgress();
 }
+function _auditSolEdited(idx){
+  const s=document.getElementById('af-st-'+idx);
+  if(s&&s.value==='لم تُعالج'){s.value='قيد المعالجة';}
+  _updateAuditProgress();
+}
 function _updateAuditProgress(){
   const el=document.getElementById('af-progress');if(!el)return;
   const sels=document.querySelectorAll('[id^="af-st-"]');
   let done=0,prog=0,tot=0;
   sels.forEach(s=>{tot++;if(s.value==='تمت المعالجة')done++;else if(s.value==='قيد المعالجة')prog++;});
-  const pct=tot?Math.round(done/tot*100):0;
+  const pct=tot?Math.round((done+prog*0.5)/tot*100):0;
   const col=pct>=100?'#15803D':pct>=50?'#2771ab':'#B45309';
-  el.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-weight:800;font-size:12px;color:var(--t2)">📈 نسبة إنجاز المعالجة</span><span style="font-family:Cairo,sans-serif;font-weight:800;font-size:16px;color:'+col+'">'+pct+'% <span style="font-size:10px;color:var(--t3)">('+done+'/'+tot+')</span></span></div><div style="height:9px;background:#E5E7EB;border-radius:99px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+col+';transition:.3s"></div></div>'+(prog?'<div style="font-size:10px;color:var(--t3);margin-top:4px">'+prog+' قيد المعالجة</div>':'');
+  el.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-weight:800;font-size:12px;color:var(--t2)">📈 نسبة إنجاز المعالجة</span><span style="font-family:Cairo,sans-serif;font-weight:800;font-size:16px;color:'+col+'">'+pct+'%</span></div><div style="height:9px;background:#E5E7EB;border-radius:99px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+col+';transition:.3s"></div></div><div style="font-size:10px;color:var(--t3);margin-top:4px">✅ '+done+' تمت • 🔄 '+prog+' قيد المعالجة • من '+tot+' ملاحظة</div>';
 }
 function copyAuditReport(){
   const r=window._lastAuditReport;if(!r)return;
@@ -2894,8 +2899,12 @@ function _renderQuickFixes(kind,id){
     inner+='</div>';
   });
   mathErrs.forEach(i=>{
-    const rate=(i.vatRate||15)/100;const cVat=+((i.subtotal||0)*rate).toFixed(2);const cTot=+((i.subtotal||0)+cVat).toFixed(2);
-    inner+='<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:9px;padding:10px;margin-bottom:8px"><div style="font-size:11.5px;font-weight:800;color:#92400E;margin-bottom:5px">🧮 خطأ حسابي — فاتورة '+esc(i.number||'—')+'</div><div style="font-size:11px;color:#374151;margin-bottom:7px;line-height:1.6">الحالي: ضريبة '+fmtI(i.vat||0)+' / إجمالي '+fmtI(i.total||0)+' — الصحيح: ضريبة <b>'+fmtI(cVat)+'</b> / إجمالي <b>'+fmtI(cTot)+'</b></div><button onclick="qfFixMath(\''+i.id+'\',\''+kind+'\',\''+id+'\')" style="background:#DCFCE7;color:#15803D;border:1px solid #86EFAC;border-radius:6px;padding:6px 12px;font-family:Tajawal,sans-serif;font-weight:700;font-size:11.5px;cursor:pointer">🔧 تصحيح فوري</button></div>';
+    const rate=(i.vatRate||15)/100;const base=(i.subtotal||0);
+    const exVat=+(base*rate).toFixed(2),exTot=+(base+exVat).toFixed(2);            // المبلغ بدون ضريبة
+    const inNet=+(base/(1+rate)).toFixed(2),inVat=+(base-inNet).toFixed(2);        // المبلغ شامل الضريبة
+    inner+='<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:9px;padding:10px;margin-bottom:8px"><div style="font-size:11.5px;font-weight:800;color:#92400E;margin-bottom:5px">🧮 خطأ حسابي — فاتورة '+esc(i.number||'—')+'</div><div style="font-size:11px;color:#374151;margin-bottom:8px;line-height:1.6">القيم الحالية: مبلغ '+fmtI(base)+' / ضريبة '+fmtI(i.vat||0)+' / إجمالي '+fmtI(i.total||0)+'.<br>اختر التصحيح الصحيح حسب المبلغ '+fmtI(base)+':</div>';
+    inner+='<button onclick="qfFixMath(\''+i.id+'\',\''+kind+'\',\''+id+'\',\'excl\')" style="display:block;width:100%;text-align:right;background:#DCFCE7;color:#15803D;border:1px solid #86EFAC;border-radius:7px;padding:8px 10px;font-family:Tajawal,sans-serif;font-weight:700;font-size:11.5px;cursor:pointer;margin-bottom:5px">🔧 المبلغ <b>بدون</b> ضريبة → ضريبة '+fmtI(exVat)+' / إجمالي '+fmtI(exTot)+'</button>';
+    inner+='<button onclick="qfFixMath(\''+i.id+'\',\''+kind+'\',\''+id+'\',\'incl\')" style="display:block;width:100%;text-align:right;background:#DBEAFE;color:#1D4ED8;border:1px solid #BFDBFE;border-radius:7px;padding:8px 10px;font-family:Tajawal,sans-serif;font-weight:700;font-size:11.5px;cursor:pointer">🔧 المبلغ <b>شامل</b> الضريبة → صافي '+fmtI(inNet)+' / ضريبة '+fmtI(inVat)+' / إجمالي '+fmtI(base)+'</button></div>';
   });
   let h='<div id="qf-panel">';
   if(inner)h+='<div style="font-family:Cairo,sans-serif;font-weight:800;font-size:13px;color:#3730A3;margin:14px 0 8px">🛠 حلول فورية (يطبّقها النظام مباشرة)</div>'+inner;
@@ -2933,13 +2942,16 @@ async function qfDelInv(invId,kind,id){
   const marked=_autoResolveByInv(num);
   _refreshQF(kind,id);toast(marked?'تم الحذف ✓ وتحدّثت النسبة':'تم الحذف','ok');
 }
-async function qfFixMath(invId,kind,id){
+async function qfFixMath(invId,kind,id,mode){
   const inv=invs.find(i=>i.id===invId);if(!inv)return;
   const num=inv.number||'';
-  const rate=(inv.vatRate||15)/100;const cVat=+((inv.subtotal||0)*rate).toFixed(2);const cTot=+((inv.subtotal||0)+cVat).toFixed(2);
-  const ok=await confirm2({title:'تصحيح حسابي',msg:'تعديل الفاتورة <b>'+esc(num)+'</b>:<br>الضريبة → '+fmtI(cVat)+' والإجمالي → '+fmtI(cTot)+'؟',ok:'تصحيح'});
+  const rate=(inv.vatRate||15)/100;const base=(inv.subtotal||0);
+  let nSub,nVat,nTot,lbl;
+  if(mode==='incl'){nSub=+(base/(1+rate)).toFixed(2);nVat=+(base-nSub).toFixed(2);nTot=base;lbl='المبلغ '+fmtI(base)+' شامل الضريبة → صافي '+fmtI(nSub)+' / ضريبة '+fmtI(nVat)+' / إجمالي '+fmtI(nTot);}
+  else{nSub=base;nVat=+(base*rate).toFixed(2);nTot=+(base+nVat).toFixed(2);lbl='المبلغ '+fmtI(base)+' بدون ضريبة → ضريبة '+fmtI(nVat)+' / إجمالي '+fmtI(nTot);}
+  const ok=await confirm2({title:'تصحيح حسابي',msg:'تعديل الفاتورة <b>'+esc(num)+'</b>:<br>'+lbl+'؟',ok:'تصحيح'});
   if(!ok)return;
-  inv.vat=cVat;inv.total=cTot;await sv();logEvent('تصحيح حسابي (تدقيق)',num||'');
+  inv.subtotal=nSub;inv.vat=nVat;inv.total=nTot;await sv();logEvent('تصحيح حسابي (تدقيق)',num||'');
   if(typeof renderList==='function')renderList();if(typeof renderDB==='function')renderDB();
   const marked=_autoResolveByInv(num);
   _refreshQF(kind,id);toast(marked?'تم التصحيح ✓ وتحدّثت النسبة':'تم التصحيح','ok');
@@ -3096,11 +3108,11 @@ function closeCFO(){document.getElementById('cfo-mb').classList.remove('show');}
 /* نسبة الامتثال في الداش بورد = نسبة الملاحظات المعالَجة في كل التقارير المحفوظة */
 function renderComplianceCard(){
   const w=document.getElementById('db-compliance');if(!w)return;
-  let done=0,tot=0;
-  audits.forEach(a=>(a.findings||[]).forEach(f=>{tot++;if(f.status==='تمت المعالجة')done++;}));
+  let done=0,prog=0,tot=0;
+  audits.forEach(a=>(a.findings||[]).forEach(f=>{tot++;if(f.status==='تمت المعالجة')done++;else if(f.status==='قيد المعالجة')prog++;}));
   if(!tot){w.innerHTML='';w.style.display='none';return;}
   w.style.display='block';
-  const pct=Math.round(done/tot*100);
+  const pct=Math.round((done+prog*0.5)/tot*100);
   const col=pct>=80?'#15803D':pct>=50?'#2771ab':'#B45309';
   let h='<div style="background:#fff;border:1.5px solid '+col+'33;border-radius:12px;padding:13px">';
   h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-family:Cairo,sans-serif;font-weight:800;font-size:13px;color:'+col+'">🛡️ نسبة الامتثال</span><span style="font-family:Cairo,sans-serif;font-weight:800;font-size:22px;color:'+col+'">'+pct+'%</span></div>';
@@ -6724,29 +6736,8 @@ function equalizeColumns(){
     c.style.height='';c.style.maxHeight='';c.style.overflow='';c.style.gap='';
     c.style.transform='';c.style.transformOrigin='';c.style.width='';c.style.marginBottom='';
   });
-  // في وضع الجوال (عمود واحد) لا حاجة للمحاذاة
-  if(window.innerWidth<900)return;
-  // عمود اجمالي البنود هو المرجع
-  const refCard=document.getElementById('db-allcats-card');
-  if(!refCard)return;
-  const refCol=refCard.closest('.db-col');
-  if(!refCol)return;
-  const h=refCol.offsetHeight;
-  if(h<100)return;
-  cols.forEach(c=>{
-    if(c===refCol)return;
-    const natH=c.offsetHeight;  // الارتفاع الطبيعي
-    if(natH>h+2){
-      // العمود الأطول: نصغّر كامل محتواه بنسبة متساوية ليفيت — بدون قص أي معلومة
-      const s=h/natH;
-      c.style.transformOrigin='top right';
-      c.style.transform='scale('+s+')';
-      c.style.marginBottom=-(natH-h)+'px'; // نطوي فراغ التخطيط
-    }else if(natH<h-2){
-      // العمود الأقصر: يتمدد لطول المرجع
-      c.style.height=h+'px';
-    }
-  });
+  // تم تعطيل التحجيم القسري (transform:scale) لأنه كان يصغّر عرض العمود وخطه
+  // ويسبب مسافة كبيرة وخطاً غير مقروء. الأعمدة الآن بحجمها الطبيعي وخطها واضح.
 }
 
 function renderDB(){
