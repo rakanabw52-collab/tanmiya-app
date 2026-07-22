@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1060">
+<meta name="app-build" content="2026-08-01-1061">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -595,7 +595,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1060</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1061</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1358,7 +1358,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1060</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1061</bdi></span></div>
   </div>
 </div>
 
@@ -6916,6 +6916,7 @@ function parseSheet(data,sheetName){
         if(/^(المبلغ|amount|قيمة)$/i.test(cc))cols.amount=j;
         else if(/^(البيان|الوصف|description|تفاصيل)$/i.test(cc))cols.desc=j;
         else if(/(المورد|العميل|اسم المورد|vendor)/i.test(cc))cols.vendor=j;
+        else if(/(الرقم الضريبي|الرقم الضريبى|التسجيل الضريبي|tax)/i.test(cc))cols.taxno=j;
         else if(/(رقم الفاتورة|invoice|رقم)/i.test(cc))cols.number=j;
         else if(/(التاريخ|date)/i.test(cc))cols.date=j;
         else if(/(مركز التكلفة|cost center|البند)/i.test(cc))cols.center=j;
@@ -6990,6 +6991,8 @@ function parseSheet(data,sheetName){
       }
       const catId=classify(desc,center);
       const hasVat=/(ضريبية|vat)/.test(vatField);
+      const taxno=cols.taxno!==undefined?String(r[cols.taxno]||'').trim():'';
+      const vatAmt=cols.vat!==undefined?(parseFloat(String(r[cols.vat]||'').replace(/,/g,''))||0):0;
       res.rows.push({
         date:date||'',
         amount:amt,
@@ -7002,6 +7005,8 @@ function parseSheet(data,sheetName){
         suggested:catId,
         notes,
         hasVat,
+        taxno,
+        vatAmount:vatAmt,
         include:true
       });
     }
@@ -7140,17 +7145,19 @@ async function confirmImp(){
   let cnt=0;
   impData.rows.forEach(r=>{
     if(!r.include)return;
+    let _sub=r.amount,_vr=0,_va=0,_tot=r.amount;
+    if(r.vatAmount&&r.vatAmount>0){_sub=r.amount;_va=+(+r.vatAmount).toFixed(2);_vr=15;_tot=+(_sub+_va).toFixed(2);}
     invs.unshift({
       id:uid('inv'),
       type:r.type||'expense',
       number:r.number||'IMP-'+Date.now().toString().slice(-6)+'-'+(cnt+1),
       date:r.date||new Date().toISOString().slice(0,10),
       vendor:r.vendor||'—',
-      vendorVAT:'',
-      subtotal:r.amount,
-      vatRate:0,
-      vat:0,
-      total:r.amount,
+      vendorVAT:r.taxno||'',
+      subtotal:_sub,
+      vatRate:_vr,
+      vat:_va,
+      total:_tot,
       category:r.categoryId,
       projectId:proj.id,
       notes:r.notes||(r.center?'مركز: '+r.center:'')+(r.desc?' • '+r.desc:''),
