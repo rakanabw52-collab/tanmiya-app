@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1052">
+<meta name="app-build" content="2026-08-01-1053">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -303,6 +303,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 .md-cl{background:none;border:none;font-size:20px;cursor:pointer;color:var(--t3);width:30px;height:30px;border-radius:7px}
 .md-cl:hover{background:var(--bg)}
 #qe-mb,#bx-mb,#pdoc-mb,#pe-mb{z-index:260}
+#audit-mb{z-index:280}
 .qe-vbtn{padding:9px;border:1.5px solid var(--bd);background:#fff;border-radius:9px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:12.5px;color:var(--t2);cursor:pointer;transition:.15s}
 .qe-vbtn.on{border-color:var(--pr);background:#EFF6FF;color:var(--pr)}
 .qe-vbrk{margin-top:10px;background:var(--bg);border:1px dashed var(--bd);border-radius:9px;padding:10px 11px;font-size:12px}
@@ -580,7 +581,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1052</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1053</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1315,7 +1316,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1052</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1053</bdi></span></div>
   </div>
 </div>
 
@@ -2836,7 +2837,7 @@ function _renderAuditReport(rep,kind,id){
   if(!finds.length){
     h+='<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:18px;text-align:center;color:#15803D;font-weight:800">✅ لا توجد ملاحظات — كل شيء سليم</div>';
   }else{
-    h+='<div style="font-size:11px;color:var(--t3);margin-bottom:6px">✏️ عدّل الحل عند الحاجة. عند حلّ ملاحظة (من «الحلول الفورية» يُعلَّم تلقائياً، أو علّم «✓ تمت» يدوياً) — والنسبة تتحدّث فوراً.</div>';
+    h+='<div style="font-size:11px;color:var(--t3);margin-bottom:6px">✏️ عدّل الحل عند الحاجة، ثم اضغط زر «✅ حل» أمام كل ملاحظة عند معالجتها (أو تُعلَّم تلقائياً من «الحلول الفورية») — والنسبة تتحدّث فوراً.</div>';
     h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e5e7eb;border-radius:10px">';
     h+='<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:560px">';
     h+='<thead><tr style="background:#1e3a5f;color:#fff">'
@@ -2854,7 +2855,8 @@ function _renderAuditReport(rep,kind,id){
       h+='<td style="padding:8px 6px;text-align:center;border:1px solid #e5e7eb;white-space:nowrap"><span style="display:inline-block;font-size:10.5px;font-weight:800;color:'+s.c+';background:'+s.bg+';border:1px solid '+s.bd+';border-radius:6px;padding:3px 8px">'+s.dot+' '+s.lbl+'</span></td>';
       h+='<td style="padding:8px 8px;text-align:right;border:1px solid #e5e7eb;line-height:1.55"><b style="color:'+s.c+';font-size:11px">'+esc(f.category||'ملاحظة')+'</b><br>'+esc(f.note||'')+'</td>';
       h+='<td style="padding:6px;border:1px solid #e5e7eb"><textarea id="af-sol-'+idx+'" style="width:100%;min-width:170px;min-height:52px;border:1px solid #cbd5e1;border-radius:7px;padding:6px 8px;font-family:Tajawal,sans-serif;font-size:11.5px;line-height:1.5;resize:vertical;background:#fffef7">'+esc(f.solution||'')+'</textarea></td>';
-      h+='<td style="padding:6px;border:1px solid #e5e7eb;text-align:center"><input type="checkbox" id="af-done-'+idx+'" onchange="_updateAuditProgress()" '+(done?'checked':'')+' style="width:22px;height:22px;cursor:pointer;accent-color:#15803D"></td>';
+      h+='<td style="padding:6px;border:1px solid #e5e7eb;text-align:center;white-space:nowrap"><input type="checkbox" id="af-done-'+idx+'" onchange="_syncRowUI('+idx+')" '+(done?'checked':'')+' style="display:none">'
+        +'<button type="button" id="af-btn-'+idx+'" onclick="qfResolveRow('+idx+')" style="background:'+(done?'#DCFCE7':'#EEF2FF')+';color:'+(done?'#15803D':'#3730A3')+';border:1px solid '+(done?'#86EFAC':'#C7D2FE')+';border-radius:7px;padding:7px 11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:11.5px;cursor:pointer;white-space:nowrap">'+(done?'✓ تمت':'✅ حل')+'</button></td>';
       h+='</tr>';
     });
     h+='</tbody></table></div>';
@@ -2961,6 +2963,26 @@ function _refreshQF(kind,id){
   const tmp=document.createElement('div');tmp.innerHTML=_renderQuickFixes(kind,id);
   if(tmp.firstChild)p.replaceWith(tmp.firstChild);
 }
+// زر «✅ حل» لكل ملاحظة — يقلب حالة المعالجة ويحدّث النسبة فوراً
+function qfResolveRow(idx){
+  const b=document.getElementById('af-done-'+idx);if(!b)return;
+  b.checked=!b.checked;
+  _syncRowUI(idx);
+}
+function _syncRowUI(idx){
+  const b=document.getElementById('af-done-'+idx);if(!b)return;
+  const done=b.checked;
+  const btn=document.getElementById('af-btn-'+idx);
+  if(btn){
+    btn.textContent=done?'✓ تمت':'✅ حل';
+    btn.style.background=done?'#DCFCE7':'#EEF2FF';
+    btn.style.color=done?'#15803D':'#3730A3';
+    btn.style.borderColor=done?'#86EFAC':'#C7D2FE';
+  }
+  const tr=b.closest('tr');
+  if(tr)tr.style.background=done?'#F0FDF4':(idx%2?'#ffffff':'#f7fafd');
+  if(typeof _updateAuditProgress==='function')_updateAuditProgress();
+}
 // عند تطبيق حل فوري، علّم الملاحظات المطابقة (بنفس رقم الفاتورة) كـ«تمت المعالجة» تلقائياً
 function _autoResolveByInv(num){
   if(!num)return 0;
@@ -2968,7 +2990,7 @@ function _autoResolveByInv(num){
   finds.forEach((f,i)=>{
     if(String(f.note||'').indexOf(String(num))>=0){
       const b=document.getElementById('af-done-'+i);
-      if(b&&!b.checked){b.checked=true;n++;}
+      if(b&&!b.checked){b.checked=true;_syncRowUI(i);n++;}
     }
   });
   if(n&&typeof _updateAuditProgress==='function')_updateAuditProgress();
@@ -3032,7 +3054,7 @@ function renderAuditsList(){
   else{
     audits.forEach(a=>{
       const d=dm[a.decision]||dm.needs_revision;
-      const done=(a.findings||[]).filter(f=>f.status==='تمت المعالجة').length;
+      const done=(a.findings||[]).filter(f=>(f.done===true)||(f.status==='تمت المعالجة')).length;
       const tot=(a.findings||[]).length;
       h+='<div style="background:#fff;border:1px solid var(--bd);border-radius:10px;padding:11px;margin-bottom:8px">';
       h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div style="flex:1"><div style="font-weight:800;font-size:12.5px">'+esc(a.title||'تقرير')+'</div><div style="font-size:10.5px;color:var(--t3);margin-top:3px">'+fmtD(new Date(a.t||a.createdAt).toISOString().slice(0,10))+' • <span style="color:'+d.c+';font-weight:700">'+d.t+'</span> • عولج '+done+'/'+tot+'</div></div><span style="font-size:11px;font-weight:800;color:#15803D">'+(tot?Math.round(done/tot*100):0)+'%</span></div>';
