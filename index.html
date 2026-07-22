@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1058">
+<meta name="app-build" content="2026-08-01-1059">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -581,7 +581,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1058</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1059</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -663,7 +663,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       <div class="field"><label>نسبة الضريبة %</label><input type="text" inputmode="decimal" id="f-vr" value="15" oninput="calcV()"></div>
       <div class="field"><label>قيمة الضريبة (تلقائي)</label><input type="text" inputmode="decimal" id="f-v" placeholder="0.00" readonly style="background:#f1f5f9"></div>
       <div class="field"><label>الإجمالي (تلقائي)</label><input type="text" inputmode="decimal" id="f-tot" placeholder="0.00" readonly style="background:#f1f5f9"></div>
-      <div class="field full"><label>المشروع</label><select id="f-proj" class="proj-sel"><option value="">— بدون مشروع —</option></select></div>
+      <div class="field full"><label>المشروع</label><div style="display:flex;gap:7px;align-items:stretch"><select id="f-proj" class="proj-sel" style="flex:1;min-width:0"><option value="">— بدون مشروع —</option></select><button type="button" onclick="newProjFromInv()" title="إضافة مشروع جديد" style="flex:0 0 auto;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:0 13px;font-family:Tajawal,sans-serif;font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap">➕ مشروع</button></div></div>
       <div class="field full"><label>البند *</label><select id="f-cat"><option value="">— اختر البند —</option></select></div>
       <div class="field full"><label>ملاحظات</label><textarea id="f-nt"></textarea></div>
     </div>
@@ -1316,7 +1316,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1058</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1059</bdi></span></div>
   </div>
 </div>
 
@@ -2207,6 +2207,8 @@ function fillCats(t){
     UCATS.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.icon+' '+c.name;s.appendChild(o);});
   }
 }
+// إضافة مشروع جديد من داخل نموذج الفاتورة (بدون الحاجة لتبويب المشاريع)
+function newProjFromInv(){window._projReturnToInv=true;newProj();}
 function fillProjSel(){
   const s=document.getElementById('f-proj');
   const cur=s.value;
@@ -5783,7 +5785,11 @@ async function savePe(){
     toast(editId?'تم التحديث ✓':(pendingFeasibility?'تم الحفظ مع الدراسة ✓':'تم الحفظ ✓'),'ok');
     pendingFeasibility=null;
     logEvent(editId?'تعديل مشروع':'إضافة مشروع',nm);
+    const _wasNew=!editId;
     closePe();renderProjList();renderDB();bumpEdits();
+    // تحديث قائمة المشاريع في نموذج الفاتورة، واختيار المشروع الجديد إن أُنشئ من هناك
+    try{fillProjSel();}catch(_){}
+    if(window._projReturnToInv){window._projReturnToInv=false;if(_wasNew){const fp=document.getElementById('f-proj');if(fp){fp.value=p.id;}const sp=document.getElementById('as-proj');if(sp){sp.value=p.id;}toast('تم إنشاء المشروع واختياره في الفاتورة ✓','ok');}}
     // رفع فوري للسحابة حتى لا يُكتب فوق التغيير عند التحديث
     if(typeof cloudPushAll==='function'&&_cloudOn){try{await cloudPushAll();}catch(_){}}
   }
