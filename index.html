@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1055">
+<meta name="app-build" content="2026-08-01-1056">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -581,7 +581,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1055</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1056</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1316,7 +1316,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1055</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1056</bdi></span></div>
   </div>
 </div>
 
@@ -2837,7 +2837,7 @@ function _renderAuditReport(rep,kind,id){
   if(!finds.length){
     h+='<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:18px;text-align:center;color:#15803D;font-weight:800">✅ لا توجد ملاحظات — كل شيء سليم</div>';
   }else{
-    h+='<div style="font-size:11px;color:var(--t3);margin-bottom:6px">💡 لكل ملاحظة حلٌّ مقترح جاهز في خانة «الحل / الإجراء» — عدّله عند الحاجة، ثم اضغط زر «✅ حل» عند معالجتها (أو تُعلَّم تلقائياً من «الحلول الفورية») — والنسبة تتحدّث فوراً.</div>';
+    h+='<div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:9px;padding:10px 12px;margin-bottom:9px;font-size:11.5px;color:#1E40AF;line-height:1.85"><b>كيف تستخدم التقرير؟</b><br>① الحل مكتوب لك <b>جاهز</b> في عمود «الحل / الإجراء» — <b>لا يلزمك كتابة شيء</b> (تعديله اختياري).<br>② إذا عالجت الملاحظة، اضغط زر <b>«✅ حل»</b> — وترتفع النسبة تلقائياً.<br>③ الأخطاء الحسابية يصحّحها النظام <b>تلقائياً</b> من قسم «🛠 الحلول الفورية» بالأسفل (تختار: المبلغ شامل الضريبة أم بدونها).</div>';
     h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e5e7eb;border-radius:10px">';
     h+='<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:560px">';
     h+='<thead><tr style="background:#1e3a5f;color:#fff">'
@@ -2854,7 +2854,7 @@ function _renderAuditReport(rep,kind,id){
       h+='<td style="padding:8px 6px;text-align:center;border:1px solid #e5e7eb;font-family:Cairo,sans-serif;font-weight:800;color:'+s.c+'">'+(idx+1)+'</td>';
       h+='<td style="padding:8px 6px;text-align:center;border:1px solid #e5e7eb;white-space:nowrap"><span style="display:inline-block;font-size:10.5px;font-weight:800;color:'+s.c+';background:'+s.bg+';border:1px solid '+s.bd+';border-radius:6px;padding:3px 8px">'+s.dot+' '+s.lbl+'</span></td>';
       h+='<td style="padding:8px 8px;text-align:right;border:1px solid #e5e7eb;line-height:1.55"><b style="color:'+s.c+';font-size:11px">'+esc(f.category||'ملاحظة')+'</b><br>'+esc(f.note||'')+'</td>';
-      h+='<td style="padding:6px;border:1px solid #e5e7eb"><textarea id="af-sol-'+idx+'" style="width:100%;min-width:170px;min-height:52px;border:1px solid #cbd5e1;border-radius:7px;padding:6px 8px;font-family:Tajawal,sans-serif;font-size:11.5px;line-height:1.5;resize:vertical;background:#fffef7">'+esc(f.solution&&f.solution.trim()?f.solution:_defaultSolution(f))+'</textarea></td>';
+      h+='<td style="padding:6px;border:1px solid #e5e7eb">'+(f.autoFixable?'<div style="font-size:10px;color:#1D4ED8;background:#DBEAFE;border-radius:5px;padding:3px 7px;margin-bottom:4px;line-height:1.5">🛠 يصحّحها النظام تلقائياً — اضغط زر التصحيح في «الحلول الفورية» بالأسفل ⬇️</div>':'')+'<textarea id="af-sol-'+idx+'" style="width:100%;min-width:170px;min-height:52px;border:1px solid #cbd5e1;border-radius:7px;padding:6px 8px;font-family:Tajawal,sans-serif;font-size:11.5px;line-height:1.5;resize:vertical;background:#fffef7">'+esc(f.solution&&f.solution.trim()?f.solution:_defaultSolution(f))+'</textarea></td>';
       h+='<td style="padding:6px;border:1px solid #e5e7eb;text-align:center;white-space:nowrap"><input type="checkbox" id="af-done-'+idx+'" onchange="_syncRowUI('+idx+')" '+(done?'checked':'')+' style="display:none">'
         +'<button type="button" id="af-btn-'+idx+'" onclick="qfResolveRow('+idx+')" style="background:'+(done?'#DCFCE7':'#EEF2FF')+';color:'+(done?'#15803D':'#3730A3')+';border:1px solid '+(done?'#86EFAC':'#C7D2FE')+';border-radius:7px;padding:7px 11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:11.5px;cursor:pointer;white-space:nowrap">'+(done?'✓ تمت':'✅ حل')+'</button></td>';
       h+='</tr>';
