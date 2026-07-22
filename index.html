@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1062">
+<meta name="app-build" content="2026-08-01-1063">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -595,7 +595,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1062</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1063</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1359,7 +1359,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1062</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1063</bdi></span></div>
   </div>
 </div>
 
@@ -6907,19 +6907,20 @@ function parseSheet(data,sheetName){
   for(let i=0;i<Math.min(data.length,8);i++){
     const r=data[i]||[];
     const cellsT=r.map(c=>String(c||'').trim());
-    const hasAmount=cellsT.some(c=>/^(المبلغ|المبلغ ر.س|amount|قيمة)$/i.test(c));
+    const hasAmount=cellsT.some(c=>/(المبلغ|amount|قيمة)/i.test(c));
     const hasDesc=cellsT.some(c=>/(البيان|الوصف|description|تفاصيل)/i.test(c));
     const hasDate=cellsT.some(c=>/(التاريخ|date)/i.test(c));
     if(hasAmount&&hasDesc){
       headerRow=i;
       cellsT.forEach((c,j)=>{
         const cc=c.trim();
-        if(/^(المبلغ|amount|قيمة)$/i.test(cc))cols.amount=j;
+        if(cols.amount===undefined&&/(المبلغ|amount|قيمة)/i.test(cc))cols.amount=j;
         else if(/^(البيان|الوصف|description|تفاصيل)$/i.test(cc))cols.desc=j;
         else if(/(المورد|العميل|اسم المورد|vendor)/i.test(cc))cols.vendor=j;
         else if(/(الرقم الضريبي|الرقم الضريبى|التسجيل الضريبي|tax)/i.test(cc))cols.taxno=j;
         else if(/(رقم الفاتورة|invoice|رقم)/i.test(cc))cols.number=j;
         else if(/(التاريخ|date)/i.test(cc))cols.date=j;
+        else if(/(المشروع|اسم المشروع|project)/i.test(cc))cols.project=j;
         else if(/(مركز التكلفة|cost center|البند)/i.test(cc))cols.center=j;
         else if(/(ضريبية|vat|ضريبة)/i.test(cc))cols.vat=j;
         else if(/(ملاحظات|notes)/i.test(cc))cols.notes=j;
@@ -6967,9 +6968,13 @@ function parseSheet(data,sheetName){
     res.matched=true;
     for(let i=headerRow+1;i<data.length;i++){
       const r=data[i]||[];
-      const amt=parseFloat(String(r[cols.amount]||'').replace(/,/g,''));
+      const amtRaw=String(r[cols.amount]||'').trim();
+      const amt=parseFloat(amtRaw.replace(/,/g,''));
       const desc=String(r[cols.desc]||'').trim();
       if(isNaN(amt)||amt<=0||!desc)continue;
+      // تخطي خلايا التاريخ (مثل «6/30/26») التي تُقرأ خطأً كمبلغ، وصفوف عناوين الإقرار
+      if(/\//.test(amtRaw))continue;
+      if(/(من|الى|إلى|الي)\s*تاريخ|الاقرار|الإقرار/.test(desc))continue;
       // تخطي صفوف الإجماليات
       if(/(اجمالي|الإجمالي|إجمالي)/.test(desc)&&!/(يومي|عامل)/.test(desc))continue;
       const center=cols.center!==undefined?String(r[cols.center]||'').trim():'';
@@ -6994,7 +6999,9 @@ function parseSheet(data,sheetName){
       const hasVat=/(ضريبية|vat)/.test(vatField);
       const taxno=cols.taxno!==undefined?String(r[cols.taxno]||'').trim():'';
       const vatAmt=cols.vat!==undefined?(parseFloat(String(r[cols.vat]||'').replace(/,/g,''))||0):0;
+      const projectName=cols.project!==undefined?String(r[cols.project]||'').trim():'';
       res.rows.push({
+        projectName,
         date:date||'',
         amount:amt,
         desc,
@@ -7135,9 +7142,22 @@ async function confirmImp(){
   if(!impData)return;
   const pn=document.getElementById('imp-pn').value.trim()||impData.projName||'مشروع مستورد';
   const rev=toNum(document.getElementById('imp-rev').value);
-  // أنشئ المشروع
+  // أنشئ المشروع (الوعاء للبنود العامة)
   const proj={id:uid('proj'),name:pn,code:'',client:'',contractValue:rev||0,status:'done',startDate:'',endDate:'',notes:'مستورد من '+(impData.source||'Excel'),createdAt:Date.now()};
   projs.unshift(proj);
+  // توزيع البنود حسب عمود «المشروع» إن وُجد: مطابقة مشروع قائم بالاسم، وإلا إنشاؤه، وإلا الوعاء العام
+  const _norm=s=>String(s||'').replace(/\s+/g,'').replace(/[«»"']/g,'').toLowerCase();
+  const _pcache={};
+  function _resolveRowProj(name){
+    name=(name||'').trim();
+    if(!name)return proj.id;
+    const key=_norm(name);
+    if(_pcache[key])return _pcache[key];
+    let found=projs.find(p=>_norm(p.name)===key)||projs.find(p=>{const pn=_norm(p.name);return pn&&(pn.includes(key)||key.includes(pn));});
+    if(found){_pcache[key]=found.id;return found.id;}
+    const np={id:uid('proj'),name:name,code:'',client:'',contractValue:0,status:'active',startDate:'',endDate:'',notes:'أُنشئ عبر الاستيراد',createdAt:Date.now()};
+    projs.unshift(np);_pcache[key]=np.id;return np.id;
+  }
   // أنشئ فاتورة إيراد إن كان هناك مبلغ
   if(rev>0){
     invs.unshift({id:uid('inv'),type:'revenue',number:'REV-IMP-'+Date.now().toString().slice(-6),date:new Date().toISOString().slice(0,10),vendor:'العميل',vendorVAT:'',subtotal:rev,vatRate:0,vat:0,total:rev,category:'إيراد عام',projectId:proj.id,notes:'إيراد مستورد من '+impData.source,createdAt:Date.now(),imp:true});
@@ -7160,7 +7180,7 @@ async function confirmImp(){
       vat:_va,
       total:_tot,
       category:r.categoryId,
-      projectId:proj.id,
+      projectId:_resolveRowProj(r.projectName),
       notes:r.notes||(r.center?'مركز: '+r.center:'')+(r.desc?' • '+r.desc:''),
       createdAt:Date.now()+cnt,
       imp:true
