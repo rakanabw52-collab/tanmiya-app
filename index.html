@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1061">
+<meta name="app-build" content="2026-08-01-1062">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -595,7 +595,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1061</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1062</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -698,6 +698,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
     <div style="flex:1;min-width:0">
       <button class="btn btn-o btn-sm" id="ls-view-btn" onclick="toggleLsView()" style="font-size:12px">📋 عرض كقائمة فواتير</button>
     </div>
+    <button class="btn btn-o btn-sm" onclick="document.getElementById('imp-xls').click()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>استيراد Excel</button>
     <button class="btn btn-o btn-sm" onclick="expXls()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Excel</button>
   </div>
   <div id="ls-proj-view"></div>
@@ -1358,7 +1359,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1061</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1062</bdi></span></div>
   </div>
 </div>
 
@@ -7168,9 +7169,16 @@ async function confirmImp(){
   });
   await svP();await sv();
   closeImp();
-  goTab('proj');
-  setTimeout(()=>showProj(proj.id),300);
-  toast('✓ تم استيراد '+cnt+' بند + مشروع','ok');
+  const _accNoProj=(window.HD_ROLE==='accountant'&&!(window.ACC_ALLOW||[]).includes('proj'));
+  if(_accNoProj){
+    // المحاسب لا يملك تبويب المشاريع: نعرض الفواتير المستوردة في تبويب الفواتير
+    goTab('ls');
+    if(typeof renderList==='function')renderList();
+  }else{
+    goTab('proj');
+    setTimeout(()=>showProj(proj.id),300);
+  }
+  toast('✓ تم استيراد '+cnt+' فاتورة'+(_accNoProj?' — تظهر في الفواتير والضريبة':' + مشروع'),'ok');
 }
 
 /* ========== DASHBOARD ========== */
