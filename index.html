@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1053">
+<meta name="app-build" content="2026-08-01-1055">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -581,7 +581,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1053</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1055</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1316,7 +1316,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1053</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1055</bdi></span></div>
   </div>
 </div>
 
@@ -2781,7 +2781,7 @@ async function internalAudit(kind,id){
   body.innerHTML='<div style="text-align:center;padding:34px 16px"><div class="spin" style="margin:0 auto 14px"></div><div style="font-weight:800;color:var(--t2)">جاري التدقيق الاحترافي...</div><div style="font-size:11.5px;color:var(--t3);margin-top:6px;line-height:1.7">يفحص المدقق الأرقام والعمليات الحسابية والتواريخ والبنود<br>والالتزام بالسياسات وجودة الصياغة</div></div>';
   try{
     const data=_buildAuditData(kind,id);
-    const pr=AUDIT_PROMPT+'\n\n=== البيانات المرسلة للتدقيق ===\n'+data+'\n\n=== صيغة المخرَج المطلوبة ===\nأعِد تقرير التدقيق حصراً بصيغة JSON صالحة فقط (بدون أي نص قبله أو بعده) بالشكل: {"findings":[{"category":"نوع الملاحظة","severity":"red","note":"وصف الملاحظة مع الرقم/التاريخ المعني","solution":"الحل العملي المقترح","autoFixable":false}],"policyCompliance":"تقييم موجز","draftingQuality":"تقييم موجز","decision":"needs_revision","decisionReason":"سبب مختصر"}.\nقواعد إلزامية:\n- severity لكل ملاحظة: "red" لخطورة عالية جداً أو خطأ مالي حرج، "yellow" لخطورة متوسطة، "green" لملاحظة عادية أو تحسينية بسيطة.\n- category: نوع الملاحظة (خطأ حسابي / مخالفة سياسة / تعارض / نقص مستند / بند مكرر / بند غير مبرر / بند غير واضح / صياغة).\n- solution: حل عملي مختصر وواضح لكل ملاحظة.\n- autoFixable: true فقط إذا كان النظام يستطيع تصحيحها آلياً بالحساب (مثل خطأ في قيمة الضريبة = 15% من المبلغ، أو الإجمالي = المبلغ + الضريبة)، وfalse إذا تحتاج تدخلاً بشرياً (مستند ناقص، موافقة، مراجعة عقد، قرار إداري).\n- إن لم توجد أي ملاحظة اجعل findings مصفوفة فارغة [].\n- decision واحد من: accepted أو needs_revision أو rejected.\n- اجعل note وsolution مختصرَين جداً (جملة واحدة قصيرة لكل منهما).\n- ادمج الملاحظات المتشابهة المتكررة في ملاحظة واحدة (مثال: عدة فواتير بنفس الخطأ = ملاحظة واحدة تذكر أرقامها).\n- كن شاملاً ومنهجياً: افحص كل مشروع وكل فاتورة بالترتيب لتخرج بنفس الملاحظات في كل مرة (نتائج ثابتة غير متغيّرة).\n- اذكر الملاحظات مرتّبةً حسب الخطورة، وبحد أقصى 60 ملاحظة بعد دمج المتشابهات.\n- لا تستخدم أي أغلفة أو علامات markdown، أعِد JSON نقيّاً فقط.';
+    const pr=AUDIT_PROMPT+'\n\n=== البيانات المرسلة للتدقيق ===\n'+data+'\n\n=== صيغة المخرَج المطلوبة ===\nأعِد تقرير التدقيق حصراً بصيغة JSON صالحة فقط (بدون أي نص قبله أو بعده) بالشكل: {"findings":[{"category":"نوع الملاحظة","severity":"red","note":"وصف الملاحظة مع الرقم/التاريخ المعني","solution":"الحل العملي المقترح","autoFixable":false}],"policyCompliance":"تقييم موجز","draftingQuality":"تقييم موجز","decision":"needs_revision","decisionReason":"سبب مختصر"}.\nقواعد إلزامية:\n- severity لكل ملاحظة: "red" لخطورة عالية جداً أو خطأ مالي حرج، "yellow" لخطورة متوسطة، "green" لملاحظة عادية أو تحسينية بسيطة.\n- category: نوع الملاحظة (خطأ حسابي / مخالفة سياسة / تعارض / نقص مستند / بند مكرر / بند غير مبرر / بند غير واضح / صياغة).\n- solution: حل عملي مختصر وواضح لكل ملاحظة — إلزامي لكل بند دون استثناء، ولا تترك solution فارغاً أبداً مهما كان نوع الملاحظة (خطأ حسابي أو مستند ناقص أو مخالفة أو صياغة… لكلٍّ حل عملي).\n- autoFixable: true فقط إذا كان النظام يستطيع تصحيحها آلياً بالحساب (مثل خطأ في قيمة الضريبة = 15% من المبلغ، أو الإجمالي = المبلغ + الضريبة)، وfalse إذا تحتاج تدخلاً بشرياً (مستند ناقص، موافقة، مراجعة عقد، قرار إداري).\n- إن لم توجد أي ملاحظة اجعل findings مصفوفة فارغة [].\n- decision واحد من: accepted أو needs_revision أو rejected.\n- اجعل note وsolution مختصرَين جداً (جملة واحدة قصيرة لكل منهما).\n- ادمج الملاحظات المتشابهة المتكررة في ملاحظة واحدة (مثال: عدة فواتير بنفس الخطأ = ملاحظة واحدة تذكر أرقامها).\n- كن شاملاً ومنهجياً: افحص كل مشروع وكل فاتورة بالترتيب لتخرج بنفس الملاحظات في كل مرة (نتائج ثابتة غير متغيّرة).\n- اذكر الملاحظات مرتّبةً حسب الخطورة، وبحد أقصى 60 ملاحظة بعد دمج المتشابهات.\n- لا تستخدم أي أغلفة أو علامات markdown، أعِد JSON نقيّاً فقط.';
     const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:16000,messages:[{role:'user',content:[{type:'text',text:pr}]}]})});
     if(!rs.ok){const et=await rs.text();throw new Error('HTTP '+rs.status+' — '+et.slice(0,120));}
     const j=await rs.json();
@@ -2837,7 +2837,7 @@ function _renderAuditReport(rep,kind,id){
   if(!finds.length){
     h+='<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:18px;text-align:center;color:#15803D;font-weight:800">✅ لا توجد ملاحظات — كل شيء سليم</div>';
   }else{
-    h+='<div style="font-size:11px;color:var(--t3);margin-bottom:6px">✏️ عدّل الحل عند الحاجة، ثم اضغط زر «✅ حل» أمام كل ملاحظة عند معالجتها (أو تُعلَّم تلقائياً من «الحلول الفورية») — والنسبة تتحدّث فوراً.</div>';
+    h+='<div style="font-size:11px;color:var(--t3);margin-bottom:6px">💡 لكل ملاحظة حلٌّ مقترح جاهز في خانة «الحل / الإجراء» — عدّله عند الحاجة، ثم اضغط زر «✅ حل» عند معالجتها (أو تُعلَّم تلقائياً من «الحلول الفورية») — والنسبة تتحدّث فوراً.</div>';
     h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e5e7eb;border-radius:10px">';
     h+='<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:560px">';
     h+='<thead><tr style="background:#1e3a5f;color:#fff">'
@@ -2854,7 +2854,7 @@ function _renderAuditReport(rep,kind,id){
       h+='<td style="padding:8px 6px;text-align:center;border:1px solid #e5e7eb;font-family:Cairo,sans-serif;font-weight:800;color:'+s.c+'">'+(idx+1)+'</td>';
       h+='<td style="padding:8px 6px;text-align:center;border:1px solid #e5e7eb;white-space:nowrap"><span style="display:inline-block;font-size:10.5px;font-weight:800;color:'+s.c+';background:'+s.bg+';border:1px solid '+s.bd+';border-radius:6px;padding:3px 8px">'+s.dot+' '+s.lbl+'</span></td>';
       h+='<td style="padding:8px 8px;text-align:right;border:1px solid #e5e7eb;line-height:1.55"><b style="color:'+s.c+';font-size:11px">'+esc(f.category||'ملاحظة')+'</b><br>'+esc(f.note||'')+'</td>';
-      h+='<td style="padding:6px;border:1px solid #e5e7eb"><textarea id="af-sol-'+idx+'" style="width:100%;min-width:170px;min-height:52px;border:1px solid #cbd5e1;border-radius:7px;padding:6px 8px;font-family:Tajawal,sans-serif;font-size:11.5px;line-height:1.5;resize:vertical;background:#fffef7">'+esc(f.solution||'')+'</textarea></td>';
+      h+='<td style="padding:6px;border:1px solid #e5e7eb"><textarea id="af-sol-'+idx+'" style="width:100%;min-width:170px;min-height:52px;border:1px solid #cbd5e1;border-radius:7px;padding:6px 8px;font-family:Tajawal,sans-serif;font-size:11.5px;line-height:1.5;resize:vertical;background:#fffef7">'+esc(f.solution&&f.solution.trim()?f.solution:_defaultSolution(f))+'</textarea></td>';
       h+='<td style="padding:6px;border:1px solid #e5e7eb;text-align:center;white-space:nowrap"><input type="checkbox" id="af-done-'+idx+'" onchange="_syncRowUI('+idx+')" '+(done?'checked':'')+' style="display:none">'
         +'<button type="button" id="af-btn-'+idx+'" onclick="qfResolveRow('+idx+')" style="background:'+(done?'#DCFCE7':'#EEF2FF')+';color:'+(done?'#15803D':'#3730A3')+';border:1px solid '+(done?'#86EFAC':'#C7D2FE')+';border-radius:7px;padding:7px 11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:11.5px;cursor:pointer;white-space:nowrap">'+(done?'✓ تمت':'✅ حل')+'</button></td>';
       h+='</tr>';
@@ -2907,6 +2907,21 @@ function togglePrivacy(){
   const b=document.getElementById('privacy-btn');if(b)b.textContent=on?'🙈':'👁️';
   if(typeof toast==='function')toast(on?'🔒 وضع الخصوصية مفعّل — الأرقام مخفية':'👁️ الأرقام ظاهرة','ok');
 }
+/* ===== حل مقترح افتراضي لكل ملاحظة (يضمن ألا يبقى أي بند بلا حل) ===== */
+function _defaultSolution(f){
+  const c=((f&&f.category)||'')+' '+((f&&f.note)||'');
+  const has=k=>c.indexOf(k)>=0;
+  if(has('حساب')||has('ضريب')||has('إجمالي')||has('الاجمالي'))return 'أعد احتساب الضريبة (15% من المبلغ قبل الضريبة) والإجمالي (المبلغ + الضريبة)، وصحّح القيمة غير المطابقة.';
+  if(has('مكرر')||has('تكرار'))return 'احذف الفاتورة/البند المكرر وأبقِ نسخة واحدة صحيحة فقط.';
+  if(has('مستند')||has('وثيق')||has('مرفق')||has('نقص'))return 'أرفق المستند/الوثيقة الناقصة (عقد، أمر شراء، سند قبض…) ووثّقها في ملف المعاملة.';
+  if(has('مخالف')||has('سياس')||has('نظام')||has('لائح'))return 'صحّح البند بما يتوافق مع السياسة/اللائحة المعتمدة، أو احصل على استثناء موثّق من الجهة المخوّلة.';
+  if(has('تعارض')||has('تناقض')||has('عدم اتساق')||has('اتساق'))return 'راجع البيانات المتعارضة (المبلغ/التاريخ/الطرف) ووحّدها على المصدر الصحيح.';
+  if(has('غير واضح')||has('صياغ')||has('غموض')||has('وصف'))return 'أعد صياغة البند ليكون واضحاً ومحدداً مع ذكر التفاصيل الكاملة.';
+  if(has('غير مبرر')||has('مبرر')||has('تبرير')||has('موافق'))return 'أرفق مبرراً مكتوباً أو موافقة معتمدة تبرّر هذا البند/المبلغ.';
+  if(has('تأخر')||has('متأخر')||has('استحقاق')||has('تحصيل'))return 'تابع التحصيل/السداد المتأخر مع الطرف المعني وحدّد موعداً ملزماً.';
+  if(has('ضمان')||has('انتهاء')||has('صلاحي')||has('منتهي'))return 'جدّد المستند/الضمان قبل انتهائه وحدّث تاريخ الصلاحية في النظام.';
+  return 'راجع الملاحظة واتخذ الإجراء التصحيحي المناسب، ثم وثّق ما تم واعتمده.';
+}
 /* ===== منع تكرار الملاحظات التي عولجت سابقاً ===== */
 function _findSig(f){return String(((f&&f.category)||'')+'|'+((f&&f.note)||'')).replace(/\s+/g,'').replace(/[،.,؛:()«»"'\-_/]/g,'').toLowerCase();}
 function _resolvedSet(){const s=new Set();(audits||[]).forEach(a=>(a.findings||[]).forEach(f=>{if((f.done===true)||(f.status==='تمت المعالجة'))s.add(_findSig(f));}));return s;}
@@ -2947,7 +2962,20 @@ function _renderQuickFixes(kind,id){
     const rate=(i.vatRate||15)/100;const base=(i.subtotal||0);
     const exVat=+(base*rate).toFixed(2),exTot=+(base+exVat).toFixed(2);            // المبلغ بدون ضريبة
     const inNet=+(base/(1+rate)).toFixed(2),inVat=+(base-inNet).toFixed(2);        // المبلغ شامل الضريبة
-    inner+='<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:9px;padding:10px;margin-bottom:8px"><div style="font-size:11.5px;font-weight:800;color:#92400E;margin-bottom:5px">🧮 خطأ حسابي — فاتورة '+esc(i.number||'—')+'</div><div style="font-size:11px;color:#374151;margin-bottom:8px;line-height:1.6">القيم الحالية: مبلغ '+fmtI(base)+' / ضريبة '+fmtI(i.vat||0)+' / إجمالي '+fmtI(i.total||0)+'.<br>اختر التصحيح الصحيح حسب المبلغ '+fmtI(base)+':</div>';
+    // تفاصيل الفاتورة لمساعدة صاحب القرار: نوعها / الطرف / المشروع / البند
+    const _typL=(typeof TL!=='undefined'&&TL[i.type])?TL[i.type]:(i.type==='revenue'?'إيراد':'مصروف');
+    const _party=i.type==='revenue'?'العميل':'المورد';
+    const _pn=projName(i.projectId);
+    const _cl=catLabel(i);
+    let _rows='<div style="display:flex;justify-content:space-between;gap:8px"><span style="color:#6B7280">النوع</span><span style="font-weight:700">'+esc(_typL)+'</span></div>';
+    _rows+='<div style="display:flex;justify-content:space-between;gap:8px"><span style="color:#6B7280">'+_party+'</span><span style="font-weight:700">'+(i.vendor?esc(i.vendor):'—')+'</span></div>';
+    _rows+='<div style="display:flex;justify-content:space-between;gap:8px"><span style="color:#6B7280">المشروع</span><span style="font-weight:700">'+(_pn?esc(_pn):'🧾 عامة')+'</span></div>';
+    if(_cl&&_cl!=='—')_rows+='<div style="display:flex;justify-content:space-between;gap:8px"><span style="color:#6B7280">البند</span><span style="font-weight:700">'+esc(_cl)+'</span></div>';
+    _rows+='<div style="display:flex;justify-content:space-between;gap:8px"><span style="color:#6B7280">التاريخ</span><span style="font-weight:700">'+fmtD(i.date)+'</span></div>';
+    if(i.notes)_rows+='<div style="display:flex;justify-content:space-between;gap:8px"><span style="color:#6B7280">ملاحظات</span><span style="font-weight:700;text-align:left">'+esc(i.notes)+'</span></div>';
+    inner+='<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:9px;padding:10px;margin-bottom:8px"><div style="font-size:11.5px;font-weight:800;color:#92400E;margin-bottom:5px">🧮 خطأ حسابي — فاتورة '+esc(i.number||'—')+'</div>';
+    inner+='<div style="background:#fff;border:1px solid #FDE68A;border-radius:7px;padding:7px 9px;margin-bottom:8px;font-size:11px;line-height:1.9">'+_rows+'</div>';
+    inner+='<div style="font-size:11px;color:#374151;margin-bottom:8px;line-height:1.6">القيم الحالية: مبلغ '+fmtI(base)+' / ضريبة '+fmtI(i.vat||0)+' / إجمالي '+fmtI(i.total||0)+'.<br>هل المبلغ '+fmtI(base)+' <b>شامل</b> الضريبة أم <b>بدونها</b>؟ اختر التصحيح الصحيح:</div>';
     inner+='<button onclick="qfFixMath(\''+i.id+'\',\''+kind+'\',\''+id+'\',\'excl\')" style="display:block;width:100%;text-align:right;background:#DCFCE7;color:#15803D;border:1px solid #86EFAC;border-radius:7px;padding:8px 10px;font-family:Tajawal,sans-serif;font-weight:700;font-size:11.5px;cursor:pointer;margin-bottom:5px">🔧 المبلغ <b>بدون</b> ضريبة → ضريبة '+fmtI(exVat)+' / إجمالي '+fmtI(exTot)+'</button>';
     inner+='<button onclick="qfFixMath(\''+i.id+'\',\''+kind+'\',\''+id+'\',\'incl\')" style="display:block;width:100%;text-align:right;background:#DBEAFE;color:#1D4ED8;border:1px solid #BFDBFE;border-radius:7px;padding:8px 10px;font-family:Tajawal,sans-serif;font-weight:700;font-size:11.5px;cursor:pointer">🔧 المبلغ <b>شامل</b> الضريبة → صافي '+fmtI(inNet)+' / ضريبة '+fmtI(inVat)+' / إجمالي '+fmtI(base)+'</button></div>';
   });
