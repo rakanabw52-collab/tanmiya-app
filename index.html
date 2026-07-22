@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1051">
+<meta name="app-build" content="2026-08-01-1052">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -169,6 +169,17 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
 @media (min-width:1600px){ #proj-dash{column-count:3} }
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .sec-ttl{font-family:'Cairo',sans-serif;font-size:17px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+/* وضع الخصوصية: تمويه كل الأرقام المالية */
+body.hd-privacy [style*="Cairo"],
+body.hd-privacy .hp-val,body.hd-privacy .kp-v,body.hd-privacy .mtc-v,body.hd-privacy .rc-v,
+body.hd-privacy .ii-tot,body.hd-privacy .ii-vat,body.hd-privacy .pgi-val,body.hd-privacy .ppl-val,
+body.hd-privacy .bdg-val,body.hd-privacy .vrow .val,body.hd-privacy .num,body.hd-privacy .vattbl td,
+body.hd-privacy #s-rev,body.hd-privacy #s-cst,body.hd-privacy #s-pft,body.hd-privacy #s-vat,
+body.hd-privacy #m-margin,body.hd-privacy #m-collected,body.hd-privacy #vt-net,body.hd-privacy #vt-ov,
+body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
+  filter:blur(7px)!important;user-select:none!important;cursor:default;transition:filter .12s;
+}
+#privacy-btn{margin-inline-start:auto;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:9px;padding:4px 11px;cursor:pointer;font-size:15px;line-height:1}
 .sec-ttl::before{content:"";width:4px;height:18px;background:linear-gradient(180deg,var(--pr),var(--pk));border-radius:2px}
 .sec-act{margin-right:auto;font-size:13px;color:var(--pr);cursor:pointer;font-weight:700}
 .card{background:var(--card);border-radius:var(--r);border:1px solid var(--bd);padding:16px;margin-bottom:12px}
@@ -510,7 +521,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
 <main>
 <!-- الرئيسية -->
 <section class="sec active" id="sec-db">
-  <h2 class="sec-ttl">داش بورد التحليل</h2>
+  <h2 class="sec-ttl">داش بورد التحليل <button id="privacy-btn" onclick="togglePrivacy()" title="إخفاء/إظهار الأرقام (خصوصية)">👁️</button></h2>
   <div onclick="openAsk()" style="display:flex;align-items:center;gap:9px;background:#fff;border:1.5px solid #BFDBFE;border-radius:12px;padding:12px 14px;margin-bottom:12px;cursor:pointer;box-shadow:0 2px 6px rgba(39,113,171,.08)"><span style="font-size:17px">🗣️</span><span style="font-weight:700;font-size:13px;color:var(--t2)">اسأل بالعربي عن أرقامك — مثلاً: كم صرفت؟ أي مشروع أكثر ربحاً؟ كم المتبقي؟</span></div>
   <div class="db-grid">
     <!-- العمود ١: Hero + المستحقات + التنبيهات -->
@@ -569,7 +580,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1051</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1052</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1304,7 +1315,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1051</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1052</bdi></span></div>
   </div>
 </div>
 
@@ -2784,6 +2795,13 @@ async function internalAudit(kind,id){
       body.innerHTML='<div style="padding:22px;text-align:center"><div style="font-size:36px">'+(truncated?'📄':'⚠️')+'</div><div style="font-weight:800;margin-top:8px;color:#B45309">'+(truncated?'التقرير طويل جداً وتعذّر عرضه بالكامل':'تعذّر قراءة نتيجة التدقيق')+'</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.7">'+(truncated?'جرّب تدقيق مشروع أو فاتورة مفردة بدل التدقيق الشامل، أو أعد المحاولة.':'أعد المحاولة.')+'</div><button onclick="internalAudit(\''+kind+'\',\''+id+'\')" style="margin-top:14px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:9px 16px;font-family:Tajawal,sans-serif;font-weight:800;cursor:pointer">🔄 إعادة المحاولة</button></div>';
       return;
     }
+    // استبعاد الملاحظات التي عولجت سابقاً في تقارير محفوظة (لا تتكرر)
+    if(Array.isArray(rep.findings)){
+      const rs=_resolvedSet();
+      const _n0=rep.findings.length;
+      rep.findings=rep.findings.filter(f=>!rs.has(_findSig(f)));
+      window._auditSkipped=_n0-rep.findings.length;
+    }
     _renderAuditReport(rep,kind,id);
     logEvent('تدقيق داخلي',(kind==='all'?'شامل: ':kind==='proj'?'مشروع: ':'فاتورة: ')+_auditTitle(kind,id));
   }catch(e){
@@ -2878,6 +2896,18 @@ function copyAuditReport(){
   navigator.clipboard.writeText(t).then(()=>toast('تم نسخ التقرير','ok')).catch(()=>toast('تعذّر النسخ','er'));
 }
 function closeAudit(){document.getElementById('audit-mb').classList.remove('show');}
+/* ===== وضع الخصوصية (إخفاء الأرقام) ===== */
+function _applyPrivacy(){try{const on=localStorage.getItem('hd-privacy')==='1';document.body.classList.toggle('hd-privacy',on);const b=document.getElementById('privacy-btn');if(b)b.textContent=on?'🙈':'👁️';}catch(e){}}
+function togglePrivacy(){
+  const on=!document.body.classList.contains('hd-privacy');
+  document.body.classList.toggle('hd-privacy',on);
+  try{localStorage.setItem('hd-privacy',on?'1':'0');}catch(e){}
+  const b=document.getElementById('privacy-btn');if(b)b.textContent=on?'🙈':'👁️';
+  if(typeof toast==='function')toast(on?'🔒 وضع الخصوصية مفعّل — الأرقام مخفية':'👁️ الأرقام ظاهرة','ok');
+}
+/* ===== منع تكرار الملاحظات التي عولجت سابقاً ===== */
+function _findSig(f){return String(((f&&f.category)||'')+'|'+((f&&f.note)||'')).replace(/\s+/g,'').replace(/[،.,؛:()«»"'\-_/]/g,'').toLowerCase();}
+function _resolvedSet(){const s=new Set();(audits||[]).forEach(a=>(a.findings||[]).forEach(f=>{if((f.done===true)||(f.status==='تمت المعالجة'))s.add(_findSig(f));}));return s;}
 /* ===== حلول فورية داخل تقرير التدقيق (حذف مكرر / تصحيح حسابي) ===== */
 function _qfScope(kind,id){
   if(kind==='inv'){const i=invs.find(x=>x.id===id);return i?[i]:[];}
@@ -6845,6 +6875,7 @@ function renderDB(){
   if(typeof renderUnitCost==='function')renderUnitCost();
   if(typeof renderCashflow==='function')renderCashflow();
   if(typeof renderComplianceCard==='function')renderComplianceCard();
+  if(typeof _applyPrivacy==='function')_applyPrivacy();
   if(typeof equalizeColumns==='function')setTimeout(equalizeColumns,50);
 }
 
