@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-29-1048">
+<meta name="app-build" content="2026-07-30-1049">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -511,6 +511,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
 <!-- الرئيسية -->
 <section class="sec active" id="sec-db">
   <h2 class="sec-ttl">داش بورد التحليل</h2>
+  <div onclick="openAsk()" style="display:flex;align-items:center;gap:9px;background:#fff;border:1.5px solid #BFDBFE;border-radius:12px;padding:12px 14px;margin-bottom:12px;cursor:pointer;box-shadow:0 2px 6px rgba(39,113,171,.08)"><span style="font-size:17px">🗣️</span><span style="font-weight:700;font-size:13px;color:var(--t2)">اسأل بالعربي عن أرقامك — مثلاً: كم صرفت؟ أي مشروع أكثر ربحاً؟ كم المتبقي؟</span></div>
   <div class="db-grid">
     <!-- العمود ١: Hero + المستحقات + التنبيهات -->
     <div class="db-col">
@@ -568,7 +569,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1048</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1049</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -838,6 +839,23 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
   <div class="md" style="max-width:640px">
     <div class="md-hdr"><div class="md-ttl">📊 انطباع المدير المالي (CFO)</div><button class="md-cl" onclick="closeCFO()">✕</button></div>
     <div id="cfo-body"></div>
+  </div>
+</div>
+<!-- مودال المساعد الذكي (اسأل بالعربي) -->
+<div class="mb" id="ask-mb" onclick="if(event.target===this)closeAsk()">
+  <div class="md" style="max-width:600px">
+    <div class="md-hdr"><div class="md-ttl">🗣️ اسأل بالعربي</div><button class="md-cl" onclick="closeAsk()">✕</button></div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <input id="ask-q" type="text" placeholder="اكتب سؤالك... مثال: كم صرفت على الوقود؟" style="flex:1;padding:11px 12px;border:1.5px solid var(--bd);border-radius:10px;font-family:Tajawal,sans-serif;font-size:13.5px" onkeydown="if(event.key==='Enter')askAI()">
+      <button onclick="askAI()" style="background:linear-gradient(135deg,#2771ab,#1a4d7d);color:#fff;border:none;border-radius:10px;padding:0 18px;font-family:Tajawal,sans-serif;font-weight:800;font-size:13px;cursor:pointer">اسأل</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+      <button onclick="askSuggest('أي مشروع هو الأكثر ربحاً وأيها الأقل؟')" style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:99px;padding:5px 11px;font-family:Tajawal,sans-serif;font-size:11px;cursor:pointer">أكثر مشروع ربحاً؟</button>
+      <button onclick="askSuggest('كم إجمالي المبالغ المتبقية على العملاء ولأي مشاريع؟')" style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:99px;padding:5px 11px;font-family:Tajawal,sans-serif;font-size:11px;cursor:pointer">المتبقي على العملاء؟</button>
+      <button onclick="askSuggest('ما أكبر بنود المصروفات وكم قيمتها؟')" style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:99px;padding:5px 11px;font-family:Tajawal,sans-serif;font-size:11px;cursor:pointer">أكبر المصروفات؟</button>
+      <button onclick="askSuggest('كم صافي ضريبة القيمة المضافة المستحقة؟')" style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:99px;padding:5px 11px;font-family:Tajawal,sans-serif;font-size:11px;cursor:pointer">الضريبة المستحقة؟</button>
+    </div>
+    <div id="ask-body"></div>
   </div>
 </div>
 <!-- مودال تعديل سريع -->
@@ -1165,7 +1183,8 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
     <button type="button" onclick="internalAuditAll()" style="width:100%;margin-bottom:8px;padding:12px;font-size:13px;font-weight:800;background:linear-gradient(135deg,#4F46E5,#3730A3);color:#fff;border:none;border-radius:10px;cursor:pointer">🔍 المدقق الداخلي الشامل — تدقيق كل المشاريع والفواتير</button>
     <button type="button" onclick="closeSet();openAudits()" style="width:100%;margin-bottom:8px;padding:9px;font-size:12.5px;font-weight:800;background:#fff;color:#3730A3;border:1px solid #C7D2FE;border-radius:10px;cursor:pointer">📁 تقارير التدقيق المحفوظة (بالحلول والحالة)</button>
     <button type="button" onclick="cfoReview()" style="width:100%;margin-bottom:8px;padding:12px;font-size:13px;font-weight:800;background:linear-gradient(135deg,#0F766E,#134E4A);color:#fff;border:none;border-radius:10px;cursor:pointer">📊 انطباع المدير المالي (CFO) — تحليل تنفيذي شامل</button>
-    <button type="button" onclick="closeSet();monthlyReportPDF()" style="width:100%;margin-bottom:10px;padding:9px;font-size:12.5px;font-weight:800;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:10px;cursor:pointer">📄 تقرير شهري PDF</button>
+    <button type="button" onclick="closeSet();monthlyReportPDF()" style="width:100%;margin-bottom:8px;padding:9px;font-size:12.5px;font-weight:800;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:10px;cursor:pointer">📄 تقرير شهري PDF</button>
+    <button type="button" onclick="closeSet();openAsk()" style="width:100%;margin-bottom:10px;padding:9px;font-size:12.5px;font-weight:800;background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:10px;cursor:pointer">🗣️ اسأل بالعربي — مساعد ذكي عن بياناتك</button>
     <div class="card" style="background:var(--bg);border:none">
       <div style="font-weight:700;margin-bottom:8px">بيانات المؤسسة</div>
       <div style="display:grid;gap:10px">
@@ -1285,7 +1304,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1048</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1049</bdi></span></div>
   </div>
 </div>
 
@@ -3098,6 +3117,29 @@ function copyCFO(){
   navigator.clipboard.writeText(t).then(()=>toast('تم نسخ التقرير','ok')).catch(()=>toast('تعذّر النسخ','er'));
 }
 function closeCFO(){document.getElementById('cfo-mb').classList.remove('show');}
+/* ========== المساعد الذكي (اسأل بالعربي) ========== */
+function openAsk(){document.getElementById('ask-mb').classList.add('show');setTimeout(()=>{const i=document.getElementById('ask-q');if(i)i.focus();},60);}
+function closeAsk(){document.getElementById('ask-mb').classList.remove('show');}
+function askSuggest(q){const el=document.getElementById('ask-q');if(el)el.value=q;askAI();}
+async function askAI(){
+  const q=(document.getElementById('ask-q').value||'').trim();
+  if(!q){toast('اكتب سؤالك أولاً','er');return;}
+  if(!aiReady()){toast('فعّل مفتاح الذكاء الاصطناعي من الإعدادات أولاً','er');return;}
+  const body=document.getElementById('ask-body');
+  body.innerHTML='<div style="text-align:center;padding:26px"><div class="spin" style="margin:0 auto 12px"></div><div style="font-weight:700;color:var(--t2)">جاري قراءة بياناتك والإجابة...</div></div>';
+  try{
+    const data=_buildAuditDataAll();
+    const pr='أنت مساعد مالي ذكي داخل نظام إدارة مقاولات سعودي. أجب على سؤال المستخدم بالعربية بإيجاز ودقة، معتمداً فقط على البيانات المرفقة. إن لم تكن المعلومة موجودة قل ذلك بصراحة، ولا تخترع أرقاماً. استخدم الأرقام الفعلية من البيانات، ويمكنك استخدام نقاط أو جدول بسيط.\n\n=== بيانات النظام ===\n'+data+'\n\n=== سؤال المستخدم ===\n'+q;
+    const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1500,messages:[{role:'user',content:[{type:'text',text:pr}]}]})});
+    if(!rs.ok){const et=await rs.text();throw new Error('HTTP '+rs.status+' — '+et.slice(0,140));}
+    const j=await rs.json();
+    const txt=(j.content&&j.content[0]&&j.content[0].text)||'لم يصل رد';
+    body.innerHTML='<div style="background:#F0F9FF;border:1px solid #BAE6FD;border-radius:12px;padding:14px;font-size:13.5px;line-height:1.95;white-space:pre-wrap;color:#1F2937">'+esc(txt)+'</div><div style="font-size:10.5px;color:var(--t3);margin-top:8px;text-align:center">الإجابة مبنية على بياناتك في التطبيق</div>';
+    logEvent('سؤال المساعد الذكي',q.slice(0,60));
+  }catch(e){
+    body.innerHTML='<div style="padding:18px;text-align:center"><div style="font-size:30px">⚠️</div><div style="font-weight:800;margin-top:6px;color:#B91C1C">تعذّرت الإجابة</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.6">'+esc((e.message||'').slice(0,150))+'</div></div>';
+  }
+}
 /* نسبة الامتثال في الداش بورد = نسبة الملاحظات المعالَجة في كل التقارير المحفوظة */
 function renderComplianceCard(){
   const w=document.getElementById('db-compliance');if(!w)return;
@@ -3280,7 +3322,8 @@ function projPL(pid){
   const margin=rev>0?(profit/rev)*100:0;
   // قيمة العقد مخزّنة بدون ضريبة — والتحصيل/المتبقي يُحسبان بالضريبة (المبلغ الفعلي)
   const contractGross=+(contract*1.15).toFixed(2);
-  const outstanding=contract>0?Math.max(0,+(contractGross-paid).toFixed(2)):0;
+  let outstanding=contract>0?Math.max(0,+(contractGross-paid).toFixed(2)):0;
+  if(outstanding<1)outstanding=0; // تجاهل فروقات التقريب دون الريال — يُعتبر محصّلاً بالكامل
   const paidPct=contractGross>0?(paid/contractGross)*100:0;
   const recv=paidInvoices,remaining=outstanding;
   const qty=proj?(proj.quantity||0):0;
