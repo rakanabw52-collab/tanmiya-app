@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-27-1046">
+<meta name="app-build" content="2026-07-28-1047">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -568,7 +568,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1046</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1047</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1285,7 +1285,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1046</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1047</bdi></span></div>
   </div>
 </div>
 
@@ -2417,7 +2417,7 @@ function renderList(){
   const card=i=>{
     const isDup=dupIds.has(i.id);
     const isCan=i.status==='cancelled';
-    return `<div class="ii${isDup?' ii-dup':''}"${isCan?' style="opacity:.5"':''} onclick="showDet('${i.id}')"><div class="ii-ic ${i.type}">${TI[i.type]}</div><div class="ii-body">${isDup?'<div class="ii-dupwarn">⚠️ أرجو التأكد — يُحتمل أنها مكررة</div>':''}<div class="ii-vnd">${esc(i.vendor)}${isCan?'<span class="tag" style="margin-right:5px;background:#FEE2E2;color:#B91C1C">🚫 ملغاة</span>':''}${i.auto?'<span class="tag auto" style="margin-right:5px">تلقائي</span>':''}</div><div class="ii-meta"><span>${esc(i.number)}</span><span>•</span><span>${fmtD(i.date)}</span>${i.category?`<span>•</span><span>${esc(catLabel(i))}</span>`:''}</div></div><div class="ii-amt"><div class="ii-tot">${fmt(i.total)}</div><div class="ii-vat">VAT:${fmt(i.vat)}</div></div><div style="display:flex;flex-direction:column;gap:4px"><button class="ii-del" style="background:#DBEAFE;color:#1D4ED8" onclick="event.stopPropagation();qEditInv('${i.id}')" title="تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ii-del" onclick="event.stopPropagation();qDel('${i.id}')" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
+    return `<div class="ii${isDup?' ii-dup':''}"${isCan?' style="opacity:.5"':''} onclick="showDet('${i.id}')"><div class="ii-ic ${i.type}">${TI[i.type]}</div><div class="ii-body">${isDup?'<div class="ii-dupwarn">⚠️ أرجو التأكد — يُحتمل أنها مكررة</div>':''}<div class="ii-vnd">${esc(i.vendor)}${isCan?'<span class="tag" style="margin-right:5px;background:#FEE2E2;color:#B91C1C">🚫 ملغاة</span>':''}${i.auto?'<span class="tag auto" style="margin-right:5px">تلقائي</span>':''}</div><div class="ii-meta"><span>${esc(i.number)}</span><span>•</span><span>${fmtD(i.date)}</span>${i.category?`<span>•</span><span>${esc(catLabel(i))}</span>`:''}</div></div><div class="ii-amt"><div class="ii-tot">${fmt(i.total)}</div><div class="ii-vat">VAT:${fmt(i.vat)}</div></div><div style="display:flex;flex-direction:column;gap:4px"><button class="ii-del" style="background:#EEF2FF;color:#4F46E5" onclick="event.stopPropagation();internalAudit('inv','${i.id}')" title="تدقيق الفاتورة">🔍</button><button class="ii-del" style="background:#DBEAFE;color:#1D4ED8" onclick="event.stopPropagation();qEditInv('${i.id}')" title="تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ii-del" onclick="event.stopPropagation();qDel('${i.id}')" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
   };
   let html='';
   order.forEach(k=>{
@@ -5268,6 +5268,7 @@ function renderProjList(){
       <div class="pcard-bar" style="margin-top:6px;background:#E0F2FE"><div class="pcard-fill" style="width:${Math.min(pl.paidPct,100)}%;background:linear-gradient(90deg,#0EA5E9,#0284C7)"></div></div>
       <div class="pcard-bar-lbl"><span>المسلّم: ${fmtI(pl.paid)}</span><span>المتبقي: ${fmtI(pl.outstanding)}</span></div>`:''}
       ${_projPayDup(p.id)?`<div style="margin-top:6px;background:#FEF2F2;border:1px solid #FCA5A5;color:#B91C1C;border-radius:7px;padding:6px 9px;font-size:10.5px;font-weight:800;line-height:1.5">⚠️ تحصيل مزدوج محتمل: دفعة يدوية + فاتورة إيراد لنفس المشروع — احذف أحدهما</div>`:''}
+      <button onclick="event.stopPropagation();internalAudit('proj','${p.id}')" style="width:100%;margin-top:9px;background:#EEF2FF;color:#4F46E5;border:1px solid #C7D2FE;border-radius:8px;padding:8px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12px;cursor:pointer">🔍 تدقيق المشروع</button>
     </div>`;
   }).join('')+'</div>';
 }
