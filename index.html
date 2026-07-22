@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-30-1049">
+<meta name="app-build" content="2026-07-31-1050">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -569,7 +569,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1049</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1050</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1304,7 +1304,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1049</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1050</bdi></span></div>
   </div>
 </div>
 
@@ -5884,7 +5884,10 @@ function showProj(id){
   // P&L summary
   const pCls=pl.profit>=0?'prof':'prof neg';
   let html=`<div style="display:flex;gap:7px;margin-bottom:11px;flex-wrap:wrap;align-items:center"><span class="pcard-st st-${p.status}">${STL[p.status]||'نشط'}</span>${p.client?`<span style="color:var(--t2);font-size:12.5px">👤 ${esc(p.client)}</span>`:''}${p.code?`<span style="color:var(--t3);font-size:12px">${esc(p.code)}</span>`:''}</div>`;
-  html+=`<button onclick="internalAudit('proj','${id}')" style="width:100%;margin-bottom:9px;background:linear-gradient(135deg,#4F46E5,#3730A3);color:#fff;border:none;border-radius:10px;padding:11px;font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;cursor:pointer">🔍 المدقق الداخلي — تدقيق المشروع وإصدار تقرير</button>`;
+  html+=`<button onclick="internalAudit('proj','${id}')" style="width:100%;margin-bottom:9px;background:linear-gradient(135deg,#4F46E5,#3730A3);color:#fff;border:none;border-radius:10px;padding:11px;font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;cursor:pointer">🔍 المدقق الداخلي — تدقيق المشروع (تقرير جديد)</button>`;
+  {const _sv=(audits||[]).filter(a=>a.kind==='proj'&&a.refId===id).sort((a,b)=>(b.t||0)-(a.t||0))[0];
+   if(_sv){const _dn=(_sv.findings||[]).filter(f=>(f.done===true)||(f.status==='تمت المعالجة')).length,_tt=(_sv.findings||[]).length;
+     html+=`<button onclick="viewSavedAudit('${_sv.id}')" style="width:100%;margin-bottom:9px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:10px;padding:9px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">📄 عرض آخر تقرير تدقيق محفوظ (بدون تدقيق جديد) — ${fmtD(new Date(_sv.t||_sv.createdAt).toISOString().slice(0,10))} · عولج ${_dn}/${_tt}</button>`;}}
   html+=`<div style="margin-bottom:11px"><button onclick="changeProjYear('${id}')" style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:8px;padding:8px 12px;font-family:Tajawal,sans-serif;font-weight:700;font-size:12px;cursor:pointer">📅 تعديل سنة كل فواتير المشروع</button></div>`;
 
   if(p.contractValue>0){
