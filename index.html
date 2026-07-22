@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-07-26-1045">
+<meta name="app-build" content="2026-07-27-1046">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -568,7 +568,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1045</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1046</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1285,7 +1285,7 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1045</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1046</bdi></span></div>
   </div>
 </div>
 
@@ -6913,24 +6913,22 @@ function buildVatSheet(yr,sel){
   const netLbl=t.net>=0?'صافي الضريبة المستحقة للدفع':'صافي الضريبة القابلة للاسترداد / المرحّلة';
   const head='<thead><tr><td class="lhcell"><div class="lhwrap"><img class="lmark" src="'+MARK_B64+'"><img class="llogo" src="'+LOGO_B64+'"></div></td></tr></thead>';
   const foot='<tfoot><tr><td class="lfcell"><div class="lfoot"><div><b>Tel</b> +966 55 554 7255 • <b>Email</b> ceo@hadff.com • <b>Web</b> www.hdft023.com</div><div>Othman Ibn Omarah St, Bldg 4994 • Al-Khuzama District • Al-Khobar, Saudi Arabia</div><div><b>C.R.</b> 2051251885 • <b>VAT</b> 311915930600003 • <b>Unified No.</b> 7036434897</div></div></td></tr></tfoot>';
-  let b='<div class="vatttl">إقرار ضريبة القيمة المضافة</div>';
-  b+='<div class="vatmeta"><div>المنشأة: '+esc(sett.name||'مؤسسة هدف التنمية للمقاولات')+'</div><div>الرقم الضريبي: '+esc(sett.vn||'—')+'</div><div>الفترة: '+esc(t.label)+' (من '+fromD+' إلى '+toD+')</div></div>';
-  b+='<table class="vattbl"><thead><tr><th style="width:13mm">الصندوق</th><th>البيان</th><th style="width:33mm">المبلغ (ر.س)</th><th style="width:33mm">الضريبة (ر.س)</th></tr></thead><tbody>';
-  b+='<tr><td>1</td><td>المبيعات الخاضعة للنسبة الأساسية (15%)</td><td>'+fmt(t.outBase)+'</td><td>'+fmt(t.outVat)+'</td></tr>';
-  b+='<tr><td>7</td><td>المشتريات الخاضعة للنسبة الأساسية (15%)</td><td>'+fmt(t.inBase)+'</td><td>'+fmt(t.inVat)+'</td></tr>';
-  b+='<tr class="zsum"><td>12</td><td>إجمالي ضريبة المخرجات</td><td>—</td><td>'+fmt(t.outVat)+'</td></tr>';
-  b+='<tr class="zsum"><td>13</td><td>إجمالي ضريبة المدخلات</td><td>—</td><td>'+fmt(t.inVat)+'</td></tr>';
-  b+='<tr class="znet"><td>14</td><td>'+netLbl+'</td><td>—</td><td>'+fmt(Math.abs(t.net))+'</td></tr>';
-  b+='</tbody></table>';
+  const _by=i=>((i.notes||'').trim()||(typeof catLabel==='function'?catLabel(i):'')||'—');
+  const rowsOf=arr=>{let x='';arr.forEach((i,idx)=>{x+='<tr><td>'+(idx+1)+'</td><td>'+lFmtD(i.date)+'</td><td style="text-align:right">'+esc(i.vendor||'')+'</td><td>'+esc(i.number||'')+'</td><td>'+esc(i.vendorVAT||'—')+'</td><td style="text-align:right">'+esc(_by(i))+'</td><td>'+fmt(i.subtotal||0)+'</td><td>'+fmt(i.vat||0)+'</td><td>'+fmt(i.total||0)+'</td></tr>';});return x;};
+  const hdr=nameLbl=>'<tr><th style="width:7mm">م</th><th style="width:19mm">التاريخ</th><th>'+nameLbl+'</th><th style="width:20mm">رقم الفاتورة</th><th style="width:28mm">الرقم الضريبي</th><th>البيان</th><th style="width:20mm">المبلغ (قبل الضريبة)</th><th style="width:16mm">الضريبة 15%</th><th style="width:20mm">الإجمالي (شامل)</th></tr>';
   const dcs=t.cs.slice().sort((a,c)=>new Date(a.date)-new Date(c.date));
-  if(dcs.length){
-    let inIncl=0;
-    b+='<div class="vatsub">تفاصيل فواتير المشتريات (ضريبة المدخلات)</div>';
-    b+='<table class="vattbl vatdet"><thead><tr><th>الرقم الضريبي للمورد</th><th>اسم المورد</th><th>رقم الفاتورة</th><th>التاريخ</th><th>المبلغ قبل الضريبة</th><th>الضريبة</th><th>شامل الضريبة</th></tr></thead><tbody>';
-    dcs.forEach(i=>{inIncl+=(i.total||0);b+='<tr><td>'+esc(i.vendorVAT||'—')+'</td><td>'+esc(i.vendor||'')+'</td><td>'+esc(i.number||'')+'</td><td>'+lFmtD(i.date)+'</td><td>'+fmt(i.subtotal||0)+'</td><td>'+fmt(i.vat||0)+'</td><td>'+fmt(i.total||0)+'</td></tr>';});
-    b+='<tr class="zsum"><td colspan="4">الإجمالي ('+dcs.length+' فاتورة)</td><td>'+fmt(t.inBase)+'</td><td>'+fmt(t.inVat)+'</td><td>'+fmt(inIncl)+'</td></tr>';
-    b+='</tbody></table>';
-  }
+  const drv=t.rv.slice().sort((a,c)=>new Date(a.date)-new Date(c.date));
+  const netLbl2=t.net>=0?'إجمالي الضريبة المستحقة للدفع لهيئة الزكاة والضريبة':'إجمالي الضريبة المرحّلة / القابلة للاسترداد';
+  let b='<style>.vatdet th,.vatdet td{font-size:9px;padding:3px 4px;border:1px solid #999;text-align:center}.vatdet th{background:#e8eef5;font-weight:700}.vattot{text-align:left;font-weight:800;font-size:12px;margin:5px 0 16px;padding:6px 11px;background:#f0f5fa;border:1px solid #d8e2ee;border-radius:6px}.vatnet{text-align:center;font-weight:800;font-size:15px;margin:14px 0;padding:11px;border-radius:8px;background:#dcfce7;border:1.5px solid #86efac;color:#15803D}</style>';
+  b+='<div class="vatttl">الإقرار الضريبي — '+esc(t.label)+'</div>';
+  b+='<div class="vatmeta"><div>'+esc(sett.name||'مؤسسة هدف التنمية للمقاولات')+'</div><div>الرقم الضريبي: '+esc(sett.vn||'—')+'</div><div>من تاريخ '+fromD+' إلى تاريخ '+toD+'</div></div>';
+  b+='<div class="vatsub">أولاً: ضريبة المدخلات (المشتريات)</div>';
+  b+='<table class="vattbl vatdet"><thead>'+hdr('اسم المورد')+'</thead><tbody>'+(dcs.length?rowsOf(dcs):'<tr><td colspan="9" style="color:#888">لا توجد فواتير مشتريات</td></tr>')+'</tbody></table>';
+  b+='<div class="vattot">إجمالي الضريبة المحسوبة على المشتريات: '+fmt(t.inVat)+' ر.س</div>';
+  b+='<div class="vatsub">ثانياً: ضريبة المخرجات (المبيعات)</div>';
+  b+='<table class="vattbl vatdet"><thead>'+hdr('اسم العميل')+'</thead><tbody>'+(drv.length?rowsOf(drv):'<tr><td colspan="9" style="color:#888">لا توجد فواتير مبيعات</td></tr>')+'</tbody></table>';
+  b+='<div class="vattot">إجمالي ضريبة المبيعات: '+fmt(t.outVat)+' ر.س</div>';
+  b+='<div class="vatnet">'+netLbl2+': '+fmt(Math.abs(t.net))+' ر.س</div>';
   if(t.noVat.length)b+='<div class="vatwarn">⚠️ '+t.noVat.length+' فاتورة مشتريات بدون رقم ضريبي للمورد — ضريبة مدخلات '+fmt(t.riskVat)+' ر.س قد لا تُقبل من هيئة الزكاة.</div>';
   b+='<div class="lsignrow"><div class="lsign"><div class="lrole">الـمــديــر الــعـــام</div><div class="lsigwrap"><img class="lsig" src="'+SIGN_B64+'"></div><div class="lname">عبدالعزيز بن مسفر العتيبي</div><div class="ldate">'+today+'</div></div><img class="lstamp" src="'+STAMP_B64+'"></div>';
   return '<table class="lsheet">'+head+foot+'<tbody><tr><td class="lbcell">'+b+'</td></tr></tbody></table>';
