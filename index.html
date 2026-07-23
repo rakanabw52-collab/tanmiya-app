@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1069">
+<meta name="app-build" content="2026-08-01-1070">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -595,7 +595,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1069</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1070</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -894,6 +894,20 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
   <div class="md" style="max-width:640px">
     <div class="md-hdr"><div class="md-ttl">📊 انطباع المدير المالي (CFO)</div><button class="md-cl" onclick="closeCFO()">✕</button></div>
     <div id="cfo-body"></div>
+  </div>
+</div>
+
+<div class="mb" id="val-mb" onclick="if(event.target===this)closeVal()">
+  <div class="md" style="max-width:660px">
+    <div class="md-hdr"><div class="md-ttl">🏛️ تقييم المنشأة (Institution Valuation)</div><button class="md-cl" onclick="closeVal()">✕</button></div>
+    <div id="val-body"></div>
+  </div>
+</div>
+
+<div class="mb" id="own-mb" onclick="if(event.target===this)closeOwner()">
+  <div class="md" style="max-width:560px">
+    <div class="md-hdr"><div class="md-ttl">💰 حاسبة راتب المالك المقترح</div><button class="md-cl" onclick="closeOwner()">✕</button></div>
+    <div id="own-body"></div>
   </div>
 </div>
 <!-- مودال المساعد الذكي (اسأل بالعربي) -->
@@ -1247,6 +1261,8 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
     <button type="button" onclick="internalAuditAll()" style="width:100%;margin-bottom:8px;padding:12px;font-size:13px;font-weight:800;background:linear-gradient(135deg,#4F46E5,#3730A3);color:#fff;border:none;border-radius:10px;cursor:pointer">🔍 المدقق الداخلي الشامل — تدقيق كل المشاريع والفواتير</button>
     <button type="button" onclick="closeSet();openAudits()" style="width:100%;margin-bottom:8px;padding:9px;font-size:12.5px;font-weight:800;background:#fff;color:#3730A3;border:1px solid #C7D2FE;border-radius:10px;cursor:pointer">📁 تقارير التدقيق المحفوظة (بالحلول والحالة)</button>
     <button type="button" onclick="cfoReview()" style="width:100%;margin-bottom:8px;padding:12px;font-size:13px;font-weight:800;background:linear-gradient(135deg,#0F766E,#134E4A);color:#fff;border:none;border-radius:10px;cursor:pointer">📊 انطباع المدير المالي (CFO) — تحليل تنفيذي شامل</button>
+    <button type="button" onclick="institutionValuation()" style="width:100%;margin-bottom:8px;padding:12px;font-size:13px;font-weight:800;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;border:none;border-radius:10px;cursor:pointer">🏛️ تقييم المنشأة (Institution Valuation) — قيمة المؤسسة</button>
+    <button type="button" onclick="openOwner()" style="width:100%;margin-bottom:8px;padding:12px;font-size:13px;font-weight:800;background:linear-gradient(135deg,#15803D,#166534);color:#fff;border:none;border-radius:10px;cursor:pointer">💰 حاسبة راتب المالك المقترح</button>
     <button type="button" onclick="closeSet();monthlyReportPDF()" style="width:100%;margin-bottom:8px;padding:9px;font-size:12.5px;font-weight:800;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:10px;cursor:pointer">📄 تقرير شهري PDF</button>
     <button type="button" onclick="closeSet();openAsk()" style="width:100%;margin-bottom:10px;padding:9px;font-size:12.5px;font-weight:800;background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:10px;cursor:pointer">🗣️ اسأل بالعربي — مساعد ذكي عن بياناتك</button>
     <button type="button" onclick="closeSet();openFixDates()" style="width:100%;margin-bottom:10px;padding:9px;font-size:12.5px;font-weight:800;background:#FFF7ED;color:#9A3412;border:1px solid #FDBA74;border-radius:10px;cursor:pointer">🗓️ تصحيح تواريخ المشاريع (توحيد سنة الفواتير مع المشروع)</button>
@@ -1369,7 +1385,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1069</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1070</bdi></span></div>
   </div>
 </div>
 
@@ -3165,6 +3181,50 @@ function accGo(v){
   else if(v==='fs')body.innerHTML=_accFS();
   else if(v==='coa')body.innerHTML=_accCOA();
 }
+function openOwner(){if(typeof closeSet==='function')closeSet();document.getElementById('own-body').innerHTML=_accOwner();document.getElementById('own-mb').classList.add('show');}
+function closeOwner(){document.getElementById('own-mb').classList.remove('show');}
+function _accOwner(){
+  const f=_finReal();
+  const net=Math.round(f.net);
+  const sal=(window._ownSal!=null?window._ownSal:12000);
+  const res=(window._ownRes!=null?window._ownRes:30);
+  let h='<div class="acc-card"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:#1e3a5f;margin-bottom:3px">💰 راتب المالك وربح المؤسسة</div><div style="font-size:11px;color:var(--t3);margin-bottom:12px">يفصل «أجر عملك كمدير» عن «ربحك كمالك» — على صافي الربح الفعلي.</div>';
+  h+='<div style="display:flex;flex-direction:column;gap:9px">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><label style="font-size:12.5px;font-weight:700">صافي الربح (سنوي)</label><input type="number" id="own-net" value="'+net+'" oninput="_ownCalc()" style="width:130px;padding:8px;border:1px solid var(--bd);border-radius:8px;text-align:left;direction:ltr;font-family:Tajawal,sans-serif;font-size:13px"></div>';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><label style="font-size:12.5px;font-weight:700">راتبك الشهري كمدير</label><input type="number" id="own-sal" value="'+sal+'" oninput="_ownCalc()" style="width:130px;padding:8px;border:1px solid var(--bd);border-radius:8px;text-align:left;direction:ltr;font-family:Tajawal,sans-serif;font-size:13px"></div>';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><label style="font-size:12.5px;font-weight:700">نسبة الاحتياطي % (ضريبة/زكاة/تشغيل)</label><input type="number" id="own-res" value="'+res+'" oninput="_ownCalc()" style="width:130px;padding:8px;border:1px solid var(--bd);border-radius:8px;text-align:left;direction:ltr;font-family:Tajawal,sans-serif;font-size:13px"></div>';
+  h+='</div><div id="own-out" style="margin-top:14px"></div></div>';
+  h+='<div style="font-size:11px;color:var(--t3);line-height:1.7;padding:0 4px">💡 القاعدة الآمنة للمقاولات: راتب ثابت معقول كأجر عملك، واحتفظ باحتياطي ٣٠٪+ للضريبة والزكاة وفترات الركود ودفعات المشاريع القادمة. لا تتجاوز مسحوباتك ٥٠–٧٠٪ من صافي الربح.</div>';
+  setTimeout(_ownCalc,0);
+  return h;
+}
+function _ownCalc(){
+  const net=+(document.getElementById('own-net')||{}).value||0;
+  const sal=+(document.getElementById('own-sal')||{}).value||0;
+  const res=+(document.getElementById('own-res')||{}).value||0;
+  window._ownSal=sal;window._ownRes=res;
+  const reserve=Math.round(net*res/100);
+  const available=net-reserve;                       // المتاح للسحب بعد الاحتياطي
+  const maxSafeMonthly=Math.max(0,Math.round(available/12));
+  const yourAnnualDraw=sal*12;                        // مسحوباتك السنوية (الراتب الذي اخترته)
+  const ratio=net>0?Math.round(yourAnnualDraw/net*100):0;
+  // التصنيف: أخضر <40 · أصفر 40-60 · أحمر >60
+  const cls=ratio>60?{c:'#B91C1C',bg:'#FEE2E2',t:'🔴 خطر'}:ratio>=40?{c:'#B45309',bg:'#FEF3C7',t:'🟡 متوسط'}:{c:'#15803D',bg:'#DCFCE7',t:'🟢 آمن'};
+  const over=ratio>60;
+  const out=document.getElementById('own-out');if(!out)return;
+  const row=(l,v,c)=>'<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--bd)"><span style="font-size:12.5px;color:var(--t2)">'+l+'</span><span style="font-family:Cairo,sans-serif;font-weight:800;font-size:14px;color:'+(c||'#1e3a5f')+'" class="acc-num">'+_accM(v)+' ر.س</span></div>';
+  let o='<div style="background:#F8FAFC;border:1px solid var(--bd);border-radius:10px;padding:12px">';
+  o+=row('صافي الربح',net,'#1e3a5f');
+  o+=row('الاحتياطي المقترح ('+res+'%)',reserve,'#B45309');
+  o+=row('المتاح للسحب (بعد الاحتياطي)',available,'#15803D');
+  o+=row('الراتب الشهري الآمن الأقصى',maxSafeMonthly,'#0F766E');
+  o+='<div style="display:flex;justify-content:space-between;padding:10px 0 2px"><span style="font-size:13px;font-weight:800">راتبك الشهري المختار</span><span style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:'+cls.c+'" class="acc-num">'+_accM(sal)+' ر.س</span></div>';
+  o+='<div style="text-align:center;margin-top:8px;background:'+cls.bg+';border-radius:9px;padding:9px"><div style="font-weight:800;font-size:13px;color:'+cls.c+'">نسبة مسحوباتك: '+ratio+'% — '+cls.t+'</div><div style="font-size:10.5px;color:'+cls.c+';margin-top:2px">آمن أقل من 40% · متوسط 40–60% · خطر فوق 60%</div></div>';
+  if(over)o+='<div style="margin-top:9px;background:#FEE2E2;border:1px solid #FCA5A5;border-radius:9px;padding:10px;font-size:11.5px;color:#B91C1C;line-height:1.7"><b>⚠️ تنبيه:</b> مسحوباتك أعلى من الحد الآمن وقد تؤثر على استقرار المنشأة.<br><b>توصيات فورية:</b> خفّض الراتب الشهري إلى '+_accM(Math.round(net*0.4/12))+' ر.س أو أقل · ارفع الاحتياطي · اضبط المصروفات · وزّع المسحوبات على دفعات.</div>';
+  else o+='<div style="margin-top:9px;text-align:center;font-size:11.5px;color:#15803D;font-weight:700">✅ مسحوباتك ضمن الحد الآمن — استمر مع الاحتفاظ بالاحتياطي.</div>';
+  o+='</div>';
+  out.innerHTML=o;
+}
 function _accSum(){
   const f=_finReal();
   let h='';
@@ -3621,6 +3681,69 @@ function copyCFO(){
   navigator.clipboard.writeText(t).then(()=>toast('تم نسخ التقرير','ok')).catch(()=>toast('تعذّر النسخ','er'));
 }
 function closeCFO(){document.getElementById('cfo-mb').classList.remove('show');}
+
+/* ========== تقييم المنشأة (Institution Valuation) ========== */
+const VAL_PROMPT=`أنت خبير تقييم منشآت ورئيس تنفيذي مالي بخبرة 30 سنة في تقييم الشركات والمقاولات والأصول والمشاريع والالتزامات. حلّل البيانات الظاهرة في النظام وقدّم تقييماً مالياً شاملاً لقيمة المنشأة.
+غطِّ: (1) الأصول المادية (معدات/آليات، عقارات/مستودعات، مخزون) بالقيمة السوقية أو الدفترية أيهما أنسب. (2) المشاريع الجارية: قيمة العقود حسب نسبة الإنجاز، والمستحق غير المستلم، والذمم المدينة مع خصم المشكوك في تحصيله. (3) الأصول غير الملموسة: تصنيف المقاول، الشهادات، سابقة الأعمال، قوة العلاقات. (4) الالتزامات: قروض، مستحقات موردين، رواتب، نهاية خدمة. (5) صافي قيمة المنشأة = الأصول − الالتزامات. (6) الشهرة (Goodwill) إن دلّت البيانات على سمعة/استقرار/عقود مستقبلية.
+مهم جداً: النظام لمؤسسة مقاولات فردية قد لا يسجّل المعدات والعقارات والمخزون. إن كانت بيانات فئة غير متوفرة فاذكر ذلك صراحةً (قيمة 0 مع ملاحظة «غير مسجّل في النظام») ولا تخترع أرقاماً. اعتمد فقط على البيانات الظاهرة (قيم العقود، التكاليف، المحصّل، المتبقّي، صافي الربح، الضريبة).`;
+async function institutionValuation(){
+  if(typeof closeSet==='function')closeSet();
+  if(!aiReady()){toast('فعّل مفتاح الذكاء الاصطناعي من الإعدادات أولاً','er');return;}
+  const body=document.getElementById('val-body');
+  document.getElementById('val-mb').classList.add('show');
+  body.innerHTML='<div style="text-align:center;padding:34px 16px"><div class="spin" style="margin:0 auto 14px"></div><div style="font-weight:800;color:var(--t2)">جاري تقييم المنشأة...</div><div style="font-size:11.5px;color:var(--t3);margin-top:6px;line-height:1.7">تحليل الأصول والمشاريع والالتزامات<br>وصافي قيمة المنشأة والشهرة</div></div>';
+  try{
+    const data=_buildAuditDataAll();
+    const pr=VAL_PROMPT+'\n\n=== البيانات الظاهرة في النظام ===\n'+data+'\n\n=== صيغة المخرَج المطلوبة ===\nأعِد التقرير حصراً بصيغة JSON صالحة فقط (بدون أي نص أو أغلفة markdown) بالشكل: {"physicalAssets":{"total":0,"items":[{"name":"","value":0,"note":""}]},"projectsValue":{"total":0,"receivables":0,"doubtful":0,"note":""},"intangibles":{"total":0,"items":[{"name":"","value":0,"note":""}]},"liabilities":{"total":0,"items":[{"name":"","value":0}]},"netWorth":0,"goodwill":0,"finalValuation":0,"executiveNotes":["ملاحظة"],"strengths":["نقطة"],"weaknesses":["نقطة"],"recommendations":["توصية"]}.\nقواعد: كل القيم أرقام بالريال. netWorth = إجمالي الأصول (مادية+مشاريع+غير ملموسة) − إجمالي الالتزامات. finalValuation = netWorth + goodwill. لكل قسم بحد أقصى 6 عناصر. إن كانت فئة غير مسجّلة اجعل total=0 وأضف note توضيحية. لا تخترع أرقاماً.';
+    const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:8000,messages:[{role:'user',content:[{type:'text',text:pr}]}]})});
+    if(!rs.ok){const et=await rs.text();throw new Error('HTTP '+rs.status+' — '+et.slice(0,120));}
+    const j=await rs.json();
+    let txt=(j.content&&j.content[0]&&j.content[0].text)||'';
+    txt=txt.replace(/```json/gi,'').replace(/```/g,'').trim();
+    const a=txt.indexOf('{'),b=txt.lastIndexOf('}');
+    let rep=null;if(a>=0&&b>a){try{rep=JSON.parse(txt.slice(a,b+1));}catch(e){}}
+    if(!rep){body.innerHTML='<div style="padding:22px;text-align:center"><div style="font-size:36px">⚠️</div><div style="font-weight:800;margin-top:8px;color:#B45309">تعذّر قراءة تقرير التقييم</div><button onclick="institutionValuation()" style="margin-top:14px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:9px 16px;font-family:Tajawal,sans-serif;font-weight:800;cursor:pointer">🔄 إعادة المحاولة</button></div>';return;}
+    _renderVal(rep);logEvent('تقييم المنشأة','Institution Valuation');
+  }catch(e){
+    body.innerHTML='<div style="padding:22px;text-align:center"><div style="font-size:36px">⚠️</div><div style="font-weight:800;margin-top:8px;color:#B91C1C">تعذّر التقييم</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.6">'+esc((e.message||'').slice(0,160))+'</div><button onclick="institutionValuation()" style="margin-top:14px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:9px 16px;font-family:Tajawal,sans-serif;font-weight:800;cursor:pointer">🔄 إعادة المحاولة</button></div>';
+  }
+}
+function _renderVal(rep){
+  const body=document.getElementById('val-body');
+  const _m=v=>fmtI(Math.round(+v||0));
+  const sec=(title,icon,obj)=>{
+    if(!obj)return '';
+    let x='<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;align-items:center;background:#F1F5F9;border-radius:9px;padding:9px 11px"><span style="font-family:Cairo,sans-serif;font-weight:800;font-size:13px;color:#1e3a5f">'+icon+' '+title+'</span><span style="font-family:Cairo,sans-serif;font-weight:800;font-size:14px;color:#1e3a5f">'+_m(obj.total)+' ر.س</span></div>';
+    (obj.items||[]).forEach(it=>{x+='<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:6px 10px;border-bottom:1px dashed var(--bd)"><span style="color:var(--t2)">'+esc(it.name||'')+(it.note?' <span style="font-size:10px;color:var(--t3)">('+esc(it.note)+')</span>':'')+'</span><span style="font-weight:700" class="acc-num">'+_m(it.value)+'</span></div>';});
+    if(obj.note&&!(obj.items||[]).length)x+='<div style="font-size:11px;color:var(--t3);padding:5px 10px">'+esc(obj.note)+'</div>';
+    return x+'</div>';
+  };
+  const bl=(title,icon,arr,col)=>{if(!arr||!arr.length)return '';let x='<div style="margin-bottom:11px"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:12.5px;color:'+(col||'#1e3a5f')+';margin-bottom:5px">'+icon+' '+title+'</div>';arr.forEach(t=>{x+='<div style="font-size:12px;line-height:1.6;color:#374151;padding:6px 10px;background:#fff;border:1px solid var(--bd);border-radius:8px;margin-bottom:4px">• '+esc(String(t))+'</div>';});return x+'</div>';};
+  let h='';
+  h+='<div style="background:linear-gradient(135deg,#5b21b6,#7c3aed);border-radius:12px;padding:16px;text-align:center;margin-bottom:14px;color:#fff"><div style="font-size:11.5px;opacity:.9;font-weight:700">التقييم النهائي للمؤسسة</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:27px;margin-top:3px">'+_m(rep.finalValuation)+' ر.س</div><div style="font-size:11px;opacity:.9;margin-top:3px">صافي القيمة '+_m(rep.netWorth)+' + شهرة '+_m(rep.goodwill)+'</div></div>';
+  h+=sec('الأصول المادية','🏗️',rep.physicalAssets);
+  h+=sec('المشاريع الجارية والذمم','📁',rep.projectsValue);
+  if(rep.projectsValue&&(rep.projectsValue.receivables||rep.projectsValue.doubtful))h+='<div style="font-size:11px;color:var(--t3);margin:-6px 0 10px;padding:0 4px">الذمم المدينة: '+_m(rep.projectsValue.receivables)+' · المشكوك في تحصيله: '+_m(rep.projectsValue.doubtful)+'</div>';
+  h+=sec('الأصول غير الملموسة','⭐',rep.intangibles);
+  h+=sec('الالتزامات','📉',rep.liabilities);
+  h+='<div style="display:flex;gap:8px;margin:12px 0"><div style="flex:1;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:9px;padding:10px;text-align:center"><div style="font-size:10.5px;color:#15803D;font-weight:700">صافي قيمة المنشأة</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:16px;color:#15803D" class="acc-num">'+_m(rep.netWorth)+'</div></div><div style="flex:1;background:#FEF9C3;border:1px solid #FDE68A;border-radius:9px;padding:10px;text-align:center"><div style="font-size:10.5px;color:#92400E;font-weight:700">الشهرة (Goodwill)</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:16px;color:#92400E" class="acc-num">'+_m(rep.goodwill)+'</div></div></div>';
+  h+=bl('ملاحظات تنفيذية','📋',rep.executiveNotes,'#1e3a5f');
+  h+=bl('نقاط القوة','💪',rep.strengths,'#15803D');
+  h+=bl('نقاط الضعف','⚠️',rep.weaknesses,'#B91C1C');
+  h+=bl('توصيات لتحسين القيمة','🚀',rep.recommendations,'#6D28D9');
+  h+='<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button onclick="copyVal()" style="flex:1;min-width:90px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">📋 نسخ</button><button onclick="institutionValuation()" style="flex:1;min-width:110px;background:#F0FDF4;color:#15803D;border:1px solid #86EFAC;border-radius:9px;padding:11px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">🔄 إعادة التقييم</button></div>';
+  h+='<div style="font-size:10.5px;color:var(--t3);text-align:center;margin-top:10px;line-height:1.6">⚠️ تقييم إرشادي مبني على البيانات المسجّلة فقط — للتقييم الرسمي راجع مقيّماً معتمداً.</div>';
+  body.innerHTML=h;window._lastVal=rep;
+}
+function copyVal(){
+  const r=window._lastVal;if(!r)return;const _m=v=>fmtI(Math.round(+v||0));
+  let t='🏛️ تقرير تقييم المنشأة\n========================\n';
+  t+='التقييم النهائي: '+_m(r.finalValuation)+' ر.س\nصافي قيمة المنشأة: '+_m(r.netWorth)+' ر.س\nالشهرة: '+_m(r.goodwill)+' ر.س\n';
+  t+='\nالأصول المادية: '+_m(r.physicalAssets&&r.physicalAssets.total)+'\nالمشاريع والذمم: '+_m(r.projectsValue&&r.projectsValue.total)+'\nالأصول غير الملموسة: '+_m(r.intangibles&&r.intangibles.total)+'\nالالتزامات: '+_m(r.liabilities&&r.liabilities.total)+'\n';
+  (r.recommendations||[]).forEach((x,i)=>{if(i===0)t+='\nتوصيات:\n';t+='• '+x+'\n';});
+  navigator.clipboard.writeText(t).then(()=>toast('تم نسخ التقرير','ok')).catch(()=>toast('تعذّر النسخ','er'));
+}
+function closeVal(){document.getElementById('val-mb').classList.remove('show');}
 /* ========== المساعد الذكي (اسأل بالعربي) ========== */
 function openAsk(){document.getElementById('ask-mb').classList.add('show');setTimeout(()=>{const i=document.getElementById('ask-q');if(i)i.focus();},60);}
 function closeAsk(){document.getElementById('ask-mb').classList.remove('show');}
