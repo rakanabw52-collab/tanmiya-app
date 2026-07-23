@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1065">
+<meta name="app-build" content="2026-08-01-1066">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -595,7 +595,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1065</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1066</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -911,6 +911,15 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       <button onclick="askSuggest('كم صافي ضريبة القيمة المضافة المستحقة؟')" style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:99px;padding:5px 11px;font-family:Tajawal,sans-serif;font-size:11px;cursor:pointer">الضريبة المستحقة؟</button>
     </div>
     <div id="ask-body"></div>
+  </div>
+</div>
+
+<div class="mb" id="fixdt-mb" onclick="if(event.target===this)closeFixDates()">
+  <div class="md" style="max-width:640px">
+    <div class="md-hdr"><div class="md-ttl">🗓️ تصحيح تواريخ المشاريع</div><button class="md-cl" onclick="closeFixDates()">✕</button></div>
+    <div style="font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:12px">حدّد السنة الصحيحة لكل مشروع، وسيغيّر النظام سنة تواريخ فواتيره لتطابقها (يبقى الشهر واليوم كما هما). تظهر أدناه عدد الفواتير التي ستُصحّح.</div>
+    <div id="fixdt-body"></div>
+    <button onclick="applyFixDates()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#15803D,#166534);color:#fff;border:none;border-radius:10px;padding:12px;font-family:Cairo,sans-serif;font-weight:800;font-size:13.5px;cursor:pointer">✅ تطبيق التصحيح</button>
   </div>
 </div>
 <!-- مودال تعديل سريع -->
@@ -1240,6 +1249,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
     <button type="button" onclick="cfoReview()" style="width:100%;margin-bottom:8px;padding:12px;font-size:13px;font-weight:800;background:linear-gradient(135deg,#0F766E,#134E4A);color:#fff;border:none;border-radius:10px;cursor:pointer">📊 انطباع المدير المالي (CFO) — تحليل تنفيذي شامل</button>
     <button type="button" onclick="closeSet();monthlyReportPDF()" style="width:100%;margin-bottom:8px;padding:9px;font-size:12.5px;font-weight:800;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:10px;cursor:pointer">📄 تقرير شهري PDF</button>
     <button type="button" onclick="closeSet();openAsk()" style="width:100%;margin-bottom:10px;padding:9px;font-size:12.5px;font-weight:800;background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:10px;cursor:pointer">🗣️ اسأل بالعربي — مساعد ذكي عن بياناتك</button>
+    <button type="button" onclick="closeSet();openFixDates()" style="width:100%;margin-bottom:10px;padding:9px;font-size:12.5px;font-weight:800;background:#FFF7ED;color:#9A3412;border:1px solid #FDBA74;border-radius:10px;cursor:pointer">🗓️ تصحيح تواريخ المشاريع (توحيد سنة الفواتير مع المشروع)</button>
     <div class="card" style="background:var(--bg);border:none">
       <div style="font-weight:700;margin-bottom:8px">بيانات المؤسسة</div>
       <div style="display:grid;gap:10px">
@@ -1359,7 +1369,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1065</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1066</bdi></span></div>
   </div>
 </div>
 
@@ -2981,6 +2991,69 @@ function copyAuditReport(){
   navigator.clipboard.writeText(t).then(()=>toast('تم نسخ التقرير','ok')).catch(()=>toast('تعذّر النسخ','er'));
 }
 function closeAudit(){document.getElementById('audit-mb').classList.remove('show');}
+
+/* ===== تصحيح تواريخ المشاريع (توحيد سنة الفواتير مع سنة المشروع) ===== */
+function _projYearGuess(p){
+  const sd=String(p.startDate||'').slice(0,4);if(/^\d{4}$/.test(sd))return sd;
+  const ed=String(p.endDate||'').slice(0,4);if(/^\d{4}$/.test(ed))return ed;
+  const yrs={};invs.filter(i=>i.projectId===p.id&&i.date).forEach(i=>{const y=String(i.date).slice(0,4);if(/^\d{4}$/.test(y))yrs[y]=(yrs[y]||0)+1;});
+  let best='',bc=0;Object.keys(yrs).forEach(y=>{if(yrs[y]>bc){bc=yrs[y];best=y;}});
+  return best||String(new Date().getFullYear());
+}
+function openFixDates(){
+  const body=document.getElementById('fixdt-body');
+  const ps=(projs||[]).slice();
+  if(!ps.length){body.innerHTML='<div style="text-align:center;color:var(--t3);padding:20px">لا توجد مشاريع.</div>';document.getElementById('fixdt-mb').classList.add('show');return;}
+  let h='';
+  ps.forEach(p=>{
+    const cnt=invs.filter(i=>i.projectId===p.id).length;
+    const yg=_projYearGuess(p);
+    const years=[...new Set(invs.filter(i=>i.projectId===p.id&&i.date).map(i=>String(i.date).slice(0,4)))].sort().join('، ')||'—';
+    h+='<div class="acc-card" style="padding:11px;margin-bottom:9px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">';
+    h+='<div style="flex:1;min-width:140px"><div style="font-weight:800;font-size:13px">'+esc(p.name)+'</div><div style="font-size:10.5px;color:var(--t3)">'+cnt+' فاتورة • سنوات حالية: '+esc(years)+'</div></div>';
+    h+='<div style="display:flex;align-items:center;gap:7px"><label style="font-size:11px;color:var(--t2)">السنة الصحيحة</label><input type="number" id="fixdt-y-'+p.id+'" value="'+yg+'" oninput="_fixDtCount(\''+p.id+'\')" style="width:82px;padding:7px;border:1px solid var(--bd);border-radius:8px;text-align:center;font-family:Tajawal,sans-serif;font-size:13px"></div>';
+    h+='</div><div id="fixdt-cnt-'+p.id+'" style="font-size:11px;color:#9A3412;margin-top:6px;font-weight:700"></div></div>';
+  });
+  body.innerHTML=h;
+  ps.forEach(p=>_fixDtCount(p.id));
+  document.getElementById('fixdt-mb').classList.add('show');
+}
+function _fixDtCount(pid){
+  const el=document.getElementById('fixdt-cnt-'+pid);if(!el)return;
+  const inp=document.getElementById('fixdt-y-'+pid);const y=(inp?inp.value:'').trim();
+  if(!/^\d{4}$/.test(y)){el.textContent='أدخل سنة صحيحة (4 أرقام)';el.style.color='#B91C1C';return;}
+  const n=invs.filter(i=>i.projectId===pid&&(!/^\d{4}-\d{2}-\d{2}$/.test(i.date||'')||String(i.date).slice(0,4)!==y)).length;
+  el.style.color=n?'#9A3412':'#15803D';
+  el.textContent=n?('سيُصحَّح تاريخ '+n+' فاتورة إلى سنة '+y):('كل الفواتير سنتها '+y+' ✓');
+}
+async function applyFixDates(){
+  const plan=[],projPlan=[];
+  (projs||[]).forEach(p=>{
+    const inp=document.getElementById('fixdt-y-'+p.id);if(!inp)return;
+    const y=(inp.value||'').trim();if(!/^\d{4}$/.test(y))return;
+    invs.forEach(i=>{
+      if(i.projectId!==p.id)return;
+      let nd;
+      if(/^\d{4}-\d{2}-\d{2}$/.test(i.date||'')){if(String(i.date).slice(0,4)===y)return;nd=y+String(i.date).slice(4);}
+      else{nd=y+'-01-01';}
+      if(nd!==i.date)plan.push({i,nd});
+    });
+    if(/^\d{4}-\d{2}-\d{2}$/.test(p.startDate||'')&&p.startDate.slice(0,4)!==y)projPlan.push({o:p,f:'startDate',nd:y+p.startDate.slice(4)});
+    if(/^\d{4}-\d{2}-\d{2}$/.test(p.endDate||'')&&p.endDate.slice(0,4)!==y)projPlan.push({o:p,f:'endDate',nd:y+p.endDate.slice(4)});
+  });
+  if(!plan.length){toast('لا توجد تواريخ تحتاج تصحيح','ok');return;}
+  const ok=await confirm2({title:'تأكيد التصحيح',msg:'سيتم تغيير سنة تاريخ <b>'+plan.length+' فاتورة</b> لتطابق سنوات مشاريعها، ومحاذاة فترات '+projPlan.length+' حقل تاريخ للمشاريع. متابعة؟',ok:'تطبيق'});
+  if(!ok)return;
+  plan.forEach(x=>{x.i.date=x.nd;});
+  projPlan.forEach(x=>{x.o[x.f]=x.nd;});
+  await sv();if(typeof svP==='function')await svP();
+  logEvent('تصحيح تواريخ المشاريع',plan.length+' فاتورة');
+  if(typeof cloudPushAll==='function'&&window._cloudOn){try{await cloudPushAll();}catch(_){}}
+  closeFixDates();
+  if(typeof renderList==='function')renderList();if(typeof renderDB==='function')renderDB();if(typeof renderVT==='function')renderVT();if(typeof renderProjList==='function')renderProjList();
+  toast('✅ تم تصحيح '+plan.length+' فاتورة','ok');
+}
+function closeFixDates(){document.getElementById('fixdt-mb').classList.remove('show');}
 
 /* ============ المحرّك المحاسبي (شجرة حسابات + قيود + ميزان + قوائم) ============ */
 const _COA_DEFAULT=[
@@ -7186,7 +7259,7 @@ async function confirmImp(){
       id:uid('inv'),
       type:r.type||'expense',
       number:r.number||'IMP-'+Date.now().toString().slice(-6)+'-'+(cnt+1),
-      date:r.date||new Date().toISOString().slice(0,10),
+      date:r.date||'',
       vendor:r.vendor||'—',
       vendorVAT:r.taxno||'',
       subtotal:_sub,
