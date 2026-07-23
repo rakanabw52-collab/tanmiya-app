@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1070">
+<meta name="app-build" content="2026-08-01-1071">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -595,7 +595,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1070</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1071</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1385,7 +1385,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1070</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1071</bdi></span></div>
   </div>
 </div>
 
@@ -3151,26 +3151,37 @@ function _fin(){
   const eq=-_typeSum('equity',bal)+net;
   return {bal,revenue,expenses,net,assets,liab,eq};
 }
-// ===== القوائم المبنية على ربحية المشاريع الفعلية (تطابق الداش بورد) =====
-function _finReal(){
-  const dp=projs.filter(p=>p.status!=='study');
+// سنة المشروع (من تاريخ البدء، وإلا من أغلب سنوات فواتيره)
+function _projYearOf(p){const s=String(p&&p.startDate||'').slice(0,4);if(/^\d{4}$/.test(s))return +s;const g=(typeof _projYearGuess==='function')?_projYearGuess(p):new Date().getFullYear();return +g;}
+function _finYears(){const ys=new Set();projs.forEach(p=>{if(p.status!=='study'&&(p.contractValue||0)>0)ys.add(_projYearOf(p));});invs.forEach(i=>{const y=String(i.date||'').slice(0,4);if(/^\d{4}$/.test(y))ys.add(+y);});if(!ys.size)ys.add(new Date().getFullYear());return [...ys].sort((a,b)=>b-a);}
+// ===== القوائم المبنية على ربحية المشاريع الفعلية لسنة محددة =====
+function _finReal(year){
+  const cy=year||(window._finYear||new Date().getFullYear());
+  const inYr=d=>{const s=String(d||'');return /^\d{4}/.test(s)&&+s.slice(0,4)===cy;};
+  const dp=projs.filter(p=>p.status!=='study'&&_projYearOf(p)===cy);
   const dpIds=new Set(dp.map(p=>p.id));
   let contractRev=0;dp.forEach(p=>contractRev+=(p.contractValue||0));
-  const standaloneRev=invs.filter(i=>i.type==='revenue'&&!i.projectId&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
+  const standaloneRev=invs.filter(i=>i.type==='revenue'&&!i.projectId&&i.status!=='cancelled'&&inYr(i.date)).reduce((s,i)=>s+(i.total||0),0);
   const revenue=contractRev+standaloneRev;
-  let projCost=0;dp.forEach(p=>projCost+=projPL(p.id).cost);
-  const standaloneCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!i.projectId&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
-  const cost=projCost+standaloneCost;
+  // التكاليف: فواتير هذه السنة لمشاريع السنة + العامة
+  const costInvs=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&i.status!=='cancelled'&&inYr(i.date)&&(!i.projectId||dpIds.has(i.projectId)));
+  const cost=costInvs.reduce((s,i)=>s+(i.total||0),0);
   const net=revenue-cost;
-  // تفصيل التكاليف حسب البند (من فواتير المشاريع النشطة + العامة)
-  const costInvs=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&i.status!=='cancelled'&&(!i.projectId||dpIds.has(i.projectId)));
   const byCat={};costInvs.forEach(i=>{const c=_expAccFor(i);byCat[c]=(byCat[c]||0)+(i.total||0);});
-  const catSum=Object.values(byCat).reduce((s,v)=>s+v,0);
-  const manualAdj=+(cost-catSum).toFixed(2);
+  const manualAdj=0;
   let outstanding=0,paid=0,contractGross=0;dp.forEach(p=>{const pl=projPL(p.id);outstanding+=pl.outstanding;paid+=pl.paid;contractGross+=pl.contractGross;});
-  return {revenue,contractRev,standaloneRev,cost,net,byCat,manualAdj,outstanding,paid,contractGross};
+  return {year:cy,revenue,contractRev,standaloneRev,cost,net,byCat,manualAdj,outstanding,paid,contractGross,projCount:dp.length};
 }
-function renderAcc(){_seedCOA();accGo(window._accView||'sum');}
+function _finYearSelHTML(cb){
+  const ys=_finYears();const cy=window._finYear||new Date().getFullYear();
+  if(!ys.includes(cy))ys.unshift(cy);
+  let s='<select onchange="'+cb+'(this.value)" style="padding:6px 10px;border:1px solid var(--bd);border-radius:8px;font-family:Tajawal,sans-serif;font-size:12.5px;font-weight:700;background:#fff">';
+  ys.forEach(y=>{s+='<option value="'+y+'"'+(y===cy?' selected':'')+'>سنة '+y+'</option>';});
+  return s+'</select>';
+}
+function _setFinYear(y){window._finYear=+y;accGo(window._accView||'sum');}
+function _setFinYearOwner(y){window._finYear=+y;const b=document.getElementById('own-body');if(b)b.innerHTML=_accOwner();}
+function renderAcc(){_seedCOA();if(window._finYear==null)window._finYear=new Date().getFullYear();accGo(window._accView||'sum');}
 function accGo(v){
   window._accView=v;
   document.querySelectorAll('#acc-subnav .acc-tab').forEach(b=>b.classList.toggle('on',b.dataset.at===v));
@@ -3188,7 +3199,8 @@ function _accOwner(){
   const net=Math.round(f.net);
   const sal=(window._ownSal!=null?window._ownSal:12000);
   const res=(window._ownRes!=null?window._ownRes:30);
-  let h='<div class="acc-card"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:#1e3a5f;margin-bottom:3px">💰 راتب المالك وربح المؤسسة</div><div style="font-size:11px;color:var(--t3);margin-bottom:12px">يفصل «أجر عملك كمدير» عن «ربحك كمالك» — على صافي الربح الفعلي.</div>';
+  let h='<div class="acc-card" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px;margin-bottom:10px"><span style="font-weight:800;font-size:13px">📅 صافي ربح سنة</span>'+_finYearSelHTML('_setFinYearOwner')+'</div>';
+  h+='<div class="acc-card"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:#1e3a5f;margin-bottom:3px">💰 راتب المالك — سنة '+f.year+'</div><div style="font-size:11px;color:var(--t3);margin-bottom:12px">على صافي ربح سنة '+f.year+' فقط.</div>';
   h+='<div style="display:flex;flex-direction:column;gap:9px">';
   h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><label style="font-size:12.5px;font-weight:700">صافي الربح (سنوي)</label><input type="number" id="own-net" value="'+net+'" oninput="_ownCalc()" style="width:130px;padding:8px;border:1px solid var(--bd);border-radius:8px;text-align:left;direction:ltr;font-family:Tajawal,sans-serif;font-size:13px"></div>';
   h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><label style="font-size:12.5px;font-weight:700">راتبك الشهري كمدير</label><input type="number" id="own-sal" value="'+sal+'" oninput="_ownCalc()" style="width:130px;padding:8px;border:1px solid var(--bd);border-radius:8px;text-align:left;direction:ltr;font-family:Tajawal,sans-serif;font-size:13px"></div>';
@@ -3228,7 +3240,8 @@ function _ownCalc(){
 function _accSum(){
   const f=_finReal();
   let h='';
-  h+='<div class="acc-card" style="background:#F0FDF4;border-color:#BBF7D0"><div style="font-weight:800;color:#15803D;font-size:12.5px;line-height:1.6">✅ الأرقام أدناه مبنية على <b>ربحية المشاريع الفعلية</b> (العقد − التكاليف) — مطابقة للداش بورد.</div></div>';
+  h+='<div class="acc-card" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px"><span style="font-weight:800;font-size:13px">📅 السنة المالية</span>'+_finYearSelHTML('_setFinYear')+'</div>';
+  h+='<div class="acc-card" style="background:#F0FDF4;border-color:#BBF7D0"><div style="font-weight:800;color:#15803D;font-size:12.5px;line-height:1.6">✅ أرقام <b>سنة '+f.year+'</b> فقط، مبنية على ربحية المشاريع الفعلية ('+f.projCount+' مشروع).</div></div>';
   h+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px">';
   h+=_kc('صافي الربح',_accM(f.net)+' ر.س',f.net>=0?'#15803D':'#B91C1C');
   h+=_kc('الإيرادات (العقود)',_accM(f.revenue)+' ر.س','#1e3a5f');
@@ -3272,8 +3285,9 @@ function _accTB(){
 function _accFS(){
   const f=_finReal();
   const _r=(lbl,val,strong)=>'<tr'+(strong?' style="background:#f8fafc;font-weight:800"':'')+'><td>'+esc(lbl)+'</td><td class="acc-num">'+_accM(val)+'</td></tr>';
-  // قائمة الدخل (مبنية على ربحية المشاريع الفعلية)
-  let h='<div class="acc-card"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:#1e3a5f;margin-bottom:4px">📄 قائمة الدخل</div><div style="font-size:11px;color:var(--t3);margin-bottom:10px">مبنية على ربحية المشاريع — كما في '+fmtD(_today())+'</div><table class="acc-tbl"><tbody>';
+  // قائمة الدخل (مبنية على ربحية المشاريع الفعلية) لسنة محددة
+  let h='<div class="acc-card" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px"><span style="font-weight:800;font-size:13px">📅 القوائم لسنة</span>'+_finYearSelHTML('_setFinYear')+'</div>';
+  h+='<div class="acc-card"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:#1e3a5f;margin-bottom:4px">📄 قائمة الدخل — سنة '+f.year+'</div><div style="font-size:11px;color:var(--t3);margin-bottom:10px">مبنية على ربحية مشاريع سنة '+f.year+' فقط</div><table class="acc-tbl"><tbody>';
   h+=_r('الإيرادات',f.revenue,true);
   h+=_r('إيرادات المقاولات (قيمة العقود)',f.contractRev);
   if(f.standaloneRev>0)h+=_r('إيرادات أخرى (بدون مشروع)',f.standaloneRev);
