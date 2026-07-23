@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1066">
+<meta name="app-build" content="2026-08-01-1067">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -595,7 +595,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1066</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1067</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1369,7 +1369,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1066</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1067</bdi></span></div>
   </div>
 </div>
 
@@ -3827,7 +3827,7 @@ function renderReceivablesByProject(){
   // كل المشاريع التي لها قيمة عقد (باستثناء «تحت الدراسة»)
   const rows=projs.filter(p=>(p.contractValue||0)>0&&p.status!=='study').map(p=>{
     const pl=projPL(p.id);
-    return {p,contract:pl.contract,paid:pl.paid,outstanding:pl.outstanding};
+    return {p,contract:pl.contract,contractGross:pl.contractGross,paid:pl.paid,outstanding:pl.outstanding};
   }).sort((a,b)=>b.outstanding-a.outstanding);
   
   if(!rows.length){w.innerHTML='';return;}
@@ -3836,8 +3836,8 @@ function renderReceivablesByProject(){
   html+='<button type="button" onclick="markAllCollected()" style="width:100%;background:#DCFCE7;color:#15803D;border:1px solid #86EFAC;border-radius:9px;padding:9px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12px;cursor:pointer;margin-bottom:9px">✅ تحديد كل المشاريع كمحصّلة بالكامل</button>';
   html+='<button type="button" onclick="fixPayDup()" style="width:100%;background:#FEF2F2;color:#B91C1C;border:1px solid #FCA5A5;border-radius:9px;padding:9px;font-family:Tajawal,sans-serif;font-weight:800;font-size:12px;cursor:pointer;margin-bottom:9px">🧹 إزالة ازدواج التحصيل (تصفير الدفعة عند وجود فاتورة إيراد)</button>';
   
-  rows.forEach(({p,contract,paid,outstanding})=>{
-    const pct=contract>0?(paid/contract*100):0;
+  rows.forEach(({p,contract,contractGross,paid,outstanding})=>{
+    const pct=contractGross>0?(paid/contractGross*100):0;
     const done=outstanding<=0;
     const col=done?'#15803D':(outstanding>contract*0.5?'#B91C1C':'#C2410C');
     html+='<div style="background:#fff;border:1px solid var(--bd);border-radius:8px;padding:8px 10px;margin-bottom:6px">';
@@ -3851,8 +3851,8 @@ function renderReceivablesByProject(){
     html+='</div>';
     html+='<div style="height:4px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:3px"><div style="height:100%;background:'+(done?'#15803D':'var(--pr)')+';width:'+Math.min(pct,100)+'%"></div></div>';
     html+='<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t2)">';
-    html+='<span>العقد: '+fmtI(contract)+'</span>';
-    html+='<span>المستلم: '+fmtI(paid)+'</span>';
+    html+='<span>العقد: '+fmtI(contract)+' <span style="color:var(--t3)">(+ض15%='+fmtI(contractGross)+')</span></span>';
+    html+='<span>المُحصّل: '+fmtI(paid)+'</span>';
     html+='</div>';
     if(!done)html+='<button onclick="waReminder(\''+p.id+'\')" style="width:100%;margin-top:6px;background:#25D366;color:#fff;border:none;border-radius:7px;padding:6px;font-family:Tajawal,sans-serif;font-weight:700;font-size:11px;cursor:pointer">📲 تذكير واتساب بالمتبقّي</button>';
     html+='</div>';
@@ -3981,9 +3981,10 @@ function renderActiveProj(){
     
     // بيانات أساسية
     html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:11.5px;line-height:1.7;margin-bottom:7px">';
-    html+='<div><span style="color:var(--t2)">قيمة العقد:</span> <strong>'+fmtI(pl.contract)+'</strong></div>';
+    html+='<div><span style="color:var(--t2)">قيمة العقد (بدون ضريبة):</span> <strong>'+fmtI(pl.contract)+'</strong></div>';
+    html+='<div><span style="color:var(--t2)">العقد شامل الضريبة:</span> <strong>'+fmtI(pl.contractGross)+'</strong></div>';
     html+='<div><span style="color:var(--t2)">المصاريف الفعلية:</span> <strong style="color:#B91C1C">'+fmtI(pl.cost)+'</strong></div>';
-    html+='<div><span style="color:var(--t2)">المستلم:</span> <strong>'+fmtI(pl.paid)+'</strong></div>';
+    html+='<div><span style="color:var(--t2)">المُحصّل (شامل الضريبة):</span> <strong>'+fmtI(pl.paid)+'</strong></div>';
     html+='<div><span style="color:var(--t2)">المتبقي:</span> <strong style="color:#C2410C">'+fmtI(pl.outstanding)+'</strong></div>';
     html+='</div>';
     
