@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1067">
+<meta name="app-build" content="2026-08-01-1068">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -595,7 +595,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1067</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1068</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -672,7 +672,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       <div class="field"><label>التاريخ *</label><input type="date" id="f-dt"></div>
       <div class="field full"><label>المورد / العميل *</label><input type="text" id="f-vnd"></div>
       <div class="field full"><label>الرقم الضريبي</label><input type="text" id="f-vtx" placeholder="3000xxxxxx"></div>
-      <div class="field full"><label>طريقة احتساب الضريبة</label><div id="f-vatmode" style="display:flex;gap:8px"><button type="button" class="qe-vbtn on" data-mode="excl" style="flex:1" onclick="setFVat('excl')">المبلغ بدون الضريبة (نضيف 15%)</button><button type="button" class="qe-vbtn" data-mode="incl" style="flex:1" onclick="setFVat('incl')">المبلغ شامل الضريبة (نستخرج 15%)</button></div></div>
+      <div class="field full"><label>طريقة احتساب الضريبة</label><div id="f-vatmode" style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="qe-vbtn on" data-mode="excl" style="flex:1;min-width:120px" onclick="setFVat('excl')">بدون الضريبة (نضيف 15%)</button><button type="button" class="qe-vbtn" data-mode="incl" style="flex:1;min-width:120px" onclick="setFVat('incl')">شامل الضريبة (نستخرج 15%)</button><button type="button" id="f-exempt-btn" class="qe-vbtn" data-mode="exempt" style="flex:1;min-width:120px" onclick="fExempt()">🚫 معفاة (بلا ضريبة — كالرواتب)</button></div></div>
       <div class="field"><label id="f-sub-lbl">المبلغ قبل الضريبة *</label><input type="text" inputmode="decimal" id="f-sub" oninput="calcV()" placeholder="0.00"></div>
       <div class="field"><label>نسبة الضريبة %</label><input type="text" inputmode="decimal" id="f-vr" value="15" oninput="calcV()"></div>
       <div class="field"><label>قيمة الضريبة (تلقائي)</label><input type="text" inputmode="decimal" id="f-v" placeholder="0.00" readonly style="background:#f1f5f9"></div>
@@ -1369,7 +1369,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1067</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1068</bdi></span></div>
   </div>
 </div>
 
@@ -2303,7 +2303,8 @@ function syncScanProj(){
   if(fp)fp.value=sp.value;
 }
 let fVatMode='excl';
-function setFVat(m){fVatMode=m;document.querySelectorAll('#f-vatmode .qe-vbtn').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));const lbl=document.getElementById('f-sub-lbl');if(lbl)lbl.textContent=(m==='incl'?'المبلغ شامل الضريبة *':'المبلغ قبل الضريبة *');calcV();}
+function setFVat(m){fVatMode=m;const vr=document.getElementById('f-vr');if(vr&&(+vr.value===0))vr.value=15;document.querySelectorAll('#f-vatmode .qe-vbtn').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));const lbl=document.getElementById('f-sub-lbl');if(lbl)lbl.textContent=(m==='incl'?'المبلغ شامل الضريبة *':'المبلغ قبل الضريبة *');calcV();}
+function fExempt(){fVatMode='excl';const vr=document.getElementById('f-vr');if(vr)vr.value='0';document.querySelectorAll('#f-vatmode .qe-vbtn').forEach(b=>b.classList.toggle('on',b.dataset.mode==='exempt'));const lbl=document.getElementById('f-sub-lbl');if(lbl)lbl.textContent='المبلغ (معفى — بلا ضريبة) *';calcV();}
 function calcV(){const amt=toNum(document.getElementById('f-sub').value),r=toNum(document.getElementById('f-vr').value);let base,vat,tot;if(fVatMode==='incl'){tot=amt;base=+(amt/(1+r/100)).toFixed(2);vat=+(tot-base).toFixed(2);}else{base=amt;vat=+(amt*r/100).toFixed(2);tot=+(amt+vat).toFixed(2);}document.getElementById('f-v').value=vat.toFixed(2);document.getElementById('f-tot').value=tot.toFixed(2);}
 function calcTot(){const s=toNum(document.getElementById('f-sub').value),v=toNum(document.getElementById('f-v').value);document.getElementById('f-tot').value=(s+v).toFixed(2);}
 function getType(){const a=document.querySelector('.tp-pill.active');return a?a.dataset.t:'purchase';}
@@ -7413,7 +7414,7 @@ function vatPrev(yr,sel){
 // أهلية دخول الفاتورة في الإقرار الضريبي:
 // المشتريات: تدخل فقط إن كان لها رقم ضريبي للمورد (فاتورة ضريبية صحيحة) — إلا إذا عُلّمت يدوياً taxDecl=true.
 // أي فاتورة عُلّمت taxDecl=false تُستبعد دائماً. البنود المستوردة/دفعات المستخلصات بلا رقم ضريبي تُستبعد تلقائياً.
-function _vatEligPurchase(i){if(i.taxDecl===false)return false;if(i.taxDecl===true)return true;return !!String(i.vendorVAT||'').trim();}
+function _vatEligPurchase(i){if(i.taxDecl===false)return false;if(i.taxDecl===true)return true;const v=String(i.vendorVAT||'').replace(/\D/g,'');return v.length>=10;}
 // المبيعات: تُستبعد تلقائياً الإيرادات المستوردة/الداخلية (ليست فواتير مبيعات ضريبية صادرة للعميل)
 function _vatEligRevenue(i){
   if(i.taxDecl===false)return false;
@@ -7495,28 +7496,40 @@ function buildVatSheet(yr,sel){
   const fromD='01/'+String(rg.sm+1).padStart(2,'0')+'/'+yr;
   const toD=String(lastDay).padStart(2,'0')+'/'+String(rg.em+1).padStart(2,'0')+'/'+yr;
   const today=lFmtD(new Date().toISOString().slice(0,10));
-  const netLbl=t.net>=0?'صافي الضريبة المستحقة للدفع':'صافي الضريبة القابلة للاسترداد / المرحّلة';
-  const head='<thead><tr><td class="lhcell"><div class="lhwrap"><img class="lmark" src="'+MARK_B64+'"><img class="llogo" src="'+LOGO_B64+'"></div></td></tr></thead>';
-  const foot='<tfoot><tr><td class="lfcell"><div class="lfoot"><div><b>Tel</b> +966 55 554 7255 • <b>Email</b> ceo@hadff.com • <b>Web</b> www.hdft023.com</div><div>Othman Ibn Omarah St, Bldg 4994 • Al-Khuzama District • Al-Khobar, Saudi Arabia</div><div><b>C.R.</b> 2051251885 • <b>VAT</b> 311915930600003 • <b>Unified No.</b> 7036434897</div></div></td></tr></tfoot>';
   const _by=i=>((i.notes||'').trim()||(typeof catLabel==='function'?catLabel(i):'')||'—');
-  const rowsOf=arr=>{let x='';arr.forEach((i,idx)=>{x+='<tr><td>'+(idx+1)+'</td><td>'+lFmtD(i.date)+'</td><td style="text-align:right">'+esc(i.vendor||'')+'</td><td>'+esc(i.number||'')+'</td><td>'+esc(i.vendorVAT||'—')+'</td><td style="text-align:right">'+esc(_by(i))+'</td><td>'+fmt(i.subtotal||0)+'</td><td>'+fmt(i.vat||0)+'</td><td>'+fmt(i.total||0)+'</td></tr>';});return x;};
-  const hdr=nameLbl=>'<tr><th style="width:7mm">م</th><th style="width:19mm">التاريخ</th><th>'+nameLbl+'</th><th style="width:20mm">رقم الفاتورة</th><th style="width:28mm">الرقم الضريبي</th><th>البيان</th><th style="width:20mm">المبلغ (قبل الضريبة)</th><th style="width:16mm">الضريبة 15%</th><th style="width:20mm">الإجمالي (شامل)</th></tr>';
+  const rowsOf=arr=>{let x='';arr.forEach((i,idx)=>{x+='<tr><td>'+(idx+1)+'</td><td>'+lFmtD(i.date)+'</td><td class="r">'+esc(i.vendor||'—')+'</td><td>'+esc(i.number||'')+'</td><td>'+esc(i.vendorVAT||'—')+'</td><td class="r">'+esc(_by(i))+'</td><td class="n">'+fmt(i.subtotal||0)+'</td><td class="n">'+fmt(i.vat||0)+'</td><td class="n">'+fmt(i.total||0)+'</td></tr>';});return x;};
+  const hdr=nameLbl=>'<tr><th>م</th><th>التاريخ</th><th>'+nameLbl+'</th><th>رقم الفاتورة</th><th>الرقم الضريبي</th><th>البيان</th><th>المبلغ (قبل الضريبة)</th><th>الضريبة (15%)</th><th>الإجمالي (شامل)</th></tr>';
   const dcs=t.cs.slice().sort((a,c)=>new Date(a.date)-new Date(c.date));
   const drv=t.rv.slice().sort((a,c)=>new Date(a.date)-new Date(c.date));
-  const netLbl2=t.net>=0?'إجمالي الضريبة المستحقة للدفع لهيئة الزكاة والضريبة':'إجمالي الضريبة المرحّلة / القابلة للاسترداد';
-  let b='<style>.vatdet th,.vatdet td{font-size:9px;padding:3px 4px;border:1px solid #999;text-align:center}.vatdet th{background:#e8eef5;font-weight:700}.vattot{text-align:left;font-weight:800;font-size:12px;margin:5px 0 16px;padding:6px 11px;background:#f0f5fa;border:1px solid #d8e2ee;border-radius:6px}.vatnet{text-align:center;font-weight:800;font-size:15px;margin:14px 0;padding:11px;border-radius:8px;background:#dcfce7;border:1.5px solid #86efac;color:#15803D}</style>';
-  b+='<div class="vatttl">الإقرار الضريبي — '+esc(t.label)+'</div>';
-  b+='<div class="vatmeta"><div>'+esc(sett.name||'مؤسسة هدف التنمية للمقاولات')+'</div><div>الرقم الضريبي: '+esc(sett.vn||'—')+'</div><div>من تاريخ '+fromD+' إلى تاريخ '+toD+'</div></div>';
-  b+='<div class="vatsub">أولاً: ضريبة المدخلات (المشتريات)</div>';
-  b+='<table class="vattbl vatdet"><thead>'+hdr('اسم المورد')+'</thead><tbody>'+(dcs.length?rowsOf(dcs):'<tr><td colspan="9" style="color:#888">لا توجد فواتير مشتريات</td></tr>')+'</tbody></table>';
-  b+='<div class="vattot">إجمالي الضريبة المحسوبة على المشتريات: '+fmt(t.inVat)+' ر.س</div>';
-  b+='<div class="vatsub">ثانياً: ضريبة المخرجات (المبيعات)</div>';
-  b+='<table class="vattbl vatdet"><thead>'+hdr('اسم العميل')+'</thead><tbody>'+(drv.length?rowsOf(drv):'<tr><td colspan="9" style="color:#888">لا توجد فواتير مبيعات</td></tr>')+'</tbody></table>';
-  b+='<div class="vattot">إجمالي ضريبة المبيعات: '+fmt(t.outVat)+' ر.س</div>';
-  b+='<div class="vatnet">'+netLbl2+': '+fmt(Math.abs(t.net))+' ر.س</div>';
-  if(t.noVat.length)b+='<div class="vatwarn">⚠️ '+t.noVat.length+' فاتورة مشتريات بدون رقم ضريبي للمورد — ضريبة مدخلات '+fmt(t.riskVat)+' ر.س قد لا تُقبل من هيئة الزكاة.</div>';
-  b+='<div class="lsignrow"><div class="lsign"><div class="lrole">الـمــديــر الــعـــام</div><div class="lsigwrap"><img class="lsig" src="'+SIGN_B64+'"></div><div class="lname">عبدالعزيز بن مسفر العتيبي</div><div class="ldate">'+today+'</div></div><img class="lstamp" src="'+STAMP_B64+'"></div>';
-  return '<table class="lsheet">'+head+foot+'<tbody><tr><td class="lbcell">'+b+'</td></tr></tbody></table>';
+  // الصافي بطريقة المحاسب: المشتريات − المبيعات (سالب = مستحق الدفع)
+  const netAcc=+(t.inVat-t.outVat).toFixed(2);
+  const netLbl=netAcc>=0?'اجمالي الضريبة المستردة / المرحلة':'اجمالي الضريبة المستحقة / المرحلة';
+  let s='<style>';
+  s+='.vatp{font-family:Tahoma,Arial,sans-serif;direction:rtl;color:#000;padding:5mm;background:#fff}';
+  s+='.vatp h1{font-size:15px;font-weight:800;text-align:center;margin:0 0 3px}';
+  s+='.vatp .est{font-size:12px;text-align:center;margin:1px 0}';
+  s+='.vatp .rng{font-size:11px;text-align:center;margin:3px 0 11px}';
+  s+='.vatp table{width:100%;border-collapse:collapse;margin-bottom:5px}';
+  s+='.vatp th,.vatp td{border:1px solid #000;padding:3px 4px;font-size:9.5px;text-align:center;vertical-align:middle}';
+  s+='.vatp th{background:#e6e6e6;font-weight:700}';
+  s+='.vatp td.r{text-align:right}.vatp td.n{text-align:left;direction:ltr}';
+  s+='.vatp .tot{font-size:11.5px;font-weight:800;text-align:right;margin:0 0 12px;padding:3px 2px}';
+  s+='.vatp .sec{font-size:12px;font-weight:800;margin:12px 0 4px}';
+  s+='.vatp .net{font-size:13.5px;font-weight:800;text-align:right;margin-top:12px;padding:7px 2px;border-top:2px solid #000}';
+  s+='</style>';
+  let b='<div class="vatp">';
+  b+='<h1>الإقرار الضريبي — '+esc(t.label)+'</h1>';
+  b+='<div class="est">'+esc(sett.name||'مؤسسة هدف التنمية للمقاولات')+'</div>';
+  b+='<div class="est">الرقم الضريبي: '+esc(sett.vn||'—')+'</div>';
+  b+='<div class="rng">من تاريخ '+fromD+' إلى تاريخ '+toD+'</div>';
+  b+='<table><thead>'+hdr('اسم المورد')+'</thead><tbody>'+(dcs.length?rowsOf(dcs):'<tr><td colspan="9">—</td></tr>')+'</tbody></table>';
+  b+='<div class="tot">اجمالي الضريبة المحسوبة على المشتريات: '+fmt(t.inVat)+'</div>';
+  b+='<div class="sec">ضريبة المبيعات (المخرجات)</div>';
+  b+='<table><thead>'+hdr('اسم العميل')+'</thead><tbody>'+(drv.length?rowsOf(drv):'<tr><td colspan="9">—</td></tr>')+'</tbody></table>';
+  b+='<div class="tot">اجمالي ضريبة المبيعات: '+fmt(t.outVat)+'</div>';
+  b+='<div class="net">'+netLbl+': '+fmt(netAcc)+'</div>';
+  b+='</div>';
+  return s+b;
 }
 function _vatSel(){return {yr:parseInt(document.getElementById('vt-yr').value),sel:document.getElementById('vt-q').value};}
 function printVat(){const s=_vatSel();if(!s.yr)return toast('اختر السنة','er');document.getElementById('lprintRoot').innerHTML=buildVatSheet(s.yr,s.sel);document.body.classList.add('lprinting');setTimeout(()=>window.print(),60);}
@@ -7556,9 +7569,9 @@ function expVAT(){
   const lastDay=new Date(yr,rg.em+1,0).getDate();
   const fromD='01/'+String(rg.sm+1).padStart(2,'0')+'/'+yr;
   const toD=String(lastDay).padStart(2,'0')+'/'+String(rg.em+1).padStart(2,'0')+'/'+yr;
-  const fl=invs.filter(i=>{if(!i.date)return false;const d=new Date(i.date);return d.getFullYear()===yr&&d.getMonth()>=rg.sm&&d.getMonth()<=rg.em;});
-  const rv=fl.filter(i=>i.type==='revenue');
-  const cs=fl.filter(i=>i.type==='purchase'||i.type==='expense').sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const fl=invs.filter(i=>{if(!i.date||i.status==='cancelled')return false;const d=new Date(i.date);return d.getFullYear()===yr&&d.getMonth()>=rg.sm&&d.getMonth()<=rg.em;});
+  const rv=fl.filter(i=>i.type==='revenue'&&_vatEligRevenue(i));
+  const cs=fl.filter(i=>(i.type==='purchase'||i.type==='expense')&&_vatEligPurchase(i)).sort((a,b)=>new Date(a.date)-new Date(b.date));
   
   const wb=XLSX.utils.book_new();
   
