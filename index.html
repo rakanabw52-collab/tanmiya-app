@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1068">
+<meta name="app-build" content="2026-08-01-1069">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
@@ -595,7 +595,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1068</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1069</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1369,7 +1369,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1068</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1069</bdi></span></div>
   </div>
 </div>
 
@@ -3135,6 +3135,25 @@ function _fin(){
   const eq=-_typeSum('equity',bal)+net;
   return {bal,revenue,expenses,net,assets,liab,eq};
 }
+// ===== القوائم المبنية على ربحية المشاريع الفعلية (تطابق الداش بورد) =====
+function _finReal(){
+  const dp=projs.filter(p=>p.status!=='study');
+  const dpIds=new Set(dp.map(p=>p.id));
+  let contractRev=0;dp.forEach(p=>contractRev+=(p.contractValue||0));
+  const standaloneRev=invs.filter(i=>i.type==='revenue'&&!i.projectId&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
+  const revenue=contractRev+standaloneRev;
+  let projCost=0;dp.forEach(p=>projCost+=projPL(p.id).cost);
+  const standaloneCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!i.projectId&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
+  const cost=projCost+standaloneCost;
+  const net=revenue-cost;
+  // تفصيل التكاليف حسب البند (من فواتير المشاريع النشطة + العامة)
+  const costInvs=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&i.status!=='cancelled'&&(!i.projectId||dpIds.has(i.projectId)));
+  const byCat={};costInvs.forEach(i=>{const c=_expAccFor(i);byCat[c]=(byCat[c]||0)+(i.total||0);});
+  const catSum=Object.values(byCat).reduce((s,v)=>s+v,0);
+  const manualAdj=+(cost-catSum).toFixed(2);
+  let outstanding=0,paid=0,contractGross=0;dp.forEach(p=>{const pl=projPL(p.id);outstanding+=pl.outstanding;paid+=pl.paid;contractGross+=pl.contractGross;});
+  return {revenue,contractRev,standaloneRev,cost,net,byCat,manualAdj,outstanding,paid,contractGross};
+}
 function renderAcc(){_seedCOA();accGo(window._accView||'sum');}
 function accGo(v){
   window._accView=v;
@@ -3147,20 +3166,17 @@ function accGo(v){
   else if(v==='coa')body.innerHTML=_accCOA();
 }
 function _accSum(){
-  const f=_fin();const up=_unpostedInvs().length;
-  let totD=0,totC=0;Object.values(f.bal).forEach(b=>{totD+=b.d;totC+=b.c;});
-  const balanced=Math.abs(totD-totC)<1;
+  const f=_finReal();
   let h='';
-  if(up>0)h+='<div class="acc-card" style="background:#FFFBEB;border-color:#FDE68A"><div style="font-weight:800;color:#92400E;font-size:13.5px;margin-bottom:6px">📥 يوجد '+up+' فاتورة غير مرحّلة محاسبياً</div><div style="font-size:12px;color:#6B7280;margin-bottom:9px">رحّلها بضغطة واحدة لتتحوّل إلى قيود يومية تلقائياً (مدين/دائن) وتظهر في الميزان والقوائم.</div><button onclick="doPostInv()" style="background:linear-gradient(135deg,#15803D,#166534);color:#fff;border:none;border-radius:9px;padding:10px 16px;font-family:Cairo,sans-serif;font-weight:800;font-size:13px;cursor:pointer">⚙️ ترحيل الفواتير الآن</button></div>';
-  else h+='<div class="acc-card" style="background:#F0FDF4;border-color:#BBF7D0"><div style="font-weight:800;color:#15803D;font-size:13px">✅ كل الفواتير مُرحّلة محاسبياً</div></div>';
+  h+='<div class="acc-card" style="background:#F0FDF4;border-color:#BBF7D0"><div style="font-weight:800;color:#15803D;font-size:12.5px;line-height:1.6">✅ الأرقام أدناه مبنية على <b>ربحية المشاريع الفعلية</b> (العقد − التكاليف) — مطابقة للداش بورد.</div></div>';
   h+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px">';
-  h+=_kc('صافي الربح (قائمة الدخل)',_accM(f.net)+' ر.س',f.net>=0?'#15803D':'#B91C1C');
-  h+=_kc('الإيرادات',_accM(f.revenue)+' ر.س','#1e3a5f');
-  h+=_kc('المصروفات والتكاليف',_accM(f.expenses)+' ر.س','#B45309');
-  h+=_kc('عدد القيود',fmtI(journals.length),'#3730A3');
+  h+=_kc('صافي الربح',_accM(f.net)+' ر.س',f.net>=0?'#15803D':'#B91C1C');
+  h+=_kc('الإيرادات (العقود)',_accM(f.revenue)+' ر.س','#1e3a5f');
+  h+=_kc('التكاليف والمصروفات',_accM(f.cost)+' ر.س','#B45309');
+  h+=_kc('المتبقّي على العملاء',_accM(f.outstanding)+' ر.س','#C2410C');
   h+='</div>';
-  h+='<div class="acc-card"><div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>إجمالي المدين</span><span class="acc-num">'+_accM(totD)+'</span></div><div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-top:5px"><span>إجمالي الدائن</span><span class="acc-num">'+_accM(totC)+'</span></div><div style="margin-top:8px;text-align:center;font-weight:800;font-size:12.5px;color:'+(balanced?'#15803D':'#B91C1C')+'">'+(balanced?'⚖️ الميزان متوازن':'⚠️ يوجد فرق — راجع القيود')+'</div></div>';
-  h+='<div style="display:flex;gap:8px;flex-wrap:wrap"><button onclick="openJE()" style="flex:1;min-width:150px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:11px;font-family:Cairo,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">📝 قيد يدوي جديد</button><button onclick="accGo(\'fs\')" style="flex:1;min-width:150px;background:#1e3a5f;color:#fff;border:none;border-radius:9px;padding:11px;font-family:Cairo,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">📄 القوائم المالية</button></div>';
+  h+='<div style="display:flex;gap:8px;flex-wrap:wrap"><button onclick="accGo(\'fs\')" style="flex:1;min-width:150px;background:#1e3a5f;color:#fff;border:none;border-radius:9px;padding:11px;font-family:Cairo,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">📄 القوائم المالية</button><button onclick="openJE()" style="flex:1;min-width:150px;background:#EEF2FF;color:#3730A3;border:1px solid #C7D2FE;border-radius:9px;padding:11px;font-family:Cairo,sans-serif;font-weight:800;font-size:12.5px;cursor:pointer">📝 قيد يدوي</button></div>';
+  h+='<div style="font-size:11px;color:var(--t3);margin-top:10px;line-height:1.6">«القيود» و«ميزان المراجعة» تعرض القيد المزدوج الخام (للاستخدام المحاسبي المتقدّم) وقد لا تطابق القوائم أعلاه لأن بياناتك تتضمّن بنوداً مستوردة.</div>';
   return h;
 }
 function _kc(lbl,val,col){return '<div class="acc-card" style="margin:0"><div style="font-size:11.5px;color:var(--t2);font-weight:700">'+lbl+'</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:17px;color:'+col+';margin-top:3px" class="acc-num">'+val+'</div></div>';}
@@ -3194,22 +3210,28 @@ function _accTB(){
   return h;
 }
 function _accFS(){
-  const f=_fin();
-  const rows=(type)=>{let s='';coa.filter(a=>a.type===type).forEach(a=>{const b=f.bal[a.id]||{d:0,c:0};let v=(type==='revenue'||type==='liability'||type==='equity')?(b.c-b.d):(b.d-b.c);if(Math.abs(v)<0.5)return;s+='<tr><td>'+esc(a.name)+'</td><td class="acc-num">'+_accM(v)+'</td></tr>';});return s;};
-  let h='<div class="acc-card"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:#1e3a5f;margin-bottom:4px">📄 قائمة الدخل</div><div style="font-size:11px;color:var(--t3);margin-bottom:10px">للفترة حتى '+fmtD(_today())+' (أساس الاستحقاق)</div><table class="acc-tbl"><tbody>';
-  h+='<tr style="background:#f8fafc;font-weight:800"><td>الإيرادات</td><td class="acc-num">'+_accM(f.revenue)+'</td></tr>'+rows('revenue');
-  h+='<tr style="background:#f8fafc;font-weight:800"><td>المصروفات والتكاليف</td><td class="acc-num">('+_accM(f.expenses)+')</td></tr>'+rows('expense');
-  h+='<tr style="background:'+(f.net>=0?'#F0FDF4':'#FEF2F2')+';font-weight:800;font-size:13.5px"><td>صافي الربح</td><td class="acc-num" style="color:'+(f.net>=0?'#15803D':'#B91C1C')+'">'+_accM(f.net)+' ر.س</td></tr>';
+  const f=_finReal();
+  const _r=(lbl,val,strong)=>'<tr'+(strong?' style="background:#f8fafc;font-weight:800"':'')+'><td>'+esc(lbl)+'</td><td class="acc-num">'+_accM(val)+'</td></tr>';
+  // قائمة الدخل (مبنية على ربحية المشاريع الفعلية)
+  let h='<div class="acc-card"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:#1e3a5f;margin-bottom:4px">📄 قائمة الدخل</div><div style="font-size:11px;color:var(--t3);margin-bottom:10px">مبنية على ربحية المشاريع — كما في '+fmtD(_today())+'</div><table class="acc-tbl"><tbody>';
+  h+=_r('الإيرادات',f.revenue,true);
+  h+=_r('إيرادات المقاولات (قيمة العقود)',f.contractRev);
+  if(f.standaloneRev>0)h+=_r('إيرادات أخرى (بدون مشروع)',f.standaloneRev);
+  h+=_r('المصروفات والتكاليف',f.cost,true);
+  Object.keys(f.byCat).sort().forEach(code=>{const a=accById(code);if(f.byCat[code]>0)h+=_r((a?a.name:code),f.byCat[code]);});
+  if(Math.abs(f.manualAdj)>=1)h+=_r('تكاليف مواقع/تسويات يدوية',f.manualAdj);
+  h+='<tr style="background:'+(f.net>=0?'#F0FDF4':'#FEF2F2')+';font-weight:800;font-size:14px"><td>صافي الربح</td><td class="acc-num" style="color:'+(f.net>=0?'#15803D':'#B91C1C')+'">'+_accM(f.net)+' ر.س</td></tr>';
+  h+='</tbody></table>';
+  h+='<div style="font-size:11px;color:var(--t3);margin-top:7px;line-height:1.6">هامش الربح: <b>'+(f.revenue>0?(f.net/f.revenue*100).toFixed(1):'0')+'%</b> · الإيراد على أساس قيمة العقود (بدون ضريبة)، والتكلفة بالمبلغ المدفوع.</div></div>';
+  // ملخص المركز المالي المبسّط
+  h+='<div class="acc-card"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:#1e3a5f;margin-bottom:4px">📊 ملخص المركز المالي المبسّط</div><div style="font-size:11px;color:var(--t3);margin-bottom:10px">كما في '+fmtD(_today())+'</div><table class="acc-tbl"><tbody>';
+  h+=_r('إجمالي قيمة العقود (شامل الضريبة)',f.contractGross,true);
+  h+=_r('المُحصّل من العملاء',f.paid);
+  h+=_r('المتبقّي على العملاء (ذمم مدينة)',f.outstanding);
+  h+=_r('إجمالي التكاليف والمصروفات',f.cost,true);
+  h+='<tr style="background:'+(f.net>=0?'#F0FDF4':'#FEF2F2')+';font-weight:800;font-size:13.5px"><td>صافي الربح المتراكم</td><td class="acc-num" style="color:'+(f.net>=0?'#15803D':'#B91C1C')+'">'+_accM(f.net)+'</td></tr>';
   h+='</tbody></table></div>';
-  h+='<div class="acc-card"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:#1e3a5f;margin-bottom:4px">📊 قائمة المركز المالي</div><div style="font-size:11px;color:var(--t3);margin-bottom:10px">كما في '+fmtD(_today())+'</div><table class="acc-tbl"><tbody>';
-  h+='<tr style="background:#f8fafc;font-weight:800"><td>الأصول</td><td class="acc-num">'+_accM(f.assets)+'</td></tr>'+rows('asset');
-  h+='<tr style="background:#f8fafc;font-weight:800"><td>الخصوم</td><td class="acc-num">'+_accM(f.liab)+'</td></tr>'+rows('liability');
-  h+='<tr style="background:#f8fafc;font-weight:800"><td>حقوق الملكية (شامل صافي الربح)</td><td class="acc-num">'+_accM(f.eq)+'</td></tr>'+rows('equity');
-  h+='<tr style="font-weight:800;font-size:12.5px"><td>+ صافي ربح الفترة</td><td class="acc-num">'+_accM(f.net)+'</td></tr>';
-  const chk=Math.abs(f.assets-(f.liab+f.eq))<1;
-  h+='<tr style="background:'+(chk?'#F0FDF4':'#FEF2F2')+';font-weight:800;font-size:13px"><td>الأصول = الخصوم + حقوق الملكية</td><td class="acc-num">'+_accM(f.assets)+' = '+_accM(f.liab+f.eq)+'</td></tr>';
-  h+='</tbody></table><div style="text-align:center;margin-top:8px;font-weight:800;font-size:12px;color:'+(chk?'#15803D':'#B91C1C')+'">'+(chk?'✅ الميزانية متوازنة':'⚠️ فرق في التوازن — راجع القيود الافتتاحية')+'</div></div>';
-  h+='<div style="font-size:11.5px;color:var(--t3);line-height:1.7;padding:0 4px">💡 القوائم على <b>أساس الاستحقاق</b> من القيود المرحّلة. النقدية تظهر عند إدخال قيود التحصيل/السداد يدوياً. أدخل قيد رأس المال الافتتاحي من «قيد يدوي» لاكتمال المركز المالي.</div>';
+  h+='<div style="font-size:11.5px;color:var(--t3);line-height:1.7;padding:0 4px">💡 هذه القوائم <b>تطابق ربحية المشاريع</b> (العقد − التكاليف). لعرض القيود المزدوجة الخام استخدم «القيود» و«ميزان المراجعة».</div>';
   return h;
 }
 function _accCOA(){
