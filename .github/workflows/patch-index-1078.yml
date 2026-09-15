@@ -1,0 +1,46 @@
+name: Patch index to 1078
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/patch-index-1078.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch index.html to 1078
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          reps={
+            'name="app-build" content="2026-09-15-1075"':'name="app-build" content="2026-09-15-1078"',
+            'manifest.json?v=1075':'manifest.json?v=1078',
+            "sw.js?v=1075":"sw.js?v=1078",
+            'إصدار التطبيق <bdi>1075</bdi>':'إصدار التطبيق <bdi>1078</bdi>'
+          }
+          for a,b in reps.items(): s=s.replace(a,b)
+          tag='<script src="settings-1078.js?v=1078"></script>'
+          if tag not in s:
+              s=s.replace('</body>',tag+'\n</body>')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit patched index
+        run: |
+          if git diff --quiet -- index.html; then
+            echo 'index already patched'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m '1078: patch index.html version and settings loader'
+          git push
