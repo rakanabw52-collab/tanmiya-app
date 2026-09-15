@@ -121,7 +121,7 @@ function replaceDashboardStrip(){
   window.renderOpsDashboardStrip=function(){
     const w=document.getElementById('ops-db-strip');if(!w)return;
     const d=window.opsData||{},n=v=>Number(v||0)||0,m=v=>(typeof fmtI==='function'?fmtI(v):Math.round(v).toLocaleString('ar-SA'))+' ر.س';
-    const projects=Array.isArray(window.projs)?window.projs:[];
+    const projects=(typeof projs!=='undefined'&&Array.isArray(projs))?projs:[];
     const claims=Array.isArray(d.claims)?d.claims:[],pos=Array.isArray(d.purchaseOrders)?d.purchaseOrders:[],dues=Array.isArray(d.dues)?d.dues:[],cash=Array.isArray(d.cashflow)?d.cashflow:[],changes=Array.isArray(d.changeOrders)?d.changeOrders:[],banks=Array.isArray(d.bankRecons)?d.bankRecons:[],budgets=Array.isArray(d.budgets)?d.budgets:[];
     const bal=x=>Math.max(0,n(x.total||x.amount)-n(x.paid));
     const now=new Date(),lim=new Date(now.getTime()+30*86400000);const in30=x=>x&&new Date(x)>=now&&new Date(x)<=lim;
