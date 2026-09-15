@@ -1,5 +1,5 @@
-// Service Worker - نظام هدف التنمية (إصدار 1073) - اسم الكاش يطابق رقم الإصدار
-const CACHE_NAME = 'hadaf-1073';
+// Service Worker - نظام هدف التنمية (إصدار 1074) - اسم الكاش يطابق رقم الإصدار
+const CACHE_NAME = 'hadaf-1074';
 const ASSETS = [
   './','./index.html','./manifest.json',
   './icon-192.png','./icon-512.png','./apple-touch-icon.png','./brand-logo.png',
@@ -64,4 +64,4 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('message', (e) => {
   if (e.data?.type==='SKIP_WAITING') self.skipWaiting();
 });
-console.log('✓ هدف التنمية إصدار 1073 (brand + security update)');
+console.log('✓ هدف التنمية إصدار 1074 (brand + security update)');
