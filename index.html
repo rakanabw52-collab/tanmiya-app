@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-09-15-1074">
+<meta name="app-build" content="2026-09-15-1075">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1074">
+<link rel="manifest" href="manifest.json?v=1075">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -538,6 +538,15 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 }
 
 </style>
+
+<link rel="stylesheet" href="ops-1075.css?v=1075">
+<script>
+window.SOPS='hd-ops-v1';
+window.opsData={
+  suppliers:[],rfqs:[],purchaseOrders:[],subcontractors:[],subcontracts:[],claims:[],changeOrders:[],cashflow:[],bankRecons:[],dues:[],periods:[],periodEvents:[],users:[],budgets:[],
+  zatca:{environment:'none',certificateStatus:'none',notes:'',updatedAt:0}
+};
+</script>
 </head>
 <body>
 
@@ -615,6 +624,8 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
   <div class="tab" data-tab="vt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>الضريبة</span></div>
   <div class="tab" data-tab="acc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v4H3z"/><path d="M5 7v14h14V7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="15" y2="15"/></svg><span>المحاسبة</span></div>
   <div class="tab" data-tab="let"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg><span>الخطابات</span></div>
+
+  <div class="tab" data-tab="ops"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M8 10h1"/><path d="M15 10h1"/></svg><span>إدارة المقاولات</span></div>
 </nav>
 
 <main>
@@ -622,6 +633,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 <section class="sec active" id="sec-db">
   <h2 class="sec-ttl">لوحة الإدارة التنفيذية <button id="privacy-btn" onclick="togglePrivacy()" title="إخفاء/إظهار الأرقام (خصوصية)">👁️</button></h2>
   <div onclick="openAsk()" style="display:flex;align-items:center;gap:9px;background:#fff;border:1.5px solid #BFDBFE;border-radius:12px;padding:12px 14px;margin-bottom:12px;cursor:pointer;box-shadow:0 2px 6px rgba(39,113,171,.08)"><span style="font-size:17px">🗣️</span><span style="font-weight:700;font-size:13px;color:var(--t2)">اسأل بالعربي عن أرقامك — مثلاً: كم صرفت؟ أي مشروع أكثر ربحاً؟ كم المتبقي؟</span></div>
+  <div id="ops-db-strip"></div>
   <div class="db-grid">
     <!-- العمود ١: Hero + المستحقات + التنبيهات -->
     <div class="db-col">
@@ -679,7 +691,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1074</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1075</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -965,6 +977,33 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
   </div>
   <div id="let-list"></div>
 </section>
+
+<!-- إدارة المقاولات المتكاملة — إصدار 1075 -->
+<section class="sec" id="sec-ops">
+  <div class="ops-title-row">
+    <div>
+      <h2 class="sec-ttl" style="margin-bottom:3px">إدارة المقاولات المتكاملة</h2>
+      <div class="ops-subtitle">المشروع ← الميزانية ← المشتريات ومقاولو الباطن ← المستخلصات ← المحاسبة ← التحصيل والدفع ← التدفق النقدي</div>
+    </div>
+    <button class="ops-sync-btn" onclick="svOps(true)">💾 حفظ ومزامنة</button>
+  </div>
+  <div class="ops-nav" id="ops-nav">
+    <button class="on" data-ov="overview" onclick="opsGo('overview')">🏗️ مركز المشروع</button>
+    <button data-ov="claims" onclick="opsGo('claims')">▤ المستخلصات</button>
+    <button data-ov="changes" onclick="opsGo('changes')">⟳ أوامر التغيير</button>
+    <button data-ov="procurement" onclick="opsGo('procurement')">🛒 المشتريات</button>
+    <button data-ov="suppliers" onclick="opsGo('suppliers')">🏢 الموردون</button>
+    <button data-ov="subs" onclick="opsGo('subs')">👷 مقاولو الباطن</button>
+    <button data-ov="cashflow" onclick="opsGo('cashflow')">💹 التدفق 30/60/90</button>
+    <button data-ov="aging" onclick="opsGo('aging')">📅 الذمم والأعمار</button>
+    <button data-ov="bank" onclick="opsGo('bank')">🏦 التسوية البنكية</button>
+    <button data-ov="period" onclick="opsGo('period')">🔒 الإقفال والعكس</button>
+    <button data-ov="users" onclick="opsGo('users')">👥 المستخدمون</button>
+    <button data-ov="zatca" onclick="opsGo('zatca')">🧾 الفوترة الإلكترونية</button>
+  </div>
+  <div id="ops-body"></div>
+</section>
+
 </main>
 <!-- مودال المدقق الداخلي -->
 <div class="mb" id="audit-mb" onclick="if(event.target===this)closeAudit()">
@@ -1469,7 +1508,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1074</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1075</bdi></span></div>
   </div>
 </div>
 
@@ -1602,6 +1641,7 @@ async function cloudPushAll(){
       const ci=await cloudPull('invoices','_all'); if(ci&&Array.isArray(ci.data)){invs=_hdMergeById(invs,ci.data);await _svRetry(SK,JSON.stringify(invs));}
       const cp=await cloudPull('projects','_all'); if(cp&&Array.isArray(cp.data)){projs=_hdMergeById(projs,cp.data);await _svRetry(SP,JSON.stringify(projs));}
       const cl=await cloudPull('letters','_all'); if(cl&&Array.isArray(cl.data)){lets=_hdMergeById(lets,cl.data);await _svRetry(SL,JSON.stringify(lets));}
+      const cop=await cloudPull('settings','ops-v1'); if(cop&&cop.data&&typeof cop.data==='object'&&typeof window.opsMergeData==='function'){window.opsData=window.opsMergeData(window.opsData,cop.data);await _svRetry(window.SOPS,JSON.stringify(window.opsData));}
     }catch(_){}
     await cloudPush('invoices','_all',invs);
     await cloudPush('projects','_all',projs);
@@ -1614,6 +1654,7 @@ async function cloudPushAll(){
     try{await cloudPush('cfo','_all',cfoReports);}catch(_){}
     try{await cloudPush('coa','_all',coa);}catch(_){}
     try{await cloudPush('journals','_all',journals);}catch(_){}
+    try{await cloudPush('settings','ops-v1',window.opsData||{});}catch(_){}
     _lastSync=Date.now();
     setSyncBadge('ok','مُزامن');
   }catch(e){
@@ -1631,6 +1672,7 @@ async function cloudPullAll(opts){
     const ci=await cloudPull('invoices','_all');
     const cp=await cloudPull('projects','_all');
     const cs=await cloudPull('settings','main');
+    const cops=await cloudPull('settings','ops-v1');
     
     if(ci&&Array.isArray(ci.data)){
       // دمج ذكي: توحيد سجلات المحلي والسحابة (لا يُفقد شيء عند اختلاف الأجهزة)
@@ -1652,6 +1694,10 @@ async function cloudPullAll(opts){
         sett=cs.data;changed=true;
         await _svRetry(SS,JSON.stringify(sett));
       }
+    }
+    if(cops&&cops.data&&typeof cops.data==='object'&&typeof window.opsMergeData==='function'){
+      const om=window.opsMergeData(window.opsData,cops.data);
+      if(JSON.stringify(om)!==JSON.stringify(window.opsData)){window.opsData=om;changed=true;await _svRetry(window.SOPS,JSON.stringify(window.opsData));}
     }
     const cl=await cloudPull('letters','_all');
     if(cl&&Array.isArray(cl.data)){
@@ -1920,6 +1966,7 @@ async function ld(){
   try{const r=await _stGet(SCFO);if(r&&r.value)cfoReports=JSON.parse(r.value);}catch(e){}
   try{const r=await _stGet(SCOA);if(r&&r.value)coa=JSON.parse(r.value);}catch(e){}
   try{const r=await _stGet(SJRN);if(r&&r.value)journals=JSON.parse(r.value);}catch(e){}
+  try{const r=await _stGet(window.SOPS);if(r&&r.value){const o=JSON.parse(r.value);window.opsData=Object.assign(window.opsData||{},o||{});}}catch(e){console.warn('load ops:',e);}
   if(typeof _seedCOA==='function')_seedCOA();
   try{const r=await _stGet('hd-seed-ver');if(r&&r.value)storedVer=r.value;}catch(e){}
   const onlySeedProjs=projs.length>0&&projs.every(p=>['proj_otaim_1112','proj_rawabi','proj_jubail'].includes(p.id));
@@ -2158,6 +2205,7 @@ function goTab(n){
   if(n==='vt')renderVT();
   if(n==='acc')renderAcc();
   if(n==='let')renderLetters();
+  if(n==='ops'&&typeof renderOps==='function')renderOps();
   if(n==='fs')initFeasibility();
   if(n==='add')fillProjSel();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -2414,6 +2462,7 @@ async function saveInv(){
   const no=document.getElementById('f-no').value.trim(),dt=document.getElementById('f-dt').value,vnd=document.getElementById('f-vnd').value.trim(),sub=toNum(document.getElementById('f-sub').value);
   if(!no){document.getElementById('f-no').focus();return toast('اكتب رقم الفاتورة','er');}
   if(!dt){document.getElementById('f-dt').focus();return toast('اختر التاريخ','er');}
+  if(typeof hdIsPeriodClosed==='function'&&hdIsPeriodClosed(dt))return toast('🔒 الفترة المحاسبية لهذا التاريخ مقفلة','er');
   if(!vnd){document.getElementById('f-vnd').focus();return toast('اكتب اسم المورد/العميل','er');}
   if(sub<=0){document.getElementById('f-sub').focus();return toast('اكتب المبلغ (الأرقام يدوياً مدعومة عربي/إنجليزي)','er');}
   cancelAS();
@@ -3439,6 +3488,7 @@ function jeCalc(){
 function saveJE(){
   const date=document.getElementById('je-date').value||_today();
   const desc=document.getElementById('je-desc').value.trim();
+  if(typeof hdIsPeriodClosed==='function'&&hdIsPeriodClosed(date))return toast('🔒 الفترة المحاسبية لهذا التاريخ مقفلة','er');
   const lines=[];let d=0,c=0;
   document.querySelectorAll('#je-lines .je-line').forEach(ln=>{
     const acc=ln.querySelector('select').value;const inp=ln.querySelectorAll('input');
@@ -7549,6 +7599,7 @@ function equalizeColumns(){
 
 function renderDB(){
   if(typeof renderDocsAlert==='function')renderDocsAlert();
+  if(typeof renderOpsDashboardStrip==='function')renderOpsDashboardStrip();
   // المشاريع «تحت الدراسة» لا تدخل أرقامها في الداش بورد حتى تُحوّل إلى نشط
   const dashProjs=projs.filter(p=>p.status!=='study');
   const contractRev=dashProjs.reduce((s,p)=>s+(p.contractValue||0),0);
@@ -8327,7 +8378,7 @@ function exportDocsCertPDF(){
 }
 function closeSet(){sett.name=document.getElementById('set-nm').value.trim();sett.vn=document.getElementById('set-vn').value.trim();sett.cr=document.getElementById('set-cr').value.trim();svS();if(typeof cloudPush==='function')cloudPush('settings','main',sett);document.getElementById('set-mb').classList.remove('show');}
 function expBak(){
-  const data={invs,projs,docs,lets,sett,at:new Date().toISOString(),ver:'hadaf-v5'};
+  const data={invs,projs,docs,lets,sett,ops:window.opsData,at:new Date().toISOString(),ver:'hadaf-v5'};
   const json=JSON.stringify(data,null,2);
   const blob=new Blob([json],{type:'application/json'});
   const u=URL.createObjectURL(blob);
@@ -8515,7 +8566,7 @@ async function autoBackup(showToast){
     return false;
   }
   try{
-    const data={invs,projs,docs,lets,sett,at:new Date().toISOString(),ver:'hadaf-auto-v2',counts:{invs:invs.length,projs:projs.length,docs:docs.length,lets:lets.length}};
+    const data={invs,projs,docs,lets,sett,ops:window.opsData,at:new Date().toISOString(),ver:'hadaf-auto-v2',counts:{invs:invs.length,projs:projs.length,docs:docs.length,lets:lets.length}};
     const dt=new Date().toISOString().slice(0,10);
     const fileName='هدف_بكاب_'+dt+'.json';
     const fileHandle=await handle.getFileHandle(fileName,{create:true});
@@ -8595,6 +8646,7 @@ document.getElementById('imp-f').addEventListener('change',async e=>{
     const impProjs=data.projs||[];
     const impDocs=data.docs||[];
     const impLets=data.lets||[];
+    const impOps=data.ops||null;
     // إزالة التكرار داخل الملف المستورد (حسب id)
     const dedup=(arr)=>{
       const seen={},out=[];
@@ -8634,7 +8686,8 @@ document.getElementById('imp-f').addEventListener('change',async e=>{
       docs=mergeById(docs,cDocs);
       lets=mergeById(lets,cLets);
       if(data.sett||data.settings)sett={...sett,...(data.sett||data.settings)};
-      await sv();await svP();await svD();await svS();await svL();apSett();closeSet();renderDB();renderLetters();
+      if(impOps&&typeof window.opsMergeData==='function')window.opsData=window.opsMergeData(window.opsData,impOps);
+      await sv();await svP();await svD();await svS();await svL();if(typeof svOps==='function')await svOps(false);apSett();closeSet();renderDB();renderLetters();
       const addedI=invs.length-beforeI,addedP=projs.length-beforeP;
       toast('✅ دمج: +'+addedI+' فاتورة جديدة، +'+addedP+' مشروع (بدون تكرار)','ok');
     }else{
@@ -8643,7 +8696,8 @@ document.getElementById('imp-f').addEventListener('change',async e=>{
       if(!ok2)return;
       invs=cInvs;projs=cProjs;docs=cDocs;lets=cLets;
       if(data.sett||data.settings)sett={...sett,...(data.sett||data.settings)};
-      await sv();await svP();await svD();await svS();await svL();apSett();closeSet();renderDB();renderLetters();
+      if(impOps)window.opsData=Object.assign(window.opsData||{},impOps);
+      await sv();await svP();await svD();await svS();await svL();if(typeof svOps==='function')await svOps(false);apSett();closeSet();renderDB();renderLetters();
       toast('✅ تم الاستبدال','ok');
     }
   }catch(err){toast('فشل: '+err.message,'er');}
@@ -8892,7 +8946,7 @@ async function removeAllDups(){
 window.HD_ROLE=null;
 window.HD_AUTHED=false;
 window.HD_PENDING_SESSION=null;
-window.ACC_ALLOW=['add','ls','vt','acc'];
+window.ACC_ALLOW=['add','ls','vt','acc','ops'];
 const HD_PIN_KEY='hd-local-pin-v1';
 const HD_PIN_FAIL_KEY='hd-pin-fails-v1';
 const HD_PIN_LOCK_KEY='hd-pin-lock-until-v1';
@@ -9169,7 +9223,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkVersi
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1074',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1075',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9224,5 +9278,15 @@ if('serviceWorker' in navigator){
   </div>
 </div>
 <div id="lprintRoot"></div>
+
+<div class="ops-modal" id="ops-modal" onclick="if(event.target===this)opsCloseModal()">
+  <div class="ops-modal-sheet">
+    <div class="ops-modal-head"><div id="ops-modal-title">إضافة</div><button onclick="opsCloseModal()">✕</button></div>
+    <div id="ops-modal-body"></div>
+    <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
+  </div>
+</div>
+<script src="ops-1075.js?v=1075"></script>
+
 </body>
 </html>

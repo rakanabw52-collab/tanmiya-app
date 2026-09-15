@@ -2,7 +2,7 @@
   "name": "هدف التنمية للمقاولات",
   "short_name": "هدف التنمية",
   "description": "نظام إدارة المشاريع والفواتير ودراسة الجدوى",
-  "start_url": "./index.html?v=1074",
+  "start_url": "./index.html?v=1075",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
