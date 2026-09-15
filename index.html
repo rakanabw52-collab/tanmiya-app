@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-08-01-1071">
+<meta name="app-build" content="2026-09-15-1073">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
-<title>هدف التنمية — النظام الشامل</title>
+<title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -460,58 +460,142 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 .upd-bar button{background:#fff;color:#2771ab;border:none;border-radius:10px;padding:7px 16px;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer}
 .upd-bar button:active{transform:scale(.95)}
 @media print{.upd-bar{display:none!important}}
+
+/* ===== تحديث 1073 — دخول سريع برمز من 4 أرقام مع إبقاء المصادقة السحابية ===== */
+:root{--pr:#2771AB;--pd:#1E5D8D;--pk:#17496F}
+.hdr{
+  background:linear-gradient(135deg,#17496F 0%,#1E5D8D 48%,#2771AB 100%);
+  box-shadow:0 8px 26px rgba(23,73,111,.22);
+}
+.hdr-inner{gap:10px}
+.brand{min-width:0}
+.brand-official{
+  width:min(330px,42vw);
+  height:50px;
+  background:#fff;
+  border-radius:12px;
+  padding:5px 10px;
+  object-fit:contain;
+  object-position:center;
+  box-shadow:0 4px 14px rgba(0,0,0,.12);
+}
+@media(max-width:620px){
+  .brand-official{width:205px;height:44px;padding:4px 7px}
+}
+@media(max-width:430px){
+  .brand-official{width:165px;height:40px}
+}
+#sec-db>.sec-ttl{
+  font-family:'Cairo','Tajawal',sans-serif;
+  font-size:20px;
+  letter-spacing:-.2px;
+  margin-bottom:12px;
+}
+#sec-db>.sec-ttl::after{
+  content:'ملخص مباشر للمشاريع والسيولة والربحية والالتزامات';
+  display:block;
+  margin-top:2px;
+  font-family:'Tajawal',sans-serif;
+  font-size:11px;
+  font-weight:600;
+  color:var(--t3);
+}
+#sec-db .db-col>*{
+  border-radius:14px;
+}
+#sec-db .kp,#sec-db .mtc,#sec-db .acc-card,#sec-db .receivables-card{
+  box-shadow:0 4px 14px rgba(15,23,42,.045);
+}
+#sec-db .hero-profit{
+  background:linear-gradient(135deg,#17496F,#2771AB);
+  box-shadow:0 10px 26px rgba(39,113,171,.18);
+}
+#sec-db .kp.p{border-right-color:#2771AB}
+#sec-db .tab.active{color:#2771AB;border-bottom-color:#2771AB}
+#hdGate{
+  background:
+    radial-gradient(circle at 12% 15%,rgba(255,255,255,.12),transparent 28%),
+    linear-gradient(155deg,#2771AB 0%,#1E5D8D 52%,#17496F 100%) !important;
+}
+.hd-login-brand{
+  width:min(300px,78vw);
+  background:#fff;
+  border-radius:16px;
+  padding:9px 14px;
+  box-shadow:0 14px 40px rgba(0,0,0,.18);
+  margin-bottom:8px;
+}
+.hd-security-note{
+  margin-top:12px;
+  background:#EFF6FF;
+  border:1px solid #BFDBFE;
+  border-radius:10px;
+  padding:8px 10px;
+  color:#1E5D8D;
+  font-size:11px;
+  line-height:1.65;
+  font-weight:700;
+}
+
 </style>
 </head>
 <body>
+
 <div id="hdGate" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#2771ab,#143b62);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;font-family:'Tajawal',sans-serif;text-align:center">
-  <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:2px">
-    <img id="hd-gate-logo" alt="" src="data:image/png;base64,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" style="width:40px;height:40px;border-radius:11px;background:#fff;flex-shrink:0">
-    <div style="color:#fff;font-size:22px;font-weight:800">هدف التنمية للمقاولات</div>
-  </div>
-  <div style="color:#cfe0f3;font-size:13px;margin-top:6px">منظومة الأرشفة وإدارة المشاريع</div>
+  <img class="hd-login-brand" src="brand-logo.png" alt="مؤسسة هدف التنمية للمقاولات">
+  <div style="color:#d9e8f6;font-size:13px;margin-top:6px">منظومة إدارة المشاريع والفواتير والجدوى</div>
+
   <div style="background:#fff;border-radius:18px;padding:22px 20px;margin-top:22px;width:100%;max-width:340px;box-shadow:0 18px 50px -18px rgba(0,0,0,.5)">
-    <div id="hd-owner-box" style="display:none">
-      <div style="font-size:15px;font-weight:800;color:#143b62;margin-bottom:14px">دخول المالك</div>
-      <input id="hd-email" type="email" inputmode="email" autocomplete="username" placeholder="البريد الإلكتروني" style="width:100%;box-sizing:border-box;direction:ltr;text-align:left;font-size:15px;font-weight:600;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif;margin-bottom:10px">
-      <input id="hd-pass" type="password" autocomplete="current-password" placeholder="كلمة المرور" style="width:100%;box-sizing:border-box;direction:ltr;text-align:left;font-size:15px;font-weight:600;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif">
-      <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:#143b62;font-weight:600;cursor:pointer;user-select:none">
+    <div id="hd-pin-box">
+      <div style="font-size:15px;font-weight:800;color:#143b62;margin-bottom:6px">رمز الدخول</div>
+      <div style="font-size:11.5px;color:#64748b;margin-bottom:13px">أدخل الرمز المكوّن من 4 أرقام</div>
+      <input id="hd-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"
+        oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)"
+        style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:12px;font-size:26px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif">
+      <button id="hd-pin-btn" onclick="hdPinLogin()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#2771ab,#1a4d7d);color:#fff;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">دخول</button>
+      <button onclick="hdShowAccountLogin()" style="margin-top:11px;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">جهاز جديد أو استخدام حساب مختلف</button>
+    </div>
+
+    <div id="hd-setup-box" style="display:none">
+      <div style="font-size:15px;font-weight:800;color:#143b62;margin-bottom:6px">تثبيت رمز الدخول</div>
+      <div style="font-size:11.5px;color:#64748b;margin-bottom:13px;line-height:1.7">اختر 4 أرقام لهذا الجهاز. تقدر تكتب نفس رمزك القديم.</div>
+      <input id="hd-newpin" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="الرمز الجديد"
+        oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)"
+        style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:9px;font-size:22px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif;margin-bottom:9px">
+      <input id="hd-newpin2" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="تأكيد الرمز"
+        oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)"
+        style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:9px;font-size:22px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif">
+      <button onclick="hdSavePinAndEnter()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#2771ab,#1a4d7d);color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">حفظ الرمز والدخول</button>
+      <button onclick="hdShowAccountLogin()" style="margin-top:11px;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">استخدام حساب مختلف</button>
+    </div>
+
+    <div id="hd-account-box" style="display:none">
+      <div style="font-size:15px;font-weight:800;color:#143b62;margin-bottom:6px">تهيئة الجهاز</div>
+      <div style="font-size:11.5px;color:#64748b;margin-bottom:13px;line-height:1.7">الدخول بالحساب مطلوب مرة واحدة على الجهاز، وبعدها يكون دخولك بالرمز فقط.</div>
+      <input id="hd-email" type="email" inputmode="email" autocomplete="username" placeholder="البريد الإلكتروني"
+        style="width:100%;box-sizing:border-box;direction:ltr;text-align:left;font-size:15px;font-weight:600;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif;margin-bottom:9px">
+      <input id="hd-pass" type="password" autocomplete="current-password" placeholder="كلمة المرور"
+        style="width:100%;box-sizing:border-box;direction:ltr;text-align:left;font-size:15px;font-weight:600;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif;margin-bottom:9px">
+      <input id="hd-auth-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="اختر رمزًا من 4 أرقام"
+        oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)"
+        style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:8px;font-size:20px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif">
+      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:#143b62;font-weight:600;cursor:pointer;user-select:none">
         <input type="checkbox" id="hd-remember" style="width:17px;height:17px;accent-color:#2771ab;cursor:pointer">
-        تذكّرني (حفظ البريد وكلمة المرور)
+        تذكّر البريد الإلكتروني
       </label>
+      <button id="hd-login-btn" onclick="hdAccountLogin()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#2771ab,#1a4d7d);color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">تهيئة والدخول</button>
+      <button onclick="hdBackToPin()" style="margin-top:11px;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">العودة للرمز</button>
     </div>
-    <div id="hd-acc-box">
-      <div style="font-size:15px;font-weight:800;color:#143b62;margin-bottom:14px">الدخول بالرمز</div>
-      <input id="hd-accpin" inputmode="numeric" maxlength="4" placeholder="••••" style="width:100%;box-sizing:border-box;text-align:center;letter-spacing:10px;font-size:24px;font-weight:800;padding:14px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif">
-    </div>
+
     <div id="hd-pin-err" style="color:#b91c1c;font-size:12.5px;font-weight:700;margin-top:8px;min-height:16px"></div>
-    <button id="hd-login-btn" onclick="hdLoginRouter()" style="width:100%;margin-top:4px;background:linear-gradient(135deg,#2771ab,#1a4d7d);color:#fff;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">دخول</button>
-    <div style="margin-top:14px;font-size:12.5px">
-      <span id="hd-toggle" onclick="hdToggleMode()" style="color:#2771ab;font-weight:700;cursor:pointer;text-decoration:underline">الدخول بالبريد وكلمة المرور</span>
-    </div>
+    <div class="hd-security-note">🔒 الرمز من 4 أرقام يقفل التطبيق على جهازك، بينما الوصول للبيانات السحابية يبقى مرتبطًا بالحساب المصرّح به.</div>
   </div>
-  <div style="color:#aecbe6;font-size:11.5px;margin-top:18px;line-height:1.9">حقوق الطبع محفوظة - هدف التنمية - برمجة أبو راكان</div>
+  <div style="color:#aecbe6;font-size:11.5px;margin-top:18px;line-height:1.9">حقوق الطبع محفوظة — مؤسسة هدف التنمية للمقاولات</div>
 </div>
+
 <header class="hdr">
 <div class="hdr-inner">
-  <div class="brand">
-    <div class="logo">
-      <svg viewBox="726.99 122 226 394" xmlns="http://www.w3.org/2000/svg">
-        <g transform="matrix(0.74,0,0,0.74,840,319)"><g>
-          <g transform="matrix(0.97,0,0,0.97,-0.02,-0.01)"><path fill="#2771ab" transform="translate(-140.12,-256.65)" d="m 248.87,195.27 c -83.02,30.97 -165.53,61.75 -248.74,92.79 0,-11.44 0,-21.89 0,-32.34 0,-61.83 0.05,-123.65 -0.09,-185.48 0,-4.02 1.45,-5.97 4.85,-7.55 29.99,-14.01 59.93,-28.11 89.87,-42.24 13.84,-6.53 27.57,-13.3 41.48,-19.66 2.07,-0.94 5.3,-1.1 7.3,-0.16 44.09,20.73 88.06,41.71 132.12,62.49 3.4,1.6 4.33,3.55 4.33,7.2 -0.06,55.83 0.03,111.65 0.17,167.48 0,2.81 -0.43,4.46 -3.45,5.57 -79.47,29.16 -158.9,58.44 -238.35,87.66 -7.4,2.72 -7.41,2.6 -7.4,10.65 0.03,27.83 0.07,55.66 0.03,83.49 0,2.83 0.26,4.82 3.41,6.26 33.7,15.47 67.33,31.1 100.91,46.82 2.71,1.27 4.74,1.08 7.37,-0.12 33.77,-15.33 67.57,-30.59 101.46,-45.65 3.82,-1.7 4.88,-3.82 4.85,-7.82 -0.19,-28.16 -0.07,-56.33 -0.21,-84.49 -0.02,-3.42 0.7,-5.28 4.32,-6.42 8.85,-2.79 17.52,-6.14 26.8,-9.46 0.15,1.7 0.34,2.92 0.34,4.14 -0.04,39.16 -0.13,78.32 -0.11,117.48 0,2.57 -0.34,4.13 -3.05,5.35 -44.98,20.42 -89.89,41.02 -134.89,61.42 -1.76,0.8 -4.5,0.83 -6.24,0.03 C 92.13,492.54 48.4,472.17 4.6,451.97 1.32,450.46 -0.01,448.77 0,444.98 0.14,402.32 0.13,359.65 0,316.99 c -0.01,-3.61 1.19,-5.15 4.54,-6.38 80.17,-29.58 160.29,-59.3 240.47,-88.86 3.08,-1.13 4.05,-2.52 3.94,-5.66 -0.23,-6.64 -0.07,-13.3 -0.07,-20.81 z M 31.04,244.25 c 2.33,-0.74 4.24,-1.25 6.07,-1.95 22.35,-8.57 44.64,-17.3 67.05,-25.74 46.52,-17.51 93.07,-34.92 139.67,-52.2 3.91,-1.45 5.18,-3.28 5.12,-7.45 -0.25,-18.99 -0.89,-38.04 0.22,-56.97 0.65,-11 -2.93,-16.03 -12.95,-20.43 -31.82,-13.97 -63.05,-29.28 -94.56,-43.96 -1.24,-0.58 -3.22,-0.6 -4.46,-0.03 -33.88,15.51 -67.68,31.19 -101.59,46.62 -3.61,1.64 -4.76,3.5 -4.74,7.4 0.17,46.99 0.15,93.98 0.18,140.97 0,4.45 0,8.89 0,13.74 z"/></g>
-          <g transform="matrix(0.97,0,0,0.97,50.89,100.12)"><path fill="#2771ab" transform="translate(-192.6,-359.87)" d="m 105.05,330.48 c 58.02,-21.33 116.02,-42.65 175.08,-64.36 0,11.39 0.11,21.47 -0.16,31.54 -0.03,1.11 -2.1,2.64 -3.53,3.17 -32.27,11.97 -64.56,23.9 -96.93,35.62 -3.81,1.38 -4.92,3.29 -4.9,7.2 0.14,30.16 0.01,60.32 0.15,90.48 0.02,3.45 -0.78,5.28 -4.18,6.64 -9.88,3.95 -19.55,8.42 -29.37,12.52 -1.15,0.48 -2.89,0.42 -4.04,-0.09 -9.57,-4.26 -19.13,-8.55 -28.51,-13.19 -1.63,-0.8 -3.44,-3.28 -3.45,-5 -0.2,-34.48 -0.15,-68.97 -0.15,-104.54 z"/></g>
-          <g transform="matrix(0.97,0,0,0.97,-70.27,122.62)"><path fill="#2771ab" transform="translate(-67.68,-383.07)" d="m 81.67,338.92 v 88.3 c -6.36,-2.83 -12.01,-6.07 -18.08,-7.86 -7.86,-2.31 -10.2,-6.66 -9.86,-14.76 0.69,-16.46 0.34,-32.98 0.04,-49.47 -0.07,-4.08 1.3,-5.82 4.96,-7.13 7.6,-2.72 15.03,-5.93 22.94,-9.09 z"/></g>
-          <g transform="matrix(0.97,0,0,0.97,69.45,124.67)"><path fill="#2771ab" transform="translate(-211.73,-385.18)" d="m 225.8,343.04 c 0,23.92 0.03,46.89 -0.09,69.86 0,1.14 -1.05,2.85 -2.06,3.3 -8.31,3.73 -16.73,7.22 -25.93,11.12 0,-3.07 0,-5.65 0,-8.22 0,-20.15 0.07,-40.31 -0.06,-60.46 -0.02,-3.06 0.71,-4.93 3.72,-6.05 7.9,-2.95 15.72,-6.13 24.42,-9.55 z"/></g>
-          <g transform="matrix(0.97,0,0,0.97,-0.36,-126.3)"><path fill="#2771ab" transform="translate(-139.77,-126.46)" d="m 104.92,191.89 c 0,-11.76 0,-22.74 0,-33.72 0,-26.14 0.04,-52.28 -0.1,-78.42 -0.02,-3.13 0.84,-4.65 3.8,-5.87 9.52,-3.92 18.85,-8.29 28.34,-12.29 1.48,-0.62 3.66,-0.8 5.08,-0.17 9.89,4.32 19.73,8.77 29.4,13.55 1.56,.77 3.16,3.37 3.17,5.13 .17,26.8 .02,53.61 .11,80.41 .01,3.43 -.76,5.22 -4.29,6.53 -20.88,7.73 -41.63,15.8 -62.43,23.74 -.74,.28 -1.5,.53 -3.09,1.09 z"/></g>
-          <g transform="matrix(0.97,0,0,0.97,-70.06,-104.33)"><path fill="#2771ab" transform="translate(-67.91,-149.09)" d="m 53.94,211.74 c 0,-3.93 0,-7.21 0,-10.49 0,-32.48 .03,-64.97 -.09,-97.45 -.01,-3.19 .68,-5.15 3.8,-6.47 7.89,-3.35 15.66,-7.01 24.22,-10.89 0,5.67 0,10.29 0,14.91 0,31.49 -.03,62.97 .1,94.46 .01,3.41 -.67,5.4 -4.21,6.64 -7.79,2.73 -15.4,5.97 -23.82,9.29 z"/></g>
-          <g transform="matrix(0.97,0,0,0.97,69.57,-130.74)"><path fill="#2771ab" transform="translate(-211.86,-121.87)" d="M 197.95,156.58 V 87.15 c 9.03,4.29 17.7,8.32 26.24,12.61 .9,.45 1.42,2.48 1.43,3.78 .15,13.14 .22,26.28 .12,39.43 0,1.32 -.88,3.42 -1.89,3.82 -8.42,3.38 -16.97,6.46 -25.91,9.78 z"/></g>
-        </g></g>
-      </svg>
-    </div>
-    <div class="brand-txt">
-      <h1>هدف التنمية للمقاولات</h1>
-      <p>المشاريع • الفواتير • الجدوى</p>
-    </div>
-  </div>
+  <div class="brand"><img class="brand-official" src="brand-logo.png" alt="مؤسسة هدف التنمية للمقاولات"></div>
   <span id="sync-badge" onclick="cloudSyncNow()" style="cursor:pointer;font-size:10.5px;font-weight:700;padding:5px 9px;border-radius:50px;background:#F3F4F6;color:#6B7280;white-space:nowrap;margin-left:6px">⚪</span>
   <button onclick="hdLock()" title="تبديل المستخدم / قفل" style="background:#F3F4F6;border:none;border-radius:50px;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-left:6px;color:#6B7280;flex-shrink:0">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -536,7 +620,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 <main>
 <!-- الرئيسية -->
 <section class="sec active" id="sec-db">
-  <h2 class="sec-ttl">داش بورد التحليل <button id="privacy-btn" onclick="togglePrivacy()" title="إخفاء/إظهار الأرقام (خصوصية)">👁️</button></h2>
+  <h2 class="sec-ttl">لوحة الإدارة التنفيذية <button id="privacy-btn" onclick="togglePrivacy()" title="إخفاء/إظهار الأرقام (خصوصية)">👁️</button></h2>
   <div onclick="openAsk()" style="display:flex;align-items:center;gap:9px;background:#fff;border:1.5px solid #BFDBFE;border-radius:12px;padding:12px 14px;margin-bottom:12px;cursor:pointer;box-shadow:0 2px 6px rgba(39,113,171,.08)"><span style="font-size:17px">🗣️</span><span style="font-weight:700;font-size:13px;color:var(--t2)">اسأل بالعربي عن أرقامك — مثلاً: كم صرفت؟ أي مشروع أكثر ربحاً؟ كم المتبقي؟</span></div>
   <div class="db-grid">
     <!-- العمود ١: Hero + المستحقات + التنبيهات -->
@@ -8803,10 +8887,15 @@ async function removeAllDups(){
 }
 
 
-/* ===== الحماية القوية: Supabase Auth + RLS ===== */
+
+/* ===== الحماية: Supabase Auth + قفل محلي برمز من 4 أرقام ===== */
 window.HD_ROLE=null;
 window.HD_AUTHED=false;
+window.HD_PENDING_SESSION=null;
 window.ACC_ALLOW=['add','ls','vt','acc'];
+const HD_PIN_KEY='hd-local-pin-v1';
+const HD_PIN_FAIL_KEY='hd-pin-fails-v1';
+const HD_PIN_LOCK_KEY='hd-pin-lock-until-v1';
 
 function hdApplyRole(role){
   window.HD_ROLE=role;
@@ -8818,7 +8907,73 @@ function hdApplyRole(role){
 function _hdErr(m){const er=document.getElementById('hd-pin-err');if(er)er.textContent=m||'';}
 function _hdGateHide(){const g=document.getElementById('hdGate');if(g)g.style.display='none';try{document.documentElement.style.overflow='';}catch(e){}}
 function _hdGateShow(){const g=document.getElementById('hdGate');if(g)g.style.display='flex';try{document.documentElement.style.overflow='hidden';}catch(e){}}
-
+function _hdBox(which){
+  ['hd-pin-box','hd-setup-box','hd-account-box'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display=(id===which)?'':'none';
+  });
+  _hdErr('');
+}
+function hdBackToPin(){_hdBox('hd-pin-box');setTimeout(()=>document.getElementById('hd-pin')?.focus(),60);}
+async function hdShowAccountLogin(){
+  try{if(cloudInit())await _supa.auth.signOut();}catch(e){}
+  window.HD_PENDING_SESSION=null;
+  _hdBox('hd-account-box');
+  try{
+    const re=localStorage.getItem('hd-rmb-email');
+    if(re){const e=document.getElementById('hd-email');if(e)e.value=re;}
+    const c=document.getElementById('hd-remember');if(c&&re)c.checked=true;
+  }catch(e){}
+  setTimeout(()=>document.getElementById('hd-email')?.focus(),60);
+}
+function _hdBytesToB64(bytes){
+  let s='';for(let i=0;i<bytes.length;i++)s+=String.fromCharCode(bytes[i]);
+  return btoa(s);
+}
+function _hdB64ToBytes(s){
+  const b=atob(s);const a=new Uint8Array(b.length);
+  for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;
+}
+async function _hdPinHash(pin,saltB64){
+  const enc=new TextEncoder();
+  const key=await crypto.subtle.importKey('raw',enc.encode(pin),'PBKDF2',false,['deriveBits']);
+  const bits=await crypto.subtle.deriveBits(
+    {name:'PBKDF2',hash:'SHA-256',salt:_hdB64ToBytes(saltB64),iterations:220000},
+    key,256
+  );
+  return _hdBytesToB64(new Uint8Array(bits));
+}
+function _hdGetPinRec(){
+  try{return JSON.parse(localStorage.getItem(HD_PIN_KEY)||'null');}catch(e){return null;}
+}
+async function _hdSavePin(pin,uid){
+  const salt=new Uint8Array(16);crypto.getRandomValues(salt);
+  const saltB64=_hdBytesToB64(salt);
+  const hash=await _hdPinHash(pin,saltB64);
+  localStorage.setItem(HD_PIN_KEY,JSON.stringify({uid:uid,salt:saltB64,hash:hash,v:1,at:Date.now()}));
+  localStorage.removeItem(HD_PIN_FAIL_KEY);
+  localStorage.removeItem(HD_PIN_LOCK_KEY);
+}
+async function _hdVerifyPin(pin,uid){
+  const rec=_hdGetPinRec();
+  if(!rec||!rec.uid||rec.uid!==uid||!rec.salt||!rec.hash)return false;
+  const hash=await _hdPinHash(pin,rec.salt);
+  return hash===rec.hash;
+}
+function _hdRateState(){
+  const until=Number(localStorage.getItem(HD_PIN_LOCK_KEY)||0);
+  return {until,fails:Number(localStorage.getItem(HD_PIN_FAIL_KEY)||0)};
+}
+function _hdRegisterPinFail(){
+  let st=_hdRateState(),fails=st.fails+1;
+  localStorage.setItem(HD_PIN_FAIL_KEY,String(fails));
+  if(fails>=5){
+    localStorage.setItem(HD_PIN_LOCK_KEY,String(Date.now()+30000));
+    localStorage.setItem(HD_PIN_FAIL_KEY,'0');
+  }
+}
+function _hdClearPinFails(){
+  localStorage.removeItem(HD_PIN_FAIL_KEY);localStorage.removeItem(HD_PIN_LOCK_KEY);
+}
 async function hdFetchRole(uid){
   try{
     const {data,error}=await _supa.from('profiles').select('role').eq('id',uid).maybeSingle();
@@ -8834,6 +8989,7 @@ async function _hdAfterAuth(session){
     try{await _supa.auth.signOut();}catch(e){}
     _hdGateShow();return;
   }
+  window.HD_PENDING_SESSION=session;
   window.HD_AUTHED=true;
   window.HD_USER=(session.user.email||'مستخدم');
   logEvent('دخول','تسجيل دخول للتطبيق');
@@ -8842,78 +8998,133 @@ async function _hdAfterAuth(session){
   try{await cloudPullAll({silent:false});}catch(e){}
   try{cloudSubscribe&&cloudSubscribe();}catch(e){}
 }
-const HD_ACC_PIN='2026',HD_ACC_EMAIL='accountant@hadff.com',HD_ACC_PASS='Hadaf-Acc-7r29-Kx';
-const HD_OWNER_PIN='8855',HD_OWNER_EMAIL='aziz0566066@gmail.com',HD_OWNER_PASS='332211Rakan@@';
-function hdToggleMode(){
-  const ob=document.getElementById('hd-owner-box'),ab=document.getElementById('hd-acc-box'),tg=document.getElementById('hd-toggle');
-  const showAcc=(ab.style.display==='none');
-  ab.style.display=showAcc?'':'none';
-  ob.style.display=showAcc?'none':'';
-  tg.textContent=showAcc?'الدخول بالبريد وكلمة المرور':'الدخول بالرمز';
-  _hdErr('');
-  setTimeout(()=>{try{(showAcc?document.getElementById('hd-accpin'):document.getElementById('hd-email')).focus();}catch(e){}},50);
-}
-function hdLoginRouter(){
-  const ab=document.getElementById('hd-acc-box');
-  if(ab&&ab.style.display!=='none')return hdLoginAcc();
-  return hdLogin();
-}
-async function hdLoginAcc(){
+async function hdPinLogin(){
   if(!cloudInit()){_hdErr('تعذّر الاتصال بالخادم');return;}
-  const v=(document.getElementById('hd-accpin').value||'').trim();
-  let _em,_pw;
-  if(v===HD_OWNER_PIN){_em=HD_OWNER_EMAIL;_pw=HD_OWNER_PASS;}
-  else if(v===HD_ACC_PIN){_em=HD_ACC_EMAIL;_pw=HD_ACC_PASS;}
-  else{_hdErr('رمز غير صحيح');const el=document.getElementById('hd-accpin');if(el){el.value='';el.focus();}return;}
-  const btn=document.getElementById('hd-login-btn');
+  const pin=(document.getElementById('hd-pin')?.value||'').replace(/\D/g,'');
+  if(pin.length!==4){_hdErr('أدخل 4 أرقام');return;}
+  const st=_hdRateState();
+  if(st.until>Date.now()){
+    const sec=Math.ceil((st.until-Date.now())/1000);
+    _hdErr('محاولات كثيرة. حاول بعد '+sec+' ثانية');return;
+  }
+  const btn=document.getElementById('hd-pin-btn');
   if(btn){btn.disabled=true;btn.textContent='جاري الدخول...';}
-  _hdErr('');
   try{
-    const {data,error}=await _supa.auth.signInWithPassword({email:_em,password:_pw});
-    if(error){_hdErr('الحساب غير مهيّأ بعد');if(btn){btn.disabled=false;btn.textContent='دخول';}return;}
-    await _hdAfterAuth(data.session);
-  }catch(e){_hdErr('تعذّر الدخول، تحقّق من الإنترنت');}
-  if(btn){btn.disabled=false;btn.textContent='دخول';}
+    const {data}=await _supa.auth.getSession();
+    const session=data&&data.session;
+    if(!session||!session.user){
+      _hdErr('انتهت جلسة الحساب. يلزم تهيئة الجهاز مرة واحدة.');
+      setTimeout(hdShowAccountLogin,800);return;
+    }
+    const rec=_hdGetPinRec();
+    if(!rec||rec.uid!==session.user.id){
+      window.HD_PENDING_SESSION=session;
+      _hdBox('hd-setup-box');
+      _hdErr('ثبّت رمزًا من 4 أرقام لهذا الحساب على الجهاز');
+      setTimeout(()=>document.getElementById('hd-newpin')?.focus(),60);
+      return;
+    }
+    const ok=await _hdVerifyPin(pin,session.user.id);
+    if(!ok){
+      _hdRegisterPinFail();
+      _hdErr('رمز غير صحيح');
+      const el=document.getElementById('hd-pin');if(el){el.value='';el.focus();}
+      return;
+    }
+    _hdClearPinFails();
+    await _hdAfterAuth(session);
+  }catch(e){
+    console.warn(e);_hdErr('تعذّر الدخول، حاول مرة أخرى');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='دخول';}
+  }
 }
-async function hdLogin(){
+async function hdSavePinAndEnter(){
+  const p1=(document.getElementById('hd-newpin')?.value||'').replace(/\D/g,'');
+  const p2=(document.getElementById('hd-newpin2')?.value||'').replace(/\D/g,'');
+  if(p1.length!==4){_hdErr('اختر رمزًا من 4 أرقام');return;}
+  if(p1!==p2){_hdErr('تأكيد الرمز غير مطابق');return;}
+  try{
+    let session=window.HD_PENDING_SESSION;
+    if(!session){const {data}=await _supa.auth.getSession();session=data&&data.session;}
+    if(!session||!session.user){_hdErr('انتهت جلسة الحساب');return hdShowAccountLogin();}
+    await _hdSavePin(p1,session.user.id);
+    await _hdAfterAuth(session);
+  }catch(e){console.warn(e);_hdErr('تعذّر حفظ الرمز');}
+}
+async function hdAccountLogin(){
   if(!cloudInit()){_hdErr('تعذّر الاتصال بالخادم');return;}
-  const em=(document.getElementById('hd-email').value||'').trim();
-  const pw=(document.getElementById('hd-pass').value||'');
+  const em=(document.getElementById('hd-email')?.value||'').trim();
+  const pw=(document.getElementById('hd-pass')?.value||'');
+  const pin=(document.getElementById('hd-auth-pin')?.value||'').replace(/\D/g,'');
   if(!em||!pw){_hdErr('أدخل البريد وكلمة المرور');return;}
+  if(pin.length!==4){_hdErr('اختر رمز دخول من 4 أرقام');return;}
   const btn=document.getElementById('hd-login-btn');
-  if(btn){btn.disabled=true;btn.textContent='جاري الدخول...';}
+  if(btn){btn.disabled=true;btn.textContent='جاري التهيئة...';}
   _hdErr('');
   try{
     const {data,error}=await _supa.auth.signInWithPassword({email:em,password:pw});
-    if(error){_hdErr('بريد أو كلمة مرور غير صحيحة');if(btn){btn.disabled=false;btn.textContent='دخول';}return;}
-    try{const rmb=document.getElementById('hd-remember');
-      if(rmb&&rmb.checked){localStorage.setItem('hd-rmb-email',em);localStorage.setItem('hd-rmb-pass',pw);}
-      else{localStorage.removeItem('hd-rmb-email');localStorage.removeItem('hd-rmb-pass');}
+    if(error){_hdErr('بريد أو كلمة مرور غير صحيحة');return;}
+    const role=await hdFetchRole(data.session.user.id);
+    if(role!=='owner'&&role!=='accountant'){
+      await _supa.auth.signOut();_hdErr('هذا الحساب لا يملك صلاحية');return;
+    }
+    try{
+      const rmb=document.getElementById('hd-remember');
+      if(rmb&&rmb.checked)localStorage.setItem('hd-rmb-email',em);
+      else localStorage.removeItem('hd-rmb-email');
+      localStorage.removeItem('hd-rmb-pass');
     }catch(e){}
+    await _hdSavePin(pin,data.session.user.id);
     await _hdAfterAuth(data.session);
-  }catch(e){_hdErr('تعذّر الدخول، تحقّق من الإنترنت');}
-  if(btn){btn.disabled=false;btn.textContent='دخول';}
+  }catch(e){console.warn(e);_hdErr('تعذّر الدخول، تحقّق من الإنترنت');}
+  finally{if(btn){btn.disabled=false;btn.textContent='تهيئة والدخول';}}
 }
+function hdLoginRouter(){return hdPinLogin();}
+function hdLogin(){return hdAccountLogin();}
 async function hdLock(){
+  window.HD_AUTHED=false;
+  _hdGateShow();
+  _hdBox('hd-pin-box');
+  const el=document.getElementById('hd-pin');if(el){el.value='';setTimeout(()=>el.focus(),60);}
+}
+async function hdFullLogout(){
   try{if(cloudInit())await _supa.auth.signOut();}catch(e){}
-  location.reload();
+  window.HD_PENDING_SESSION=null;window.HD_AUTHED=false;
+  _hdGateShow();_hdBox('hd-account-box');
 }
 async function hdInitGate(){
-  /* شعار البوابة مضمّن مباشرة في الصورة */
-  const pw=document.getElementById('hd-pass');if(pw)pw.addEventListener('keydown',e=>{if(e.key==='Enter')hdLogin();});
-  try{const re=localStorage.getItem('hd-rmb-email'),rp=localStorage.getItem('hd-rmb-pass');
+  const pin=document.getElementById('hd-pin');
+  if(pin)pin.addEventListener('keydown',e=>{if(e.key==='Enter')hdPinLogin();});
+  const np2=document.getElementById('hd-newpin2');
+  if(np2)np2.addEventListener('keydown',e=>{if(e.key==='Enter')hdSavePinAndEnter();});
+  const ap=document.getElementById('hd-auth-pin');
+  if(ap)ap.addEventListener('keydown',e=>{if(e.key==='Enter')hdAccountLogin();});
+  try{
+    const re=localStorage.getItem('hd-rmb-email');
+    localStorage.removeItem('hd-rmb-pass');
     if(re){const e=document.getElementById('hd-email');if(e)e.value=re;}
-    if(rp){const p=document.getElementById('hd-pass');if(p)p.value=rp;}
-    const c=document.getElementById('hd-remember');if(c&&(re||rp))c.checked=true;
+    const c=document.getElementById('hd-remember');if(c&&re)c.checked=true;
   }catch(e){}
-  const ap=document.getElementById('hd-accpin');if(ap)ap.addEventListener('keydown',e=>{if(e.key==='Enter')hdLoginAcc();});
-  if(!cloudInit()){_hdGateShow();return;}
+  if(!cloudInit()){_hdGateShow();_hdBox('hd-account-box');return;}
   try{
     const {data}=await _supa.auth.getSession();
-    if(data&&data.session){await _hdAfterAuth(data.session);return;}
+    const session=data&&data.session;
+    if(session&&session.user){
+      window.HD_PENDING_SESSION=session;
+      const rec=_hdGetPinRec();
+      if(rec&&rec.uid===session.user.id){
+        _hdGateShow();_hdBox('hd-pin-box');
+        setTimeout(()=>document.getElementById('hd-pin')?.focus(),120);
+      }else{
+        _hdGateShow();_hdBox('hd-setup-box');
+        setTimeout(()=>document.getElementById('hd-newpin')?.focus(),120);
+      }
+      return;
+    }
   }catch(e){}
-  _hdGateShow();
-  const el=document.getElementById('hd-email');if(el)setTimeout(()=>{try{el.focus();}catch(e){}},200);
+  _hdGateShow();_hdBox('hd-account-box');
+  setTimeout(()=>document.getElementById('hd-email')?.focus(),120);
 }
 
 /* ========== INIT ========== */
