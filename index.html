@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-09-15-1075">
+<meta name="app-build" content="2026-09-15-1078">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1075">
+<link rel="manifest" href="manifest.json?v=1078">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -691,7 +691,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1075</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1078</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1508,7 +1508,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1075</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1078</bdi></span></div>
   </div>
 </div>
 
@@ -4970,13 +4970,17 @@ async function viewProjDoc(attId){
   const ext=(d.fileName||'').split('.').pop().toLowerCase();
   const title=esc(d.name||d.fileName||'وثيقة');
   if(isPdf){
-    w.document.write('<html><head><title>'+title+'</title></head><body style="margin:0"><embed src="'+url+'" type="application/pdf" width="100%" height="100%" style="height:100vh"></body></html>');
+    w.document.write('<html><head><title>'+title+'</title></head><body style="margin:0"><embed src="'+url+'" type="application/pdf" width="100%" height="100%" style="height:100vh"><script src="settings-1078.js?v=1078"></script>
+</body></html>');
   }else if(isImg){
-    w.document.write('<html dir="rtl"><head><title>'+title+'</title><style>body{margin:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;min-height:100vh}img{max-width:100%;max-height:100vh}</style></head><body><img src="'+url+'" alt="'+title+'"></body></html>');
+    w.document.write('<html dir="rtl"><head><title>'+title+'</title><style>body{margin:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;min-height:100vh}img{max-width:100%;max-height:100vh}</style></head><body><img src="'+url+'" alt="'+title+'"><script src="settings-1078.js?v=1078"></script>
+</body></html>');
   }else if(['xlsx','xls','csv'].includes(ext)){
-    w.document.write('<html dir="rtl"><head><title>'+title+'</title><style>body{margin:0;font-family:Tajawal,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F1F5F9}.box{background:#fff;padding:30px;border-radius:12px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,0.1);max-width:400px}h1{font-size:18px;color:#0F172A;margin-bottom:10px}p{color:#64748B;margin-bottom:20px}a{display:inline-block;background:#7C3AED;color:#fff;padding:10px 22px;border-radius:8px;text-decoration:none;font-weight:700}</style></head><body><div class="box"><div style="font-size:48px">📊</div><h1>'+title+'</h1><p>المتصفح لا يعرض ملفات Excel مباشرة.</p><a href="'+url+'" download="'+esc(d.fileName)+'">⬇️ تنزيل الملف</a></div></body></html>');
+    w.document.write('<html dir="rtl"><head><title>'+title+'</title><style>body{margin:0;font-family:Tajawal,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F1F5F9}.box{background:#fff;padding:30px;border-radius:12px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,0.1);max-width:400px}h1{font-size:18px;color:#0F172A;margin-bottom:10px}p{color:#64748B;margin-bottom:20px}a{display:inline-block;background:#7C3AED;color:#fff;padding:10px 22px;border-radius:8px;text-decoration:none;font-weight:700}</style></head><body><div class="box"><div style="font-size:48px">📊</div><h1>'+title+'</h1><p>المتصفح لا يعرض ملفات Excel مباشرة.</p><a href="'+url+'" download="'+esc(d.fileName)+'">⬇️ تنزيل الملف</a></div><script src="settings-1078.js?v=1078"></script>
+</body></html>');
   }else{
-    w.document.write('<html dir="rtl"><head><title>'+title+'</title><style>body{margin:0;font-family:Tajawal,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F1F5F9}.box{background:#fff;padding:30px;border-radius:12px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,0.1)}a{display:inline-block;background:#7C3AED;color:#fff;padding:10px 22px;border-radius:8px;text-decoration:none;font-weight:700;margin-top:15px}</style></head><body><div class="box"><h1>'+title+'</h1><a href="'+url+'" download="'+esc(d.fileName)+'">⬇️ تنزيل الملف</a></div></body></html>');
+    w.document.write('<html dir="rtl"><head><title>'+title+'</title><style>body{margin:0;font-family:Tajawal,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F1F5F9}.box{background:#fff;padding:30px;border-radius:12px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,0.1)}a{display:inline-block;background:#7C3AED;color:#fff;padding:10px 22px;border-radius:8px;text-decoration:none;font-weight:700;margin-top:15px}</style></head><body><div class="box"><h1>'+title+'</h1><a href="'+url+'" download="'+esc(d.fileName)+'">⬇️ تنزيل الملف</a></div><script src="settings-1078.js?v=1078"></script>
+</body></html>');
   }
 }
 
@@ -7114,7 +7118,8 @@ function viewContract(){
   const imgsHtml=pages.map((b,i)=>'<div style="margin-bottom:14px"><div style="color:#fff;font-weight:bold;text-align:center;margin-bottom:6px">صفحة '+(i+1)+' من '+pages.length+'</div><img src="data:image/jpeg;base64,'+b+'" style="width:100%;display:block;border-radius:8px;background:#fff"></div>').join('');
   const w=window.open('','_blank');
   if(w){
-    w.document.write('<html dir="rtl"><head><title>العقد - '+esc(p.name)+'</title><style>body{margin:0;background:#1a1a1a;padding:20px;font-family:Arial,sans-serif}.container{max-width:900px;margin:0 auto}h1{color:#fff;text-align:center;margin-bottom:20px;font-size:20px}img{max-width:100%;height:auto}</style></head><body><div class="container"><h1>📎 '+esc(p.name)+'</h1>'+imgsHtml+'</div></body></html>');
+    w.document.write('<html dir="rtl"><head><title>العقد - '+esc(p.name)+'</title><style>body{margin:0;background:#1a1a1a;padding:20px;font-family:Arial,sans-serif}.container{max-width:900px;margin:0 auto}h1{color:#fff;text-align:center;margin-bottom:20px;font-size:20px}img{max-width:100%;height:auto}</style></head><body><div class="container"><h1>📎 '+esc(p.name)+'</h1>'+imgsHtml+'</div><script src="settings-1078.js?v=1078"></script>
+</body></html>');
   }else{
     const ov=document.createElement('div');
     ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;overflow-y:auto;padding:20px;cursor:pointer';
@@ -8278,9 +8283,11 @@ function viewDocFile(id){
   const isPdf=(d.fileMime||'').includes('pdf');
   const title=esc(d.name||'وثيقة');
   if(isPdf){
-    w.document.write('<html><head><title>'+title+'</title></head><body style="margin:0"><embed src="'+d.fileData+'" type="application/pdf" width="100%" height="100%" style="height:100vh"></body></html>');
+    w.document.write('<html><head><title>'+title+'</title></head><body style="margin:0"><embed src="'+d.fileData+'" type="application/pdf" width="100%" height="100%" style="height:100vh"><script src="settings-1078.js?v=1078"></script>
+</body></html>');
   }else{
-    w.document.write('<html dir="rtl"><head><title>'+title+'</title><style>body{margin:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;min-height:100vh}img{max-width:100%;max-height:100vh}</style></head><body><img src="'+d.fileData+'" alt="'+title+'"></body></html>');
+    w.document.write('<html dir="rtl"><head><title>'+title+'</title><style>body{margin:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;min-height:100vh}img{max-width:100%;max-height:100vh}</style></head><body><img src="'+d.fileData+'" alt="'+title+'"><script src="settings-1078.js?v=1078"></script>
+</body></html>');
   }
 }
 
@@ -8369,7 +8376,8 @@ function exportDocsCertPDF(){
     html+='</div></div>';
   });
   html+='<div class="footer">صادر من نظام هدف التنمية الشامل • '+esc(today)+'</div>';
-  html+='</body></html>';
+  html+='<script src="settings-1078.js?v=1078"></script>
+</body></html>';
   const w=window.open('','_blank');
   if(!w){toast('فعّل النوافذ المنبثقة','er');return;}
   w.document.write(html);
@@ -9223,7 +9231,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkVersi
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1075',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1078',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9288,5 +9296,6 @@ if('serviceWorker' in navigator){
 </div>
 <script src="ops-1075.js?v=1075"></script>
 
+<script src="settings-1078.js?v=1078"></script>
 </body>
 </html>
