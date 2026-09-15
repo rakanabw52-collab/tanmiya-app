@@ -1,9 +1,10 @@
-// Service Worker - نظام هدف التنمية (إصدار 1075) - اسم الكاش يطابق رقم الإصدار
-const CACHE_NAME = 'hadaf-1075';
+// Service Worker - نظام هدف التنمية (إصدار 1076)
+const CACHE_NAME = 'hadaf-1076';
 const ASSETS = [
   './','./index.html','./manifest.json',
   './icon-192.png','./icon-512.png','./apple-touch-icon.png','./brand-logo.png',
-  './apple-touch-icon-120.png','./apple-touch-icon-152.png','./apple-touch-icon-167.png','./ops-1075.css','./ops-1075.js'
+  './apple-touch-icon-120.png','./apple-touch-icon-152.png','./apple-touch-icon-167.png',
+  './ops-1075.css','./ops-1075.js','./integrate-1076.js'
 ];
 
 self.addEventListener('install', (e) => {
@@ -26,10 +27,7 @@ self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   const url = e.request.url;
   if (!url.startsWith('http')) return;
-  // طلبات API ومزامنة Supabase: مباشرة للشبكة دائماً (بدون كاش)
-  if (url.includes('api.anthropic.com') || url.includes('supabase.co') || url.includes('supabase.in')) {
-    return; // اترك المتصفح يتعامل معها مباشرة
-  }
+  if (url.includes('api.anthropic.com') || url.includes('supabase.co') || url.includes('supabase.in')) return;
   const isHTML = e.request.headers.get('accept')?.includes('text/html');
   if (isHTML) {
     e.respondWith(
@@ -47,12 +45,12 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
       caches.match(e.request).then(cached => {
         if (cached) {
-          fetch(e.request).then(fr=>{
+          fetch(e.request,{cache:'no-store'}).then(fr=>{
             if(fr&&fr.status===200)caches.open(CACHE_NAME).then(c=>c.put(e.request,fr.clone()).catch(()=>{}));
           }).catch(()=>{});
           return cached;
         }
-        return fetch(e.request).then(r=>{
+        return fetch(e.request,{cache:'no-store'}).then(r=>{
           if(r&&r.status===200){const cl=r.clone();caches.open(CACHE_NAME).then(c=>c.put(e.request,cl).catch(()=>{}));}
           return r;
         });
@@ -64,4 +62,4 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('message', (e) => {
   if (e.data?.type==='SKIP_WAITING') self.skipWaiting();
 });
-console.log('✓ هدف التنمية إصدار 1075 (brand + security update)');
+console.log('✓ هدف التنمية إصدار 1076 — وظائف المقاولات مدمجة داخل النظام الأصلي');
