@@ -30,7 +30,9 @@ jobs:
           for a,b in reps.items(): s=s.replace(a,b)
           tag='<script src="settings-1078.js?v=1078"></script>'
           if tag not in s:
-              s=s.replace('</body>',tag+'\n</body>')
+              i=s.rfind('</body>')
+              if i!=-1:
+                  s=s[:i]+tag+'\n'+s[i:]
           p.write_text(s,encoding='utf-8')
           PY
       - name: Commit patched index
