@@ -1,5 +1,5 @@
-// Service Worker - نظام هدف التنمية (إصدار 1080 - تحديث)
-const CACHE_NAME = 'hadaf-1080';
+// Service Worker - نظام هدف التنمية (إصدار 1081 - تحديث)
+const CACHE_NAME = 'hadaf-1081';
 const ASSETS = [
   './','./index.html','./manifest.json',
   './icon-192.png','./icon-512.png','./apple-touch-icon.png','./brand-logo.png',
@@ -23,14 +23,10 @@ self.addEventListener('activate',e=>e.waitUntil((async()=>{
 })()));
 
 function upgradeHtml(text){
-  let t=text||'';
-  t=t.replace(/name="app-build"\s+content="[^"]+"/,'name="app-build" content="2026-10-07-1080"');
-  t=t.replace(/manifest\.json\?v=\d+/g,'manifest.json?v=1080');
-  t=t.replace(/sw\.js\?v=\d+/g,'sw.js?v=1080');
-  t=t.replace(/إصدار التطبيق\s*<bdi>\d+<\/bdi>/g,'إصدار التطبيق <bdi>1080</bdi>');
-  const tag='<script src="settings-1078.js?v=1078"></script>';
-  if(!t.includes('settings-1078.js')) t=t.replace('</body>',tag+'\n</body>');
-  return t;
+  // تمرير مباشر دون فرض رقم الإصدار. كان الفرض يُبقي رقم الصفحة ثابتاً
+  // بينما يقرأ فاحص التحديث الرقم الحقيقي من الخادم، فينشأ اختلاف دائم
+  // يجعل رسالة «تتوفّر نسخة جديدة» تتكرر بلا توقف. التمرير المباشر يوقفها.
+  return text||'';
 }
 
 async function htmlResponse(r){
@@ -72,4 +68,4 @@ self.addEventListener('fetch',e=>{
 });
 
 self.addEventListener('message',e=>{if(e.data?.type==='SKIP_WAITING')self.skipWaiting();});
-console.log('✓ هدف التنمية إصدار 1080 — تحديث إجباري + إعدادات مرتبة');
+console.log('✓ هدف التنمية إصدار 1081 — تحديث إجباري + إعدادات مرتبة');
