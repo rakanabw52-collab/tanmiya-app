@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-10-07-1081">
+<meta name="app-build" content="2026-10-07-1082">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1081">
+<link rel="manifest" href="manifest.json?v=1082">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -691,7 +691,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1081</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1082</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1510,7 +1510,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1081</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1082</bdi></span></div>
   </div>
 </div>
 
@@ -8840,9 +8840,10 @@ async function shareLetterPDF(){
 }
 window.addEventListener('afterprint',()=>document.body.classList.remove('lprinting'));
 async function delLet(id){const l=lets.find(x=>x.id===id);if(!l)return;const ok=await confirm2({title:'\u062d\u0630\u0641 \u0627\u0644\u062e\u0637\u0627\u0628',msg:'<strong>'+esc(l.ref)+'</strong>',ok:'\u062d\u0630\u0641'});if(!ok)return;toTrash('let',l);logEvent('\u062d\u0630\u0641 \u062e\u0637\u0627\u0628',l.ref||'');lets=lets.filter(x=>x.id!==id);await svL();renderLetters();toast('\u062a\u0645 \u0627\u0644\u062d\u0630\u0641','ok');}
-// رفع خطاب جاهز (PDF/صورة): يخزّن الملف ثم يطلب العنوان والجهة قبل الحفظ
+// رفع خطاب جاهز (PDF/صورة): يخزّن الملف ثم يقرأه بالذكاء (الموضوع/الجهة/التاريخ) قبل الحفظ
 let _letPendingUpload=null;
 let _letNotesId=null;
+function _fileToB64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error||new Error('read error'));r.readAsDataURL(file);});}
 async function uploadLetterFile(inp){
   const f=inp.files&&inp.files[0];
   inp.value='';
@@ -8853,9 +8854,35 @@ async function uploadLetterFile(inp){
   try{
     const ref=_newFileRef();
     await _filePut(ref,f);
-    _letPendingUpload={fileRef:ref,fileName:f.name||'',fileMime:f.type||'application/pdf',fileSize:f.size||0};
+    let b64='';try{b64=await _fileToB64(f);}catch(_){}
+    _letPendingUpload={fileRef:ref,fileName:f.name||'',fileMime:f.type||'application/pdf',fileSize:f.size||0,_b64:b64};
     openLetUploadDialog((f.name||'خطاب').replace(/\.[^.]+$/,''));
+    if(aiReady()&&b64)aiReadLetter();
   }catch(e){toast('تعذّر حفظ الملف: '+(e.message||''),'er');}
+}
+async function aiReadLetter(){
+  const p=_letPendingUpload;const st=document.getElementById('letup-ai-status');
+  if(!p||!p._b64){if(st){st.textContent='لا يوجد ملف للقراءة';st.style.color='#B45309';}return;}
+  if(!aiReady()){if(st){st.textContent='أضف مفتاح الذكاء الاصطناعي من الإعدادات';st.style.color='#B45309';}return;}
+  if(st){st.textContent='🤖 جاري قراءة الخطاب...';st.style.color='#2771ab';}
+  const mt=p.fileMime||'',isPdf=mt.includes('pdf'),b64=String(p._b64).split(',')[1]||'';
+  const pr='هذا خطاب رسمي. اقرأه واستخرج بياناته وأرجع JSON فقط بلا أي نص إضافي:\n{"subject":"موضوع الخطاب باختصار","recipient":"الجهة أو الشخص الموجَّه إليه الخطاب","date":"YYYY-MM-DD"}\nحوّل أي تاريخ هجري إلى ميلادي. اترك الحقل فارغاً إن لم يوجد.';
+  try{
+    const docBlock=isPdf?{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}}:{type:'image',source:{type:'base64',media_type:mt,data:b64}};
+    const rs=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:500,messages:[{role:'user',content:[docBlock,{type:'text',text:pr}]}]})});
+    const raw=await rs.text();let data;try{data=JSON.parse(raw);}catch(_){throw new Error('رد غير صالح');}
+    if(data.error||data.type==='error')throw new Error((data.error||data).message||'خطأ');
+    const tb=data.content&&data.content.find(c=>c.type==='text');if(!tb||!tb.text)throw new Error('لا يوجد نص');
+    let tx=tb.text.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();const mm=tx.match(/\{[\s\S]*\}/);if(mm)tx=mm[0];
+    const o=JSON.parse(tx);
+    const subEl=document.getElementById('letup-sub'),rcpEl=document.getElementById('letup-rcp'),dtEl=document.getElementById('letup-dt');
+    if(subEl&&o.subject)subEl.value=o.subject;
+    if(rcpEl&&o.recipient)rcpEl.value=o.recipient;
+    if(dtEl&&o.date&&/^\d{4}-\d{2}-\d{2}$/.test(o.date))dtEl.value=o.date;
+    if(st){st.textContent='✅ تمت القراءة — راجِع البيانات واحفظ';st.style.color='#15803D';}
+  }catch(err){
+    if(st){st.textContent='⚠️ تعذّرت القراءة التلقائية — عبّئ يدوياً ('+((err.message||'').substring(0,30))+')';st.style.color='#B45309';}
+  }
 }
 function closeLetUploadDialog(){const o=document.getElementById('letup-ov');if(o)o.remove();}
 function openLetUploadDialog(defSubject){
@@ -8867,8 +8894,12 @@ function openLetUploadDialog(defSubject){
   ov.onclick=e=>{if(e.target===ov)closeLetUploadDialog();};
   const fld='width:100%;padding:10px;border:1px solid #d4e2ed;border-radius:9px;font-family:Tajawal,sans-serif;margin-bottom:11px';
   const lbl='display:block;font-weight:700;font-size:12.5px;color:#334155;margin-bottom:4px';
+  const aiRow=aiReady()
+    ?'<button onclick="aiReadLetter()" style="width:100%;background:#f3e8ff;color:#6b21a8;border:1px solid #d8b4fe;border-radius:9px;padding:9px;font-family:Tajawal,sans-serif;font-weight:800;cursor:pointer;margin-bottom:7px">🤖 اقرأ الخطاب تلقائياً</button><div id="letup-ai-status" style="font-size:11.5px;margin-bottom:11px;min-height:15px;color:#2771ab">🤖 جاري قراءة الخطاب تلقائياً...</div>'
+    :'<div id="letup-ai-status" style="font-size:11px;margin-bottom:11px;color:#B45309;background:#FFFBEB;border:1px dashed #FDE68A;border-radius:8px;padding:8px;line-height:1.6">💡 لتعبئة البيانات تلقائياً من الملف: أضف مفتاح الذكاء الاصطناعي من الإعدادات، ثم ارفع الخطاب.</div>';
   ov.innerHTML='<div style="background:#fff;width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:18px;font-family:Tajawal,sans-serif;max-height:90vh;overflow:auto">'
     +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:16px;color:#17496f">⬆️ بيانات الخطاب المرفوع</div><button onclick="closeLetUploadDialog()" style="background:#eef2f7;border:0;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer">✕</button></div>'
+    +aiRow
     +'<label style="'+lbl+'">الموضوع / العنوان</label><input id="letup-sub" type="text" value="'+esc(defSubject||'')+'" placeholder="موضوع الخطاب" style="'+fld+'">'
     +'<label style="'+lbl+'">موجّه إلى (الجهة)</label><input id="letup-rcp" type="text" placeholder="اسم الجهة / الشخص" style="'+fld+'">'
     +'<label style="'+lbl+'">التاريخ</label><input id="letup-dt" type="date" value="'+today+'" style="'+fld+'">'
@@ -8886,7 +8917,8 @@ async function finishLetUpload(){
   const rcp=(document.getElementById('letup-rcp').value||'').trim();
   const note=(document.getElementById('letup-note').value||'').trim();
   const notes=note?[{t:note,at:Date.now()}]:[];
-  const saved=Object.assign({id:uid('let'),createdAt:Date.now(),date:iso,seq:seq,ref:buildLRef(seq,iso),recipient:rcp,subject:sub,body:'',status:'مُصدَر',signed:false,projectId:'',isUpload:true,notes:notes},_letPendingUpload);
+  const _p=_letPendingUpload||{};const fileMeta={fileRef:_p.fileRef,fileName:_p.fileName,fileMime:_p.fileMime,fileSize:_p.fileSize};
+  const saved=Object.assign({id:uid('let'),createdAt:Date.now(),date:iso,seq:seq,ref:buildLRef(seq,iso),recipient:rcp,subject:sub,body:'',status:'مُصدَر',signed:false,projectId:'',isUpload:true,notes:notes},fileMeta);
   _letPendingUpload=null;
   lets.unshift(saved);
   logEvent('رفع خطاب',saved.ref);
@@ -8959,7 +8991,9 @@ function renderLetters(){
     const prBtn=up
       ?'<button class="lc-pr" onclick="event.stopPropagation();openLetFile(\''+l.id+'\')" title="\u0641\u062a\u062d \u0627\u0644\u0645\u0644\u0641">\ud83d\udcc4</button>'
       :'<button class="lc-pr" onclick="event.stopPropagation();openLetPrev(\''+l.id+'\')">\ud83d\udda8\ufe0f</button>';
-    return '<div class="let-card" onclick="openLetForm(\''+l.id+'\')"><div class="lc-info"><div class="lc-sub">'+(up?'\ud83d\udcce ':'')+(esc(l.subject)||'\u0628\u062f\u0648\u0646 \u0645\u0648\u0636\u0648\u0639')+'</div><div class="lc-meta">'+esc(l.ref)+' \u2022 '+lFmtD(l.date)+' \u2022 '+esc(l.recipient||'')+'</div></div><div class="lc-act">'+notesBtn+prBtn+'<button class="lc-dl" onclick="event.stopPropagation();delLet(\''+l.id+'\')">\ud83d\uddd1\ufe0f</button></div></div>';
+    const lastNote=(l.notes&&l.notes.length)?l.notes.slice().sort((a,b)=>(b.at||0)-(a.at||0))[0]:null;
+    const noteLine=lastNote?'<div style="margin-top:3px;font-size:10px;color:#6b21a8;background:#f3e8ff;border-radius:6px;padding:2px 7px;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom">\ud83d\udcdd '+esc(lastNote.t)+' \u00b7 '+lFmtDT(lastNote.at)+'</div>':'';
+    return '<div class="let-card" onclick="openLetForm(\''+l.id+'\')"><div class="lc-info"><div class="lc-sub">'+(up?'\ud83d\udcce ':'')+(esc(l.subject)||'\u0628\u062f\u0648\u0646 \u0645\u0648\u0636\u0648\u0639')+'</div><div class="lc-meta">'+esc(l.ref)+' \u2022 '+lFmtD(l.date)+' \u2022 '+esc(l.recipient||'')+'</div>'+noteLine+'</div><div class="lc-act">'+notesBtn+prBtn+'<button class="lc-dl" onclick="event.stopPropagation();delLet(\''+l.id+'\')">\ud83d\uddd1\ufe0f</button></div></div>';
   }).join('');
 }
 async function clrAll(){
@@ -9333,7 +9367,7 @@ function showUpdateBar(latest){
 }
 function doUpdate(){location.replace(location.pathname+'?v='+Date.now());}
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='إصلاح تكرار رسالة التحديث نهائياً';
+const APP_UPD_NOTE='قراءة الخطاب تلقائياً عند الرفع + إظهار آخر ملاحظة بجانب كل خطاب';
 function showUpdatedBanner(){
   try{
     try{if(sessionStorage.getItem('hadaf-upd-shown'))return;}catch(_){}
@@ -9358,7 +9392,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkVersi
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1081',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1082',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
