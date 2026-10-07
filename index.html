@@ -8840,7 +8840,9 @@ async function shareLetterPDF(){
 }
 window.addEventListener('afterprint',()=>document.body.classList.remove('lprinting'));
 async function delLet(id){const l=lets.find(x=>x.id===id);if(!l)return;const ok=await confirm2({title:'\u062d\u0630\u0641 \u0627\u0644\u062e\u0637\u0627\u0628',msg:'<strong>'+esc(l.ref)+'</strong>',ok:'\u062d\u0630\u0641'});if(!ok)return;toTrash('let',l);logEvent('\u062d\u0630\u0641 \u062e\u0637\u0627\u0628',l.ref||'');lets=lets.filter(x=>x.id!==id);await svL();renderLetters();toast('\u062a\u0645 \u0627\u0644\u062d\u0630\u0641','ok');}
-// رفع خطاب جاهز (PDF/صورة) وحفظه في الخطابات الصادرة برقم تسلسلي وتاريخ تلقائي
+// رفع خطاب جاهز (PDF/صورة): يخزّن الملف ثم يطلب العنوان والجهة قبل الحفظ
+let _letPendingUpload=null;
+let _letNotesId=null;
 async function uploadLetterFile(inp){
   const f=inp.files&&inp.files[0];
   inp.value='';
@@ -8851,15 +8853,89 @@ async function uploadLetterFile(inp){
   try{
     const ref=_newFileRef();
     await _filePut(ref,f);
-    const iso=new Date().toISOString().slice(0,10);
-    const seq=suggestLSeq(iso);
-    const nm=(f.name||'خطاب').replace(/\.[^.]+$/,'');
-    const saved={id:uid('let'),createdAt:Date.now(),date:iso,seq:seq,ref:buildLRef(seq,iso),recipient:'',subject:nm,body:'',status:'مُصدَر',signed:false,projectId:'',isUpload:true,fileRef:ref,fileName:f.name||'',fileMime:f.type||'application/pdf',fileSize:f.size||0};
-    lets.unshift(saved);
-    logEvent('رفع خطاب',saved.ref);
-    await svL();renderLetters();
-    toast('✅ تم حفظ الخطاب برقم '+saved.ref,'ok');
+    _letPendingUpload={fileRef:ref,fileName:f.name||'',fileMime:f.type||'application/pdf',fileSize:f.size||0};
+    openLetUploadDialog((f.name||'خطاب').replace(/\.[^.]+$/,''));
   }catch(e){toast('تعذّر حفظ الملف: '+(e.message||''),'er');}
+}
+function closeLetUploadDialog(){const o=document.getElementById('letup-ov');if(o)o.remove();}
+function openLetUploadDialog(defSubject){
+  closeLetUploadDialog();
+  const today=new Date().toISOString().slice(0,10);
+  const ov=document.createElement('div');
+  ov.id='letup-ov';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10030;display:flex;align-items:flex-end;justify-content:center';
+  ov.onclick=e=>{if(e.target===ov)closeLetUploadDialog();};
+  const fld='width:100%;padding:10px;border:1px solid #d4e2ed;border-radius:9px;font-family:Tajawal,sans-serif;margin-bottom:11px';
+  const lbl='display:block;font-weight:700;font-size:12.5px;color:#334155;margin-bottom:4px';
+  ov.innerHTML='<div style="background:#fff;width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:18px;font-family:Tajawal,sans-serif;max-height:90vh;overflow:auto">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:16px;color:#17496f">⬆️ بيانات الخطاب المرفوع</div><button onclick="closeLetUploadDialog()" style="background:#eef2f7;border:0;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer">✕</button></div>'
+    +'<label style="'+lbl+'">الموضوع / العنوان</label><input id="letup-sub" type="text" value="'+esc(defSubject||'')+'" placeholder="موضوع الخطاب" style="'+fld+'">'
+    +'<label style="'+lbl+'">موجّه إلى (الجهة)</label><input id="letup-rcp" type="text" placeholder="اسم الجهة / الشخص" style="'+fld+'">'
+    +'<label style="'+lbl+'">التاريخ</label><input id="letup-dt" type="date" value="'+today+'" style="'+fld+'">'
+    +'<label style="'+lbl+'">ملاحظة أولى (اختياري)</label><input id="letup-note" type="text" placeholder="مثال: تم الإرسال / في انتظار الرد" style="'+fld+'">'
+    +'<button onclick="finishLetUpload()" style="width:100%;background:#2771ab;color:#fff;border:0;border-radius:10px;padding:12px;font-family:Cairo,sans-serif;font-weight:800;font-size:14px;cursor:pointer">💾 حفظ الخطاب</button>'
+    +'</div>';
+  document.body.appendChild(ov);
+  setTimeout(()=>{const s=document.getElementById('letup-rcp');if(s)s.focus();},60);
+}
+async function finishLetUpload(){
+  if(!_letPendingUpload){closeLetUploadDialog();return;}
+  const iso=(document.getElementById('letup-dt').value)||new Date().toISOString().slice(0,10);
+  const seq=suggestLSeq(iso);
+  const sub=(document.getElementById('letup-sub').value||'').trim();
+  const rcp=(document.getElementById('letup-rcp').value||'').trim();
+  const note=(document.getElementById('letup-note').value||'').trim();
+  const notes=note?[{t:note,at:Date.now()}]:[];
+  const saved=Object.assign({id:uid('let'),createdAt:Date.now(),date:iso,seq:seq,ref:buildLRef(seq,iso),recipient:rcp,subject:sub,body:'',status:'مُصدَر',signed:false,projectId:'',isUpload:true,notes:notes},_letPendingUpload);
+  _letPendingUpload=null;
+  lets.unshift(saved);
+  logEvent('رفع خطاب',saved.ref);
+  await svL();renderLetters();closeLetUploadDialog();
+  toast('✅ تم حفظ الخطاب برقم '+saved.ref,'ok');
+}
+// ===== ملاحظات/تحديثات الخطاب (مع تاريخ ووقت) =====
+function lFmtDT(ts){try{const d=new Date(ts);if(isNaN(d))return'';const D=String(d.getDate()).padStart(2,'0')+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+d.getFullYear();const T=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');return D+' • '+T;}catch(e){return'';}}
+function closeLetNotes(){const o=document.getElementById('letnotes-ov');if(o)o.remove();}
+function openLetNotes(id){
+  const l=lets.find(x=>x.id===id);if(!l)return;
+  _letNotesId=id;closeLetNotes();
+  const ov=document.createElement('div');
+  ov.id='letnotes-ov';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10030;display:flex;align-items:flex-end;justify-content:center';
+  ov.onclick=e=>{if(e.target===ov)closeLetNotes();};
+  ov.innerHTML='<div style="background:#fff;width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:18px;font-family:Tajawal,sans-serif;max-height:90vh;overflow:auto"><div id="letnotes-inner"></div></div>';
+  document.body.appendChild(ov);
+  renderLetNotes();
+}
+function renderLetNotes(){
+  const l=lets.find(x=>x.id===_letNotesId);if(!l)return;
+  const box=document.getElementById('letnotes-inner');if(!box)return;
+  const notes=(l.notes||[]).slice().sort((a,b)=>(b.at||0)-(a.at||0));
+  let h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:#17496f">📝 ملاحظات الخطاب</div><button onclick="closeLetNotes()" style="background:#eef2f7;border:0;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer">✕</button></div>';
+  h+='<div style="background:#f1f5f9;border-radius:9px;padding:9px 11px;margin-bottom:12px;font-size:12px;color:#475569"><b>'+(esc(l.subject)||'بدون موضوع')+'</b><br>'+esc(l.ref||'')+' • '+(esc(l.recipient)||'بدون جهة')+'</div>';
+  h+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px">';
+  ['جاء الرد','تمت الموافقة','تم الرفض','في انتظار الرد','تم الإرسال'].forEach(q=>{h+='<button onclick="quickLetNote(\''+q+'\')" style="background:#eff6fb;color:#1e5d8d;border:1px solid #cfe3f1;border-radius:999px;padding:7px 11px;font-family:Tajawal,sans-serif;font-weight:700;font-size:11.5px;cursor:pointer">'+q+'</button>';});
+  h+='</div>';
+  h+='<div style="display:flex;gap:7px;margin-bottom:14px"><input id="letnote-inp" type="text" placeholder="اكتب ملاحظة..." style="flex:1;padding:10px;border:1px solid #d4e2ed;border-radius:9px;font-family:Tajawal,sans-serif" onkeydown="if(event.key===&quot;Enter&quot;)addLetNote()"><button onclick="addLetNote()" style="background:#2771ab;color:#fff;border:0;border-radius:9px;padding:0 16px;font-family:Cairo,sans-serif;font-weight:800;cursor:pointer">إضافة</button></div>';
+  if(!notes.length){h+='<div style="text-align:center;color:#94a3b8;font-size:12.5px;padding:14px">لا توجد ملاحظات بعد</div>';}
+  else{h+='<div style="display:flex;flex-direction:column;gap:8px">';notes.forEach(n=>{const ri=(l.notes||[]).indexOf(n);h+='<div style="background:#fff;border:1px solid #e9eef4;border-right:3px solid #2771ab;border-radius:9px;padding:9px 11px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div style="font-size:13px;color:#1e293b;font-weight:600;flex:1">'+esc(n.t||'')+'</div><button onclick="delLetNote('+ri+')" style="background:none;border:0;color:#cbd5e1;cursor:pointer;font-size:13px">🗑️</button></div><div style="font-size:10.5px;color:#94a3b8;margin-top:3px">🕐 '+lFmtDT(n.at)+'</div></div>';});h+='</div>';}
+  box.innerHTML=h;
+}
+async function addLetNote(txt){
+  const l=lets.find(x=>x.id===_letNotesId);if(!l)return;
+  const inp=document.getElementById('letnote-inp');
+  const t=(txt!==undefined?txt:(inp?inp.value:'')||'').trim();
+  if(!t)return;
+  if(!Array.isArray(l.notes))l.notes=[];
+  l.notes.push({t:t,at:Date.now()});
+  if(inp&&txt===undefined)inp.value='';
+  await svL();renderLetNotes();renderLetters();
+}
+function quickLetNote(q){addLetNote(q);}
+async function delLetNote(idx){
+  const l=lets.find(x=>x.id===_letNotesId);if(!l||!Array.isArray(l.notes))return;
+  l.notes.splice(idx,1);
+  await svL();renderLetNotes();renderLetters();
 }
 // فتح/عرض ملف خطاب مرفوع
 async function openLetFile(id){
@@ -8878,10 +8954,12 @@ function renderLetters(){
   if(!list.length){w.innerHTML='<div class="let-empty"><div>\u2709\ufe0f</div>\u0644\u0627 \u062a\u0648\u062c\u062f \u062e\u0637\u0627\u0628\u0627\u062a</div>';return;}
   w.innerHTML=list.map(l=>{
     const up=!!l.isUpload;
+    const nc=(l.notes||[]).length;
+    const notesBtn='<button class="lc-pr" onclick="event.stopPropagation();openLetNotes(\''+l.id+'\')" title="\u0645\u0644\u0627\u062d\u0638\u0627\u062a">\ud83d\udcdd'+(nc?' '+nc:'')+'</button>';
     const prBtn=up
       ?'<button class="lc-pr" onclick="event.stopPropagation();openLetFile(\''+l.id+'\')" title="\u0641\u062a\u062d \u0627\u0644\u0645\u0644\u0641">\ud83d\udcc4</button>'
       :'<button class="lc-pr" onclick="event.stopPropagation();openLetPrev(\''+l.id+'\')">\ud83d\udda8\ufe0f</button>';
-    return '<div class="let-card" onclick="openLetForm(\''+l.id+'\')"><div class="lc-info"><div class="lc-sub">'+(up?'\ud83d\udcce ':'')+(esc(l.subject)||'\u0628\u062f\u0648\u0646 \u0645\u0648\u0636\u0648\u0639')+'</div><div class="lc-meta">'+esc(l.ref)+' \u2022 '+lFmtD(l.date)+' \u2022 '+esc(l.recipient||'')+'</div></div><div class="lc-act">'+prBtn+'<button class="lc-dl" onclick="event.stopPropagation();delLet(\''+l.id+'\')">\ud83d\uddd1\ufe0f</button></div></div>';
+    return '<div class="let-card" onclick="openLetForm(\''+l.id+'\')"><div class="lc-info"><div class="lc-sub">'+(up?'\ud83d\udcce ':'')+(esc(l.subject)||'\u0628\u062f\u0648\u0646 \u0645\u0648\u0636\u0648\u0639')+'</div><div class="lc-meta">'+esc(l.ref)+' \u2022 '+lFmtD(l.date)+' \u2022 '+esc(l.recipient||'')+'</div></div><div class="lc-act">'+notesBtn+prBtn+'<button class="lc-dl" onclick="event.stopPropagation();delLet(\''+l.id+'\')">\ud83d\uddd1\ufe0f</button></div></div>';
   }).join('');
 }
 async function clrAll(){
