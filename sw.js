@@ -1,5 +1,5 @@
-// Service Worker - نظام هدف التنمية (إصدار 1079 - تحديث إجباري)
-const CACHE_NAME = 'hadaf-1079';
+// Service Worker - نظام هدف التنمية (إصدار 1080 - تحديث)
+const CACHE_NAME = 'hadaf-1080';
 const ASSETS = [
   './','./index.html','./manifest.json',
   './icon-192.png','./icon-512.png','./apple-touch-icon.png','./brand-logo.png',
@@ -17,24 +17,17 @@ self.addEventListener('activate',e=>e.waitUntil((async()=>{
   const keys=await caches.keys();
   await Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)));
   await self.clients.claim();
-  const cs=await self.clients.matchAll({type:'window',includeUncontrolled:true});
-  for(const c of cs){
-    try{
-      const u=new URL(c.url);
-      if(u.origin===self.location.origin){
-        u.searchParams.set('v','1079');
-        await c.navigate(u.href);
-      }
-    }catch(_){ }
-  }
+  // ملاحظة: أُزيل إعادة التحميل القسري (c.navigate) لأنه كان يسبّب حلقة
+  // إعادة تحميل وتذبذب بين الإصدارات أثناء انتشار CDN. التحديث يصل عبر
+  // الجلب الشبكي (network-first) وشريط «تتوفّر نسخة جديدة».
 })()));
 
 function upgradeHtml(text){
   let t=text||'';
-  t=t.replace(/name="app-build"\s+content="[^"]+"/,'name="app-build" content="2026-10-07-1079"');
-  t=t.replace(/manifest\.json\?v=\d+/g,'manifest.json?v=1079');
-  t=t.replace(/sw\.js\?v=\d+/g,'sw.js?v=1079');
-  t=t.replace(/إصدار التطبيق\s*<bdi>\d+<\/bdi>/g,'إصدار التطبيق <bdi>1079</bdi>');
+  t=t.replace(/name="app-build"\s+content="[^"]+"/,'name="app-build" content="2026-10-07-1080"');
+  t=t.replace(/manifest\.json\?v=\d+/g,'manifest.json?v=1080');
+  t=t.replace(/sw\.js\?v=\d+/g,'sw.js?v=1080');
+  t=t.replace(/إصدار التطبيق\s*<bdi>\d+<\/bdi>/g,'إصدار التطبيق <bdi>1080</bdi>');
   const tag='<script src="settings-1078.js?v=1078"></script>';
   if(!t.includes('settings-1078.js')) t=t.replace('</body>',tag+'\n</body>');
   return t;
@@ -79,4 +72,4 @@ self.addEventListener('fetch',e=>{
 });
 
 self.addEventListener('message',e=>{if(e.data?.type==='SKIP_WAITING')self.skipWaiting();});
-console.log('✓ هدف التنمية إصدار 1079 — تحديث إجباري + إعدادات مرتبة');
+console.log('✓ هدف التنمية إصدار 1080 — تحديث إجباري + إعدادات مرتبة');
