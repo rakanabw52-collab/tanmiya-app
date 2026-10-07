@@ -974,6 +974,8 @@ window.opsData={
   <div class="let-top">
     <div class="let-search"><input type="text" id="let-search" placeholder="بحث برقم أو موضوع أو جهة..." oninput="renderLetters()"></div>
     <button class="let-newbtn" onclick="openLetForm()">＋ خطاب جديد</button>
+    <button class="let-newbtn" style="background:#6B21A8" onclick="document.getElementById('let-upload-inp').click()">⬆️ رفع خطاب (PDF)</button>
+    <input type="file" id="let-upload-inp" accept="application/pdf,image/*" style="display:none" onchange="uploadLetterFile(this)">
   </div>
   <div id="let-list"></div>
 </section>
@@ -8838,13 +8840,49 @@ async function shareLetterPDF(){
 }
 window.addEventListener('afterprint',()=>document.body.classList.remove('lprinting'));
 async function delLet(id){const l=lets.find(x=>x.id===id);if(!l)return;const ok=await confirm2({title:'\u062d\u0630\u0641 \u0627\u0644\u062e\u0637\u0627\u0628',msg:'<strong>'+esc(l.ref)+'</strong>',ok:'\u062d\u0630\u0641'});if(!ok)return;toTrash('let',l);logEvent('\u062d\u0630\u0641 \u062e\u0637\u0627\u0628',l.ref||'');lets=lets.filter(x=>x.id!==id);await svL();renderLetters();toast('\u062a\u0645 \u0627\u0644\u062d\u0630\u0641','ok');}
+// رفع خطاب جاهز (PDF/صورة) وحفظه في الخطابات الصادرة برقم تسلسلي وتاريخ تلقائي
+async function uploadLetterFile(inp){
+  const f=inp.files&&inp.files[0];
+  inp.value='';
+  if(!f)return;
+  const okType=f.type==='application/pdf'||(f.type||'').startsWith('image/');
+  if(!okType){toast('اختر ملف PDF أو صورة','er');return;}
+  if(f.size>15*1024*1024){toast('الملف كبير جداً (الحد 15 ميجا)','er');return;}
+  try{
+    const ref=_newFileRef();
+    await _filePut(ref,f);
+    const iso=new Date().toISOString().slice(0,10);
+    const seq=suggestLSeq(iso);
+    const nm=(f.name||'خطاب').replace(/\.[^.]+$/,'');
+    const saved={id:uid('let'),createdAt:Date.now(),date:iso,seq:seq,ref:buildLRef(seq,iso),recipient:'',subject:nm,body:'',status:'مُصدَر',signed:false,projectId:'',isUpload:true,fileRef:ref,fileName:f.name||'',fileMime:f.type||'application/pdf',fileSize:f.size||0};
+    lets.unshift(saved);
+    logEvent('رفع خطاب',saved.ref);
+    await svL();renderLetters();
+    toast('✅ تم حفظ الخطاب برقم '+saved.ref,'ok');
+  }catch(e){toast('تعذّر حفظ الملف: '+(e.message||''),'er');}
+}
+// فتح/عرض ملف خطاب مرفوع
+async function openLetFile(id){
+  const l=lets.find(x=>x.id===id);if(!l)return;
+  const w=window.open('','_blank');
+  const url=await _resolveAttBlob(l);
+  if(!url){if(w)try{w.close();}catch(_){}toast('تعذّر فتح الملف','er');return;}
+  if(w){try{w.location=url;}catch(_){}}
+  else{const a=document.createElement('a');a.href=url;a.download=l.fileName||'letter';document.body.appendChild(a);a.click();a.remove();}
+}
 function renderLetters(){
   const q=(document.getElementById('let-search')?document.getElementById('let-search').value:'').trim().toLowerCase();
   let list=lets.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)||((b.seq||0)-(a.seq||0)));
   if(q)list=list.filter(l=>((l.ref||'')+' '+(l.subject||'')+' '+(l.recipient||'')).toLowerCase().indexOf(q)>=0);
   const w=document.getElementById('let-list');if(!w)return;
   if(!list.length){w.innerHTML='<div class="let-empty"><div>\u2709\ufe0f</div>\u0644\u0627 \u062a\u0648\u062c\u062f \u062e\u0637\u0627\u0628\u0627\u062a</div>';return;}
-  w.innerHTML=list.map(l=>'<div class="let-card" onclick="openLetForm(\''+l.id+'\')"><div class="lc-info"><div class="lc-sub">'+(esc(l.subject)||'\u0628\u062f\u0648\u0646 \u0645\u0648\u0636\u0648\u0639')+'</div><div class="lc-meta">'+esc(l.ref)+' \u2022 '+lFmtD(l.date)+' \u2022 '+esc(l.recipient||'')+'</div></div><div class="lc-act"><button class="lc-pr" onclick="event.stopPropagation();openLetPrev(\''+l.id+'\')">\ud83d\udda8\ufe0f</button><button class="lc-dl" onclick="event.stopPropagation();delLet(\''+l.id+'\')">\ud83d\uddd1\ufe0f</button></div></div>').join('');
+  w.innerHTML=list.map(l=>{
+    const up=!!l.isUpload;
+    const prBtn=up
+      ?'<button class="lc-pr" onclick="event.stopPropagation();openLetFile(\''+l.id+'\')" title="\u0641\u062a\u062d \u0627\u0644\u0645\u0644\u0641">\ud83d\udcc4</button>'
+      :'<button class="lc-pr" onclick="event.stopPropagation();openLetPrev(\''+l.id+'\')">\ud83d\udda8\ufe0f</button>';
+    return '<div class="let-card" onclick="openLetForm(\''+l.id+'\')"><div class="lc-info"><div class="lc-sub">'+(up?'\ud83d\udcce ':'')+(esc(l.subject)||'\u0628\u062f\u0648\u0646 \u0645\u0648\u0636\u0648\u0639')+'</div><div class="lc-meta">'+esc(l.ref)+' \u2022 '+lFmtD(l.date)+' \u2022 '+esc(l.recipient||'')+'</div></div><div class="lc-act">'+prBtn+'<button class="lc-dl" onclick="event.stopPropagation();delLet(\''+l.id+'\')">\ud83d\uddd1\ufe0f</button></div></div>';
+  }).join('');
 }
 async function clrAll(){
   const ok1=await confirm2({title:'حذف الكل',msg:'سيتم حذف جميع الفواتير والمشاريع والوثائق نهائياً.',ok:'متابعة'});if(!ok1)return;
