@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-09-15-1078">
+<meta name="app-build" content="2026-10-07-1079">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1078">
+<link rel="manifest" href="manifest.json?v=1079">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -691,7 +691,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1078</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1079</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1510,7 +1510,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1078</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1079</bdi></span></div>
   </div>
 </div>
 
@@ -9332,6 +9332,23 @@ function showUpdateBar(latest){
   requestAnimationFrame(()=>bar.classList.add('show'));
 }
 function doUpdate(){location.replace(location.pathname+'?v='+Date.now());}
+/* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
+const APP_UPD_NOTE='رفع خطابات PDF + تسجيل العنوان والجهة + ملاحظات الخطابات بالتاريخ والوقت';
+function showUpdatedBanner(){
+  try{
+    const b=curBuild();if(!b)return;
+    let seen=null;try{seen=localStorage.getItem('hadaf-seen-build');}catch(_){}
+    try{localStorage.setItem('hadaf-seen-build',b);}catch(_){}
+    if(!seen||seen===b)return; // أول تشغيل أو نفس الإصدار → لا بانر
+    const vnum=b.split('-').pop();
+    let bar=document.getElementById('updDoneBar');
+    if(!bar){bar=document.createElement('div');bar.id='updDoneBar';document.body.appendChild(bar);}
+    bar.style.cssText='position:fixed;top:0;left:0;right:0;z-index:10060;background:linear-gradient(135deg,#15803D,#0f6e34);color:#fff;font-family:Tajawal,sans-serif;padding:10px 14px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 10px rgba(0,0,0,.25);font-size:12.5px;font-weight:700;text-align:center';
+    bar.innerHTML='<span>✅ تم التحديث إلى الإصدار '+esc(vnum)+' — '+esc(APP_UPD_NOTE)+'</span><button onclick="var x=document.getElementById(&quot;updDoneBar&quot;);if(x)x.remove();" style="background:rgba(255,255,255,.22);border:0;color:#fff;border-radius:7px;padding:5px 11px;cursor:pointer;font-family:Tajawal,sans-serif;font-weight:800;white-space:nowrap">إغلاق</button>';
+    setTimeout(()=>{var x=document.getElementById('updDoneBar');if(x)x.remove();},15000);
+  }catch(e){}
+}
+setTimeout(showUpdatedBanner,900);
 setTimeout(checkVersion,5000);
 setInterval(checkVersion,60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkVersion();});
@@ -9339,7 +9356,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkVersi
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1078',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1079',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
