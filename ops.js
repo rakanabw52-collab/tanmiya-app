@@ -121,7 +121,7 @@ window.opsPrintPO=function(id,docTitle){
   const proj=(typeof pName==='function')?(pName(x.projectId)||'—'):'—';
   const amount=num(x.amount)||Math.max(0,num(x.total)-num(x.vat)),vat=num(x.vat),total=num(x.total);
   const dd=d=>(typeof fmtD==='function'?fmtD(d):(d||''));
-  const LOGO=window.MARK_B64||'',SIGN=window.SIGN_B64||'',STAMP=window.STAMP_B64||'';
+  const LOGO=window.LOGO_B64||'',SIGN=window.SIGN_B64||'',STAMP=window.STAMP_B64||'';
   const w=window.open('','_blank');if(!w){try{toast('فعّل النوافذ المنبثقة','er');}catch(_){}return;}
   try{w.document.title=TTL+' '+(x.number||'');}catch(_){}
   const row=(a,b,bold)=>'<tr'+(bold?' class="tot"':'')+'><td>'+a+'</td><td class="num">'+b+'</td></tr>';
@@ -140,16 +140,16 @@ window.opsPrintPO=function(id,docTitle){
    +'</style></head><body>'
    +'<div class="ptip">💡 لإخفاء التاريخ أعلى الصفحة ورابط about:blank أسفلها عند الطباعة: من نافذة الطباعة اضغط «المزيد من الإعدادات» وألغِ تفعيل «الرؤوس والتذييلات» (Headers and footers) — رقم الصفحة بالأسفل جزء من المستند نفسه وسيبقى ظاهراً. هذا السطر لا يُطبع.</div>'
    +'<div class="sheet">'
-   +'<div class="hd">'+(LOGO?'<img src="'+LOGO+'">':'<div class="t1">مؤسسة هدف التنمية للمقاولات</div>')+'<div class="t2">نظام إدارة المشاريع والمشتريات</div></div>'
+   +'<div class="hd">'+(LOGO?'<img src="'+LOGO+'">':'<div class="t1">مؤسسة هدف التنمية للمقاولات</div>')+'<div class="t2">نظام إدارة المشاريع والمشتريات<br>Project &amp; Procurement Management System</div></div>'
    +'<div class="ttl">'+esc(TTL)+'</div><div class="sub">PURCHASE ORDER</div>'
-   +'<div class="meta"><div><b>رقم الأمر:</b> '+esc(x.number||'—')+'</div><div><b>التاريخ:</b> '+esc(dd(x.date)||'—')+'</div><div><b>المورد:</b> '+esc(supplier)+'</div><div><b>المشروع:</b> '+esc(proj)+'</div>'+(x.dueDate?'<div><b>تاريخ الاستحقاق:</b> '+esc(dd(x.dueDate))+'</div>':'')+'<div><b>الحالة:</b> '+esc((({draft:'مسودة',approved:'معتمد',received:'مستلم',partial:'دفع جزئي',paid:'مدفوع',open:'مفتوح',cancelled:'ملغى'})[x.status]||x.status||'—'))+'</div></div>'
-   +'<table><thead><tr><th>البيان</th><th>القيمة (ر.س)</th></tr></thead><tbody>'
-   +row(esc(x.notes||'توريد حسب الاتفاق'),money(amount))
-   +row('ضريبة القيمة المضافة ('+esc(String(x.vatRate==null?15:x.vatRate))+'%)',money(vat))
-   +row('الإجمالي شامل الضريبة',money(total),true)
+   +'<div class="meta"><div><b>رقم الأمر / Order No.:</b> '+esc(x.number||'—')+'</div><div><b>التاريخ / Date:</b> '+esc(dd(x.date)||'—')+'</div><div><b>المورد / Supplier:</b> '+esc(supplier)+'</div><div><b>المشروع / Project:</b> '+esc(proj)+'</div>'+(x.dueDate?'<div><b>تاريخ الاستحقاق / Due Date:</b> '+esc(dd(x.dueDate))+'</div>':'')+'<div><b>الحالة / Status:</b> '+esc((({draft:'مسودة Draft',approved:'معتمد Approved',received:'مستلم Received',partial:'دفع جزئي Partial',paid:'مدفوع Paid',open:'مفتوح Open',cancelled:'ملغى Cancelled'})[x.status]||x.status||'—'))+'</div></div>'
+   +'<table><thead><tr><th>البيان / Description</th><th>القيمة (ر.س) / Amount (SAR)</th></tr></thead><tbody>'
+   +row(esc(x.notes||'توريد حسب الاتفاق / Supply as agreed'),money(amount))
+   +row('ضريبة القيمة المضافة / VAT ('+esc(String(x.vatRate==null?15:x.vatRate))+'%)',money(vat))
+   +row('الإجمالي شامل الضريبة / Total incl. VAT',money(total),true)
    +'</tbody></table>'
-   +'<div class="sign"><div><div class="role">المدير العام</div>'+(SIGN?'<img class="s" src="'+SIGN+'">':'')+'<div class="nm">عبدالعزيز بن مسفر العتيبي</div></div>'+(STAMP?'<img class="st" src="'+STAMP+'">':'')+'</div>'
-   +'<div class="ft">Tel +966 55 554 7255 • Email ceo@hadff.com • Web www.hdft023.com<br>C.R. 2051251885 • VAT 311915930600003 • Unified No. 7036434897</div>'
+   +'<div class="sign"><div><div class="role">المدير العام<br><span style="font-weight:600;font-size:11px;color:#6b7280">General Manager</span></div>'+(SIGN?'<img class="s" src="'+SIGN+'">':'')+'<div class="nm">عبدالعزيز بن مسفر العتيبي<br><span style="font-size:11px;font-weight:600">Abdulaziz bin Musfer Al-Otaibi</span></div></div>'+(STAMP?'<img class="st" src="'+STAMP+'">':'')+'</div>'
+   +'<div class="ft">هاتف / Tel +966 55 554 7255 • بريد / Email ceo@hadff.com • موقع / Web www.hdft023.com<br>س.ت / C.R. 2051251885 • ر.ض / VAT 311915930600003 • الرقم الموحد / Unified No. 7036434897</div>'
    +'<div class="pgnum">1</div>'
    +'</div></body></html>';
   w.document.open();w.document.write(html);w.document.close();
@@ -181,7 +181,7 @@ window.addEventListener('load',()=>setTimeout(()=>{try{renderOpsDashboardStrip()
   if(document.getElementById('tanmiya-integrate')) return;
   const s=document.createElement('script');
   s.id='tanmiya-integrate';
-  s.src='integrate.js?v=1095';
+  s.src='integrate.js?v=1096';
   s.defer=true;
   document.head.appendChild(s);
 })();
