@@ -140,9 +140,9 @@ window.opsPrintPO=function(id,docTitle){
    +'</style></head><body>'
    +'<div class="ptip">💡 لإخفاء التاريخ أعلى الصفحة ورابط about:blank أسفلها عند الطباعة: من نافذة الطباعة اضغط «المزيد من الإعدادات» وألغِ تفعيل «الرؤوس والتذييلات» (Headers and footers) — رقم الصفحة بالأسفل جزء من المستند نفسه وسيبقى ظاهراً. هذا السطر لا يُطبع.</div>'
    +'<div class="sheet">'
-   +'<div class="hd">'+(LOGO?'<img src="'+LOGO+'">':'')+'<div><div class="t1">مؤسسة هدف التنمية للمقاولات</div><div class="t2">نظام إدارة المشاريعوالمشتريات</div></div></div>'
+   +'<div class="hd">'+(LOGO?'<img src="'+LOGO+'">':'<div class="t1">مؤسسة هدف التنمية للمقاولات</div>')+'<div class="t2">نظام إدارة المشاريع والمشتريات</div></div>'
    +'<div class="ttl">'+esc(TTL)+'</div><div class="sub">PURCHASE ORDER</div>'
-   +'<div class="meta"><div><b>رقم الأمر:</b> '+esc(x.number||'—')+'</div><div><b>التاريخ:</b> '+esc(dd(x.date)||'—')+'</div><div><b>المورد:</b> '+esc(supplier)+'</div><div><b>المشروع:</b> '+esc(proj)+'</div>'+(x.dueDate?'<div><b>تاريخ الاستحقاق:</b> '+esc(dd(x.dueDate))+'</div>':'')+'<div><b>الحالة:</b> '+esc((x.status||'—'))+'</div></div>'
+   +'<div class="meta"><div><b>رقم الأمر:</b> '+esc(x.number||'—')+'</div><div><b>التاريخ:</b> '+esc(dd(x.date)||'—')+'</div><div><b>المورد:</b> '+esc(supplier)+'</div><div><b>المشروع:</b> '+esc(proj)+'</div>'+(x.dueDate?'<div><b>تاريخ الاستحقاق:</b> '+esc(dd(x.dueDate))+'</div>':'')+'<div><b>الحالة:</b> '+esc((({draft:'مسودة',approved:'معتمد',received:'مستلم',partial:'دفع جزئي',paid:'مدفوع',open:'مفتوح',cancelled:'ملغى'})[x.status]||x.status||'—'))+'</div></div>'
    +'<table><thead><tr><th>البيان</th><th>القيمة (ر.س)</th></tr></thead><tbody>'
    +row(esc(x.notes||'توريد حسب الاتفاق'),money(amount))
    +row('ضريبة القيمة المضافة ('+esc(String(x.vatRate==null?15:x.vatRate))+'%)',money(vat))
@@ -181,7 +181,7 @@ window.addEventListener('load',()=>setTimeout(()=>{try{renderOpsDashboardStrip()
   if(document.getElementById('tanmiya-integrate')) return;
   const s=document.createElement('script');
   s.id='tanmiya-integrate';
-  s.src='integrate.js?v=1094';
+  s.src='integrate.js?v=1095';
   s.defer=true;
   document.head.appendChild(s);
 })();
