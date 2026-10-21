@@ -121,8 +121,9 @@ window.opsPrintPO=function(id,docTitle){
   const proj=(typeof pName==='function')?(pName(x.projectId)||'—'):'—';
   const amount=num(x.amount)||Math.max(0,num(x.total)-num(x.vat)),vat=num(x.vat),total=num(x.total);
   const dd=d=>(typeof fmtD==='function'?fmtD(d):(d||''));
-  const LOGO=window.LOGO_B64||'',SIGN=window.SIGN_B64||'',STAMP=window.STAMP_B64||'';
+  const LOGO=window.MARK_B64||'',SIGN=window.SIGN_B64||'',STAMP=window.STAMP_B64||'';
   const w=window.open('','_blank');if(!w){try{toast('فعّل النوافذ المنبثقة','er');}catch(_){}return;}
+  try{w.document.title=TTL+' '+(x.number||'');}catch(_){}
   const row=(a,b,bold)=>'<tr'+(bold?' class="tot"':'')+'><td>'+a+'</td><td class="num">'+b+'</td></tr>';
   const html='<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>'+esc(TTL)+' '+esc(x.number||'')+'</title><style>'
    +'*{box-sizing:border-box;font-family:Tahoma,Arial,sans-serif}body{margin:0;padding:22px;color:#1f2937;background:#fff}'
@@ -133,8 +134,12 @@ window.opsPrintPO=function(id,docTitle){
    +'table{width:calc(100% - 44px);margin:0 22px;border-collapse:collapse;font-size:13px}th,td{border:1px solid #e5e7eb;padding:9px 10px;text-align:right}th{background:#eff6fb;color:#1a4d7d}.num{text-align:left;font-variant-numeric:tabular-nums;white-space:nowrap}tr.tot td{font-weight:800;background:#f8fafc;color:#1a4d7d}'
    +'.sign{display:flex;justify-content:space-between;align-items:flex-end;padding:30px 28px 6px}.sign .role{font-weight:700;color:#374151;margin-bottom:30px}.sign img.s{height:58px;display:block}.sign .nm{font-weight:800;margin-top:4px;font-size:13px}.sign img.st{height:92px;opacity:.95}'
    +'.ft{background:#f8fafc;border-top:1px solid #eef2f7;padding:10px 22px;font-size:10px;color:#6b7280;text-align:center;line-height:1.8;margin-top:8px}'
-   +'@media print{body{padding:0}.sheet{border:0;border-radius:0}}</style></head><body><div class="sheet">'
-   +'<div class="hd">'+(LOGO?'<img src="'+LOGO+'">':'')+'<div><div class="t1">مؤسسة هدف التنمية للمقاولات</div><div class="t2">نظام إدارة المشاريع والمشتريات</div></div></div>'
+   +'@page{margin:12mm 10mm}@media print{body{padding:0}.sheet{border:0;border-radius:0}.ptip{display:none}}'
+   +'.ptip{max-width:780px;margin:0 auto 10px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:9px 12px;color:#92400e;font-size:11.5px;line-height:1.7}'
+   +'</style></head><body>'
+   +'<div class="ptip">💡 لإخفاء التاريخ والوقت أعلى الصفحة عند الطباعة: من نافذة الطباعة اضغط «المزيد من الإعدادات» وألغِ تفعيل «الرؤوس والتذييلات» (Headers and footers). هذا السطر لا يُطبع.</div>'
+   +'<div class="sheet">'
+   +'<div class="hd">'+(LOGO?'<img src="'+LOGO+'">':'')+'<div><div class="t1">مؤسسة هدف التنمية للمقاولات</div><div class="t2">نظام إدارة المشاريعوالمشتريات</div></div></div>'
    +'<div class="ttl">'+esc(TTL)+'</div><div class="sub">PURCHASE ORDER</div>'
    +'<div class="meta"><div><b>رقم الأمر:</b> '+esc(x.number||'—')+'</div><div><b>التاريخ:</b> '+esc(dd(x.date)||'—')+'</div><div><b>المورد:</b> '+esc(supplier)+'</div><div><b>المشروع:</b> '+esc(proj)+'</div>'+(x.dueDate?'<div><b>تاريخ الاستحقاق:</b> '+esc(dd(x.dueDate))+'</div>':'')+'<div><b>الحالة:</b> '+esc((x.status||'—'))+'</div></div>'
    +'<table><thead><tr><th>البيان</th><th>القيمة (ر.س)</th></tr></thead><tbody>'
@@ -174,7 +179,7 @@ window.addEventListener('load',()=>setTimeout(()=>{try{renderOpsDashboardStrip()
   if(document.getElementById('tanmiya-integrate')) return;
   const s=document.createElement('script');
   s.id='tanmiya-integrate';
-  s.src='integrate.js?v=1092';
+  s.src='integrate.js?v=1093';
   s.defer=true;
   document.head.appendChild(s);
 })();
