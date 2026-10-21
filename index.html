@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-10-07-1083">
+<meta name="app-build" content="2026-10-07-1084">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1083">
+<link rel="manifest" href="manifest.json?v=1084">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -691,7 +691,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1083</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1084</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1510,7 +1510,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1083</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1084</bdi></span></div>
   </div>
 </div>
 
@@ -8379,8 +8379,37 @@ function exportDocsCertPDF(){
   setTimeout(()=>w.print(),700);
 }
 function closeSet(){sett.name=document.getElementById('set-nm').value.trim();sett.vn=document.getElementById('set-vn').value.trim();sett.cr=document.getElementById('set-cr').value.trim();svS();if(typeof cloudPush==='function')cloudPush('settings','main',sett);document.getElementById('set-mb').classList.remove('show');}
-function expBak(){
-  const data={invs,projs,docs,lets,sett,ops:window.opsData,at:new Date().toISOString(),ver:'hadaf-v5'};
+// ===== بناء النسخة الاحتياطية مع إدراج المرفقات (ملفات IndexedDB) =====
+function _blobToDataUrl(blob){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error||new Error('read error'));r.readAsDataURL(blob);});}
+function _collectFileRefs(){
+  const refs=new Set();
+  const add=o=>{if(o&&o.fileRef)refs.add(o.fileRef);};
+  (projs||[]).forEach(p=>{(p.attachments||[]).forEach(add);(p.contractFiles||[]).forEach(add);});
+  (lets||[]).forEach(add);
+  (docs||[]).forEach(add);
+  return [...refs];
+}
+async function buildBackupData(cap){
+  const data={invs,projs,docs,lets,sett,ops:window.opsData,at:new Date().toISOString(),ver:'hadaf-v6'};
+  try{
+    const refs=_collectFileRefs();
+    const files={};let total=0;const CAP=cap||45*1024*1024;
+    for(const ref of refs){
+      try{const blob=await _fileGet(ref);if(!blob||!blob.size)continue;if(total+blob.size>CAP)continue;files[ref]=await _blobToDataUrl(blob);total+=blob.size;}catch(_){}
+    }
+    if(Object.keys(files).length){data.files=files;data.filesCount=Object.keys(files).length;}
+  }catch(_){}
+  return data;
+}
+async function _restoreBackupFiles(data){
+  if(!data||!data.files||typeof data.files!=='object')return 0;
+  let n=0;
+  for(const ref in data.files){try{const blob=_dataUrlToBlob(data.files[ref]);if(blob){await _filePut(ref,blob);n++;}}catch(_){}}
+  return n;
+}
+async function expBak(){
+  toast('⏳ جاري تجهيز النسخة (مع المرفقات)...','ok');
+  const data=await buildBackupData();
   const json=JSON.stringify(data,null,2);
   const blob=new Blob([json],{type:'application/json'});
   const u=URL.createObjectURL(blob);
@@ -8390,7 +8419,7 @@ function expBak(){
   a.download='هدف_'+new Date().toISOString().slice(0,10)+'_'+invs.length+'فاتورة_'+projs.length+'مشاريع_'+docs.length+'وثيقة.json';
   a.click();
   URL.revokeObjectURL(u);
-  toast('✓ تنزيل '+sizeKB+'KB - احفظه على OneDrive','ok');
+  toast('✓ تنزيل '+sizeKB+'KB'+(data.filesCount?(' + '+data.filesCount+' مرفق'):'')+' — احفظه على OneDrive','ok');
   localStorage.setItem('hd-last-backup',Date.now().toString());
 }
 
@@ -8568,7 +8597,8 @@ async function autoBackup(showToast){
     return false;
   }
   try{
-    const data={invs,projs,docs,lets,sett,ops:window.opsData,at:new Date().toISOString(),ver:'hadaf-auto-v2',counts:{invs:invs.length,projs:projs.length,docs:docs.length,lets:lets.length}};
+    const data=await buildBackupData();
+    data.ver='hadaf-auto-v3';data.counts={invs:invs.length,projs:projs.length,docs:docs.length,lets:lets.length};
     const dt=new Date().toISOString().slice(0,10);
     const fileName='هدف_بكاب_'+dt+'.json';
     const fileHandle=await handle.getFileHandle(fileName,{create:true});
@@ -8689,9 +8719,10 @@ document.getElementById('imp-f').addEventListener('change',async e=>{
       lets=mergeById(lets,cLets);
       if(data.sett||data.settings)sett={...sett,...(data.sett||data.settings)};
       if(impOps&&typeof window.opsMergeData==='function')window.opsData=window.opsMergeData(window.opsData,impOps);
+      const _rf=await _restoreBackupFiles(data);
       await sv();await svP();await svD();await svS();await svL();if(typeof svOps==='function')await svOps(false);apSett();closeSet();renderDB();renderLetters();
       const addedI=invs.length-beforeI,addedP=projs.length-beforeP;
-      toast('✅ دمج: +'+addedI+' فاتورة جديدة، +'+addedP+' مشروع (بدون تكرار)','ok');
+      toast('✅ دمج: +'+addedI+' فاتورة، +'+addedP+' مشروع'+(_rf?('، +'+_rf+' مرفق'):'')+' (بدون تكرار)','ok');
     }else{
       // استبدال كامل
       const ok2=await confirm2({title:'تأكيد الاستبدال',msg:'⚠️ سيتم <strong>حذف كل بياناتك الحالية</strong> واستبدالها ببيانات الملف.<br>الحالي: '+invs.length+' فاتورة • '+projs.length+' مشروع',ok:'استبدل',danger:true});
@@ -8699,8 +8730,9 @@ document.getElementById('imp-f').addEventListener('change',async e=>{
       invs=cInvs;projs=cProjs;docs=cDocs;lets=cLets;
       if(data.sett||data.settings)sett={...sett,...(data.sett||data.settings)};
       if(impOps)window.opsData=Object.assign(window.opsData||{},impOps);
+      const _rf=await _restoreBackupFiles(data);
       await sv();await svP();await svD();await svS();await svL();if(typeof svOps==='function')await svOps(false);apSett();closeSet();renderDB();renderLetters();
-      toast('✅ تم الاستبدال','ok');
+      toast('✅ تم الاستبدال'+(_rf?(' + '+_rf+' مرفق'):''),'ok');
     }
   }catch(err){toast('فشل: '+err.message,'er');}
   e.target.value='';
@@ -9362,12 +9394,32 @@ function showUpdateBar(latest){
   const vnum=(latest||'').split('-').pop();
   let bar=document.getElementById('updBar');
   if(!bar){bar=document.createElement('div');bar.id='updBar';bar.className='upd-bar';document.body.appendChild(bar);}
-  bar.innerHTML='<span>🔄 تتوفّر نسخة جديدة'+(vnum?' (إصدار <bdi>'+vnum+'</bdi>)':'')+'</span><button onclick="doUpdate()">حدّث الآن</button>';
+  bar.innerHTML='<span>🔄 تتوفّر نسخة جديدة'+(vnum?' (إصدار <bdi>'+esc(vnum)+'</bdi>)':'')+'</span><button onclick="doUpdate()">حدّث الآن</button><button onclick="dismissUpdate(&quot;'+esc(latest||'')+'&quot;)" style="background:transparent;border:0;color:inherit;opacity:.65;cursor:pointer;padding:0 8px;font-family:inherit">لاحقاً</button>';
   requestAnimationFrame(()=>bar.classList.add('show'));
 }
+function dismissUpdate(latest){try{if(latest)localStorage.setItem('hadaf-dismissed-build',latest);}catch(_){}const b=document.getElementById('updBar');if(b)b.remove();}
 function doUpdate(){location.replace(location.pathname+'?v='+Date.now());}
+/* فحص تحديث ذكي: مرة واحدة لكل جلسة، ولا يُظهر إلا إذا الإصدار أحدث فعلاً
+   (رقم أكبر) ولم يُرفض سابقاً — لا مؤقتات متكررة ولا تذبذب مع CDN */
+async function smartUpdateCheck(){
+  try{
+    try{if(sessionStorage.getItem('hadaf-upd-checked'))return;sessionStorage.setItem('hadaf-upd-checked','1');}catch(_){}
+    const cur=curBuild();if(!cur)return;
+    const res=await fetch(location.pathname+'?_u='+Date.now(),{cache:'no-store'});
+    if(!res.ok)return;
+    const t=await res.text();
+    const mm=t.match(/name="app-build"\s+content="([^"]+)"/);
+    const latest=mm?mm[1]:'';
+    if(!latest||latest===cur)return;
+    const curN=parseInt(cur.split('-').pop()||'0',10),latN=parseInt(latest.split('-').pop()||'0',10);
+    if(!(latN>curN))return; // أحدث فعلاً فقط
+    let dis=null;try{dis=localStorage.getItem('hadaf-dismissed-build');}catch(_){}
+    if(dis===latest)return; // سبق رفضه
+    showUpdateBar(latest);
+  }catch(e){}
+}
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='إيقاف تكرار رسالة التحديث نهائياً';
+const APP_UPD_NOTE='إشعار تحديث ذكي (بلا تكرار) + حفظ المرفقات داخل النسخة الاحتياطية';
 function showUpdatedBanner(){
   try{
     try{if(sessionStorage.getItem('hadaf-upd-shown'))return;}catch(_){}
@@ -9385,15 +9437,12 @@ function showUpdatedBanner(){
   }catch(e){}
 }
 setTimeout(showUpdatedBanner,900);
-/* تم تعطيل الفحص المتكرر للإصدار: كان يقارن جلبتين من الخادم فيتذبذب مع
-   نسخ CDN ويُظهر «تتوفّر نسخة جديدة» بشكل متكرر بلا سبب حقيقي. التطبيق
-   يجلب أحدث نسخة تلقائياً عند كل فتح (network-first)، وبانر «تم التحديث»
-   يُعلِم المستخدم مرة واحدة عند تغيّر الإصدار فعلاً. */
+setTimeout(smartUpdateCheck,6000); // فحص ذكي مرة واحدة بالجلسة (بدون تكرار/لوب)
 </script>
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1083',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1084',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
