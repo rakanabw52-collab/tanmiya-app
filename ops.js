@@ -134,10 +134,11 @@ window.opsPrintPO=function(id,docTitle){
    +'table{width:calc(100% - 44px);margin:0 22px;border-collapse:collapse;font-size:13px}th,td{border:1px solid #e5e7eb;padding:9px 10px;text-align:right}th{background:#eff6fb;color:#1a4d7d}.num{text-align:left;font-variant-numeric:tabular-nums;white-space:nowrap}tr.tot td{font-weight:800;background:#f8fafc;color:#1a4d7d}'
    +'.sign{display:flex;justify-content:space-between;align-items:flex-end;padding:30px 28px 6px}.sign .role{font-weight:700;color:#374151;margin-bottom:30px}.sign img.s{height:58px;display:block}.sign .nm{font-weight:800;margin-top:4px;font-size:13px}.sign img.st{height:92px;opacity:.95}'
    +'.ft{background:#f8fafc;border-top:1px solid #eef2f7;padding:10px 22px;font-size:10px;color:#6b7280;text-align:center;line-height:1.8;margin-top:8px}'
+   +'.pgnum{text-align:center;font-size:10px;color:#9ca3af;padding:6px 0 2px}'
    +'@page{margin:12mm 10mm}@media print{body{padding:0}.sheet{border:0;border-radius:0}.ptip{display:none}}'
    +'.ptip{max-width:780px;margin:0 auto 10px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:9px 12px;color:#92400e;font-size:11.5px;line-height:1.7}'
    +'</style></head><body>'
-   +'<div class="ptip">💡 لإخفاء التاريخ والوقت أعلى الصفحة عند الطباعة: من نافذة الطباعة اضغط «المزيد من الإعدادات» وألغِ تفعيل «الرؤوس والتذييلات» (Headers and footers). هذا السطر لا يُطبع.</div>'
+   +'<div class="ptip">💡 لإخفاء التاريخ أعلى الصفحة ورابط about:blank أسفلها عند الطباعة: من نافذة الطباعة اضغط «المزيد من الإعدادات» وألغِ تفعيل «الرؤوس والتذييلات» (Headers and footers) — رقم الصفحة بالأسفل جزء من المستند نفسه وسيبقى ظاهراً. هذا السطر لا يُطبع.</div>'
    +'<div class="sheet">'
    +'<div class="hd">'+(LOGO?'<img src="'+LOGO+'">':'')+'<div><div class="t1">مؤسسة هدف التنمية للمقاولات</div><div class="t2">نظام إدارة المشاريعوالمشتريات</div></div></div>'
    +'<div class="ttl">'+esc(TTL)+'</div><div class="sub">PURCHASE ORDER</div>'
@@ -149,6 +150,7 @@ window.opsPrintPO=function(id,docTitle){
    +'</tbody></table>'
    +'<div class="sign"><div><div class="role">المدير العام</div>'+(SIGN?'<img class="s" src="'+SIGN+'">':'')+'<div class="nm">عبدالعزيز بن مسفر العتيبي</div></div>'+(STAMP?'<img class="st" src="'+STAMP+'">':'')+'</div>'
    +'<div class="ft">Tel +966 55 554 7255 • Email ceo@hadff.com • Web www.hdft023.com<br>C.R. 2051251885 • VAT 311915930600003 • Unified No. 7036434897</div>'
+   +'<div class="pgnum">1</div>'
    +'</div></body></html>';
   w.document.open();w.document.write(html);w.document.close();
   setTimeout(function(){try{w.focus();w.print();}catch(_){}} ,500);
@@ -179,7 +181,7 @@ window.addEventListener('load',()=>setTimeout(()=>{try{renderOpsDashboardStrip()
   if(document.getElementById('tanmiya-integrate')) return;
   const s=document.createElement('script');
   s.id='tanmiya-integrate';
-  s.src='integrate.js?v=1093';
+  s.src='integrate.js?v=1094';
   s.defer=true;
   document.head.appendChild(s);
 })();
