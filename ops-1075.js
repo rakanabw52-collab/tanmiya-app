@@ -114,16 +114,17 @@ window.opsOpen=function(type,id,preset){window._opsEdit={type,id:id||'',preset:p
  document.getElementById('ops-modal-title').textContent=title;document.getElementById('ops-modal-body').innerHTML='<div class="ops-form">'+f+'</div>';document.getElementById('ops-modal').classList.add('show');};
 window.opsCloseModal=function(){document.getElementById('ops-modal').classList.remove('show');window._opsEdit=null;};
 // طباعة أمر الشراء موقّعاً ومختوماً (هوية هدف التنمية)
-window.opsPrintPO=function(id){
-  const x=record('po',id);if(!x){try{toast('أمر الشراء غير موجود','er');}catch(_){}return;}
+window.opsPrintPO=function(id,docTitle){
+  const x=record('po',id);if(!x){try{toast('السجل غير موجود','er');}catch(_){}return;}
+  const TTL=docTitle||'أمر شراء';
   const supplier=poSupName(x);
   const proj=(typeof pName==='function')?(pName(x.projectId)||'—'):'—';
-  const amount=num(x.amount),vat=num(x.vat),total=num(x.total);
+  const amount=num(x.amount)||Math.max(0,num(x.total)-num(x.vat)),vat=num(x.vat),total=num(x.total);
   const dd=d=>(typeof fmtD==='function'?fmtD(d):(d||''));
   const LOGO=window.LOGO_B64||'',SIGN=window.SIGN_B64||'',STAMP=window.STAMP_B64||'';
   const w=window.open('','_blank');if(!w){try{toast('فعّل النوافذ المنبثقة','er');}catch(_){}return;}
   const row=(a,b,bold)=>'<tr'+(bold?' class="tot"':'')+'><td>'+a+'</td><td class="num">'+b+'</td></tr>';
-  const html='<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>أمر شراء '+esc(x.number||'')+'</title><style>'
+  const html='<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>'+esc(TTL)+' '+esc(x.number||'')+'</title><style>'
    +'*{box-sizing:border-box;font-family:Tahoma,Arial,sans-serif}body{margin:0;padding:22px;color:#1f2937;background:#fff}'
    +'.sheet{max-width:780px;margin:0 auto;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden}'
    +'.hd{background:linear-gradient(135deg,#1a4d7d,#2771ab);color:#fff;padding:16px 22px;display:flex;align-items:center;gap:14px}.hd img{height:52px;background:#fff;border-radius:8px;padding:4px}.hd .t1{font-size:19px;font-weight:800}.hd .t2{font-size:11.5px;opacity:.9}'
@@ -134,7 +135,7 @@ window.opsPrintPO=function(id){
    +'.ft{background:#f8fafc;border-top:1px solid #eef2f7;padding:10px 22px;font-size:10px;color:#6b7280;text-align:center;line-height:1.8;margin-top:8px}'
    +'@media print{body{padding:0}.sheet{border:0;border-radius:0}}</style></head><body><div class="sheet">'
    +'<div class="hd">'+(LOGO?'<img src="'+LOGO+'">':'')+'<div><div class="t1">مؤسسة هدف التنمية للمقاولات</div><div class="t2">نظام إدارة المشاريع والمشتريات</div></div></div>'
-   +'<div class="ttl">أمر شراء</div><div class="sub">PURCHASE ORDER</div>'
+   +'<div class="ttl">'+esc(TTL)+'</div><div class="sub">PURCHASE ORDER</div>'
    +'<div class="meta"><div><b>رقم الأمر:</b> '+esc(x.number||'—')+'</div><div><b>التاريخ:</b> '+esc(dd(x.date)||'—')+'</div><div><b>المورد:</b> '+esc(supplier)+'</div><div><b>المشروع:</b> '+esc(proj)+'</div>'+(x.dueDate?'<div><b>تاريخ الاستحقاق:</b> '+esc(dd(x.dueDate))+'</div>':'')+'<div><b>الحالة:</b> '+esc((x.status||'—'))+'</div></div>'
    +'<table><thead><tr><th>البيان</th><th>القيمة (ر.س)</th></tr></thead><tbody>'
    +row(esc(x.notes||'توريد حسب الاتفاق'),money(amount))
