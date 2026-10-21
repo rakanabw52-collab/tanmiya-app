@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-10-21-1085">
+<meta name="app-build" content="2026-10-21-1086">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1085">
+<link rel="manifest" href="manifest.json?v=1086">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -691,7 +691,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1085</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1086</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1510,7 +1510,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1085</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1086</bdi></span></div>
   </div>
 </div>
 
@@ -8971,6 +8971,14 @@ function openLetNotes(id){
   document.body.appendChild(ov);
   renderLetNotes();
 }
+const _NOTE_COLORS={g:{bg:'#f0fdf4',bd:'#86efac',tx:'#15803d'},r:{bg:'#fef2f2',bd:'#fca5a5',tx:'#b91c1c'},a:{bg:'#fffbeb',bd:'#fde68a',tx:'#b45309'},b:{bg:'#eff6ff',bd:'#bfdbfe',tx:'#1e40af'},d:{bg:'#f3e8ff',bd:'#d8b4fe',tx:'#6b21a8'}};
+function _letNoteColor(t){const s=String(t||'');
+  if(/رفض|مرفوض|ملغى|إلغاء|متأخر|اعتراض|مشكلة|توقّف|معتذر/.test(s))return 'r';
+  if(/موافق|اعتماد|اعتمد|قبول|مقبول|جاء الرد|تم الاستلام|استلم|منجز|مكتمل|تمّ|نجح/.test(s))return 'g';
+  if(/انتظار|بانتظار|معلّق|معلق|قيد|مراجعة|متابعة|لم يرد|مؤجل|تذكير/.test(s))return 'a';
+  if(/إرسال|أُرسل|مُرسل|تسليم|سلّم|تقديم|قُدّم/.test(s))return 'b';
+  return 'd';}
+function _noteCol(n){return _NOTE_COLORS[(n&&n.c)||_letNoteColor(n&&n.t)]||_NOTE_COLORS.d;}
 function renderLetNotes(){
   const l=lets.find(x=>x.id===_letNotesId);if(!l)return;
   const box=document.getElementById('letnotes-inner');if(!box)return;
@@ -8978,11 +8986,11 @@ function renderLetNotes(){
   let h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:#17496f">📝 ملاحظات الخطاب</div><button onclick="closeLetNotes()" style="background:#eef2f7;border:0;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer">✕</button></div>';
   h+='<div style="background:#f1f5f9;border-radius:9px;padding:9px 11px;margin-bottom:12px;font-size:12px;color:#475569"><b>'+(esc(l.subject)||'بدون موضوع')+'</b><br>'+esc(l.ref||'')+' • '+(esc(l.recipient)||'بدون جهة')+'</div>';
   h+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px">';
-  ['جاء الرد','تمت الموافقة','تم الرفض','في انتظار الرد','تم الإرسال'].forEach(q=>{h+='<button onclick="quickLetNote(\''+q+'\')" style="background:#eff6fb;color:#1e5d8d;border:1px solid #cfe3f1;border-radius:999px;padding:7px 11px;font-family:Tajawal,sans-serif;font-weight:700;font-size:11.5px;cursor:pointer">'+q+'</button>';});
+  ['جاء الرد','تمت الموافقة','تم الرفض','في انتظار الرد','تم الإرسال'].forEach(q=>{const qc=_NOTE_COLORS[_letNoteColor(q)];h+='<button onclick="quickLetNote(\''+q+'\')" style="background:'+qc.bg+';color:'+qc.tx+';border:1px solid '+qc.bd+';border-radius:999px;padding:7px 11px;font-family:Tajawal,sans-serif;font-weight:700;font-size:11.5px;cursor:pointer">'+q+'</button>';});
   h+='</div>';
   h+='<div style="display:flex;gap:7px;margin-bottom:14px"><input id="letnote-inp" type="text" placeholder="اكتب ملاحظة..." style="flex:1;padding:10px;border:1px solid #d4e2ed;border-radius:9px;font-family:Tajawal,sans-serif" onkeydown="if(event.key===&quot;Enter&quot;)addLetNote()"><button onclick="addLetNote()" style="background:#2771ab;color:#fff;border:0;border-radius:9px;padding:0 16px;font-family:Cairo,sans-serif;font-weight:800;cursor:pointer">إضافة</button></div>';
   if(!notes.length){h+='<div style="text-align:center;color:#94a3b8;font-size:12.5px;padding:14px">لا توجد ملاحظات بعد</div>';}
-  else{h+='<div style="display:flex;flex-direction:column;gap:8px">';notes.forEach(n=>{const ri=(l.notes||[]).indexOf(n);h+='<div style="background:#fff;border:1px solid #e9eef4;border-right:3px solid #2771ab;border-radius:9px;padding:9px 11px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div style="font-size:13px;color:#1e293b;font-weight:600;flex:1">'+esc(n.t||'')+'</div><button onclick="delLetNote('+ri+')" style="background:none;border:0;color:#cbd5e1;cursor:pointer;font-size:13px">🗑️</button></div><div style="font-size:10.5px;color:#94a3b8;margin-top:3px">🕐 '+lFmtDT(n.at)+'</div></div>';});h+='</div>';}
+  else{h+='<div style="display:flex;flex-direction:column;gap:8px">';notes.forEach(n=>{const ri=(l.notes||[]).indexOf(n);const c=_noteCol(n);h+='<div style="background:'+c.bg+';border:1px solid '+c.bd+';border-right:4px solid '+c.tx+';border-radius:9px;padding:9px 11px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div style="font-size:13px;color:'+c.tx+';font-weight:700;flex:1">'+esc(n.t||'')+'</div><button onclick="delLetNote('+ri+')" style="background:none;border:0;color:'+c.tx+';opacity:.55;cursor:pointer;font-size:13px">🗑️</button></div><div style="font-size:10.5px;color:'+c.tx+';opacity:.75;margin-top:3px">🕐 '+lFmtDT(n.at)+'</div></div>';});h+='</div>';}
   box.innerHTML=h;
 }
 async function addLetNote(txt){
@@ -8991,7 +8999,7 @@ async function addLetNote(txt){
   const t=(txt!==undefined?txt:(inp?inp.value:'')||'').trim();
   if(!t)return;
   if(!Array.isArray(l.notes))l.notes=[];
-  l.notes.push({t:t,at:Date.now()});
+  l.notes.push({t:t,at:Date.now(),c:_letNoteColor(t)});
   if(inp&&txt===undefined)inp.value='';
   await svL();renderLetNotes();renderLetters();
 }
@@ -9024,7 +9032,8 @@ function renderLetters(){
       ?'<button class="lc-pr" onclick="event.stopPropagation();openLetFile(\''+l.id+'\')" title="\u0641\u062a\u062d \u0627\u0644\u0645\u0644\u0641">\ud83d\udcc4</button>'
       :'<button class="lc-pr" onclick="event.stopPropagation();openLetPrev(\''+l.id+'\')">\ud83d\udda8\ufe0f</button>';
     const lastNote=(l.notes&&l.notes.length)?l.notes.slice().sort((a,b)=>(b.at||0)-(a.at||0))[0]:null;
-    const noteLine=lastNote?'<div style="margin-top:3px;font-size:10px;color:#6b21a8;background:#f3e8ff;border-radius:6px;padding:2px 7px;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom">\ud83d\udcdd '+esc(lastNote.t)+' \u00b7 '+lFmtDT(lastNote.at)+'</div>':'';
+    const lc=lastNote?_noteCol(lastNote):null;
+    const noteLine=lastNote?'<div style="margin-top:3px;font-size:10px;color:'+lc.tx+';background:'+lc.bg+';border:1px solid '+lc.bd+';border-radius:6px;padding:2px 7px;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom">\ud83d\udcdd '+esc(lastNote.t)+' \u00b7 '+lFmtDT(lastNote.at)+'</div>':'';
     return '<div class="let-card" onclick="openLetForm(\''+l.id+'\')"><div class="lc-info"><div class="lc-sub">'+(up?'\ud83d\udcce ':'')+(esc(l.subject)||'\u0628\u062f\u0648\u0646 \u0645\u0648\u0636\u0648\u0639')+'</div><div class="lc-meta">'+esc(l.ref)+' \u2022 '+lFmtD(l.date)+' \u2022 '+esc(l.recipient||'')+'</div>'+noteLine+'</div><div class="lc-act">'+notesBtn+prBtn+'<button class="lc-dl" onclick="event.stopPropagation();delLet(\''+l.id+'\')">\ud83d\uddd1\ufe0f</button></div></div>';
   }).join('');
 }
@@ -9419,7 +9428,7 @@ async function smartUpdateCheck(){
   }catch(e){}
 }
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='أوامر الشراء: إضافة مورد يدوي + طباعة موقّعة ومختومة';
+const APP_UPD_NOTE='ملاحظات الخطابات ملوّنة حسب الحالة + زر طباعة أمر الشراء داخل النموذج';
 function showUpdatedBanner(){
   try{
     try{if(sessionStorage.getItem('hadaf-upd-shown'))return;}catch(_){}
@@ -9442,7 +9451,7 @@ setTimeout(smartUpdateCheck,6000); // فحص ذكي مرة واحدة بالجل
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1085',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1086',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9505,7 +9514,7 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="ops-1075.js?v=1085"></script>
+<script src="ops-1075.js?v=1086"></script>
 
 <script src="settings-1078.js?v=1078"></script>
 </body>
