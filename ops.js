@@ -171,10 +171,10 @@ window.addEventListener('load',()=>setTimeout(()=>{try{renderOpsDashboardStrip()
 
 /* 1076: تحميل طبقة دمج وظائف المقاولات داخل أقسام النظام الأصلي */
 (function(){
-  if(document.getElementById('tanmiya-integrate-1076')) return;
+  if(document.getElementById('tanmiya-integrate')) return;
   const s=document.createElement('script');
-  s.id='tanmiya-integrate-1076';
-  s.src='integrate-1076.js?v=1076';
+  s.id='tanmiya-integrate';
+  s.src='integrate.js?v=1088';
   s.defer=true;
   document.head.appendChild(s);
 })();
