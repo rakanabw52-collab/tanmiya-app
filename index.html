@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-10-22-1101">
+<meta name="app-build" content="2026-10-22-1102">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1101">
+<link rel="manifest" href="manifest.json?v=1102">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -169,6 +169,8 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
 .pcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;align-items:start}
 .pcards.reorder{grid-template-columns:1fr;max-width:620px}
 @media (min-width:1080px){ #proj-list .pcards{grid-template-columns:repeat(4,1fr)} }
+#proj-list .pcards.few{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+#proj-list .pcards.few>.pcard{flex:0 0 300px;max-width:100%}
 .dash-active-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:10px}
 .dash-charts-quad{display:grid;grid-template-columns:1fr;gap:13px}
 .dash-ct{font-family:Cairo,sans-serif;font-weight:800;font-size:13px;margin-bottom:10px}
@@ -539,7 +541,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1101">
+<link rel="stylesheet" href="ops.css?v=1102">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -691,7 +693,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1101</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1102</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1510,7 +1512,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1101</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1102</bdi></span></div>
   </div>
 </div>
 
@@ -6057,7 +6059,7 @@ function renderProjList(){
   if(reorderMode){
     hdr='<div style="background:#FEF3C7;border:1.5px solid #FDE68A;border-radius:10px;padding:9px 12px;margin-bottom:10px;font-size:12.5px;color:#92400E;font-weight:700;text-align:center">🔃 وضع الترتيب — استخدم الأسهم ▲ ▼ لتحريك المشاريع، ثم اضغط <strong>✅ تم</strong> للحفظ</div>';
   }
-  w.innerHTML=hdr+'<div class="pcards'+(reorderMode?' reorder':'')+'">'+list.map((p,idx)=>{
+  w.innerHTML=hdr+'<div class="pcards'+(reorderMode?' reorder':(list.length<4?' few':''))+'">'+list.map((p,idx)=>{
     const pl=projPL(p.id);
     const cvUsage=p.contractValue>0?(pl.cost/p.contractValue)*100:0;
     let barCls='good',barW=cvUsage;
@@ -9443,7 +9445,7 @@ async function smartUpdateCheck(){
   }catch(e){}
 }
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='المشتريات المسجّلة تحت المشروع تظهر الآن بوضوح ضمن مصروفات المشروع مع عددها وإجمالي (مشتريات + فواتير)';
+const APP_UPD_NOTE='عند وجود مشاريع قليلة تتوسّط بطاقاتها في الصفحة بدل ما تنزوي في طرف وتترك فراغاً';
 function showUpdatedBanner(){
   try{
     try{if(sessionStorage.getItem('hadaf-upd-shown'))return;}catch(_){}
@@ -9466,7 +9468,7 @@ setTimeout(smartUpdateCheck,6000); // فحص ذكي مرة واحدة بالجل
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1101',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1102',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9529,8 +9531,8 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="ops.js?v=1101"></script>
+<script src="ops.js?v=1102"></script>
 
-<script src="settings.js?v=1101"></script>
+<script src="settings.js?v=1102"></script>
 </body>
 </html>
