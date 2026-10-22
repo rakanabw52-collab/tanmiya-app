@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-10-22-1103">
+<meta name="app-build" content="2026-10-22-1104">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1103">
+<link rel="manifest" href="manifest.json?v=1104">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -541,7 +541,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1103">
+<link rel="stylesheet" href="ops.css?v=1104">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -693,7 +693,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1103</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1104</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1512,7 +1512,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1103</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1104</bdi></span></div>
   </div>
 </div>
 
@@ -1816,6 +1816,7 @@ const UCATS=[
   {id:'banking',name:'مصاريف بنكية',icon:'🏦',color:'#15803D'},
   {id:'loans',name:'سلف وعهد',icon:'💵',color:'#84CC16'},
   {id:'site',name:'مصاريف موقع',icon:'🛠️',color:'#F59E0B'},
+  {id:'subcontractor',name:'مقاولو الباطن',icon:'👷',color:'#B91C1C'},
   {id:'other',name:'أخرى',icon:'📦',color:'#64748B'}
 ];
 const UCAT_BY_ID={};UCATS.forEach(c=>UCAT_BY_ID[c.id]=c);
@@ -4086,22 +4087,29 @@ async function monthlyReportPDF(){
 function projPL(pid){
   const proj=projs.find(x=>x.id===pid);
   const pinvs=invs.filter(i=>i.projectId===pid&&i.status!=='cancelled');
-  const contract=proj?(proj.contractValue||0):0;
+  const _OD=window.opsData||{};const _OA=k=>Array.isArray(_OD[k])?_OD[k]:[];
+  // أوامر التغيير المعتمدة ترفع قيمة العقد في كل النظام
+  const chOrders=_OA('changeOrders').filter(o=>o&&o.projectId===pid&&o.status==='approved').reduce((s,o)=>s+(+o.amount||0),0);
+  const contract=(proj?(proj.contractValue||0):0)+chOrders;
   const paidManual=proj?(proj.paidAmount||0):0;
   const paidInvoices=pinvs.filter(i=>i.type==='revenue').reduce((s,i)=>s+(i.total||0),0);
-  // المُحصّل = الدفعة اليدوية + مجموع دفعات الإيرادات المسجّلة (تتراكم معاً)
-  const paid=paidManual+paidInvoices;
+  // تحصيل مستخلصات العميل (المبلغ المحصّل من كل مستخلص غير ملغى)
+  const claimCollected=_OA('claims').filter(c=>c&&c.projectId===pid&&c.partyType==='client'&&c.status!=='cancelled').reduce((s,c)=>s+(+c.paid||0),0);
+  // المُحصّل = الدفعة اليدوية + دفعات الإيرادات + تحصيل مستخلصات العميل (تتراكم معاً)
+  const paid=paidManual+paidInvoices+claimCollected;
   const invoicePur=pinvs.filter(i=>i.type==='purchase').reduce((s,i)=>s+(i.total||0),0);
   const exp=pinvs.filter(i=>i.type==='expense').reduce((s,i)=>s+(i.total||0),0);
   // مشتريات وحدة المشتريات (أوامر الشراء) محفوظة بمخزن منفصل — تُضاف للتكلفة الفعلية دائماً
-  const opsList=(window.opsData&&Array.isArray(window.opsData.purchaseOrders)?window.opsData.purchaseOrders:[]).filter(o=>o&&o.projectId===pid&&o.status!=='cancelled');
+  const opsList=_OA('purchaseOrders').filter(o=>o&&o.projectId===pid&&o.status!=='cancelled');
   const opsPur=opsList.reduce((s,o)=>s+(+o.total||0),0);
   const opsPurCount=opsList.length;
+  // تكلفة مقاولي الباطن = مستخلصات الباطن غير الملغاة (العمل المعتمد)
+  const subCost=_OA('claims').filter(c=>c&&c.projectId===pid&&c.partyType==='subcontractor'&&c.status!=='cancelled').reduce((s,c)=>s+(+c.total||0),0);
   const pur=invoicePur+opsPur;
   const invoicesTotal=invoicePur+exp;
   const siteTotal=proj?(proj.siteExpensesTotal||0):0;
-  // إذا فيه مبلغ يدوي → يستبدل الفواتير، وتُضاف مشتريات أوامر الشراء فوقها دائماً
-  const cost=(siteTotal>0?siteTotal:invoicesTotal)+opsPur;
+  // إذا فيه مبلغ يدوي → يستبدل الفواتير، وتُضاف المشتريات وتكلفة الباطن فوقها دائماً
+  const cost=(siteTotal>0?siteTotal:invoicesTotal)+opsPur+subCost;
   const rev=contract>0?contract:paidInvoices;
   const profit=rev-cost;
   const margin=rev>0?(profit/rev)*100:0;
@@ -4122,7 +4130,8 @@ function projPL(pid){
     byCat[c]=(byCat[c]||0)+(i.total||0);
   });
   if(opsPur>0){const _pc=migrateCat('materials');byCat[_pc]=(byCat[_pc]||0)+opsPur;}
-  return {rev,pur,exp,cost,profit,margin,byCat,count:pinvs.length,contract,contractGross,recv,remaining,paid,paidManual,paidInvoices,outstanding,paidPct,siteTotal,invoicesTotal,qty,unit,costPerUnit,valuePerUnit,profitPerUnit,opsPur,opsPurCount};
+  if(subCost>0)byCat.subcontractor=(byCat.subcontractor||0)+subCost;
+  return {rev,pur,exp,cost,profit,margin,byCat,count:pinvs.length,contract,contractGross,recv,remaining,paid,paidManual,paidInvoices,outstanding,paidPct,siteTotal,invoicesTotal,qty,unit,costPerUnit,valuePerUnit,profitPerUnit,opsPur,opsPurCount,subCost,chOrders,claimCollected};
 }
 
 /* المبالغ المتبقية لكل مشروع - تحت ملخص المستحقات */
@@ -9446,7 +9455,7 @@ async function smartUpdateCheck(){
   }catch(e){}
 }
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='التدفق النقدي المتوقع صار يضم المتبقّي من المشاريع المنجزة أيضاً (مثل الأنوار) وليس الجارية فقط';
+const APP_UPD_NOTE='ربط شامل: أوامر التغيير ترفع قيمة العقد، تكاليف مقاولي الباطن تدخل التكلفة الفعلية، وتحصيل مستخلصات العميل يدخل التحصيل — في كل النظام';
 function showUpdatedBanner(){
   try{
     try{if(sessionStorage.getItem('hadaf-upd-shown'))return;}catch(_){}
@@ -9469,7 +9478,7 @@ setTimeout(smartUpdateCheck,6000); // فحص ذكي مرة واحدة بالجل
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1103',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1104',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9532,8 +9541,8 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="ops.js?v=1103"></script>
+<script src="ops.js?v=1104"></script>
 
-<script src="settings.js?v=1103"></script>
+<script src="settings.js?v=1104"></script>
 </body>
 </html>
