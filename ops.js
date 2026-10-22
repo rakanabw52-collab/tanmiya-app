@@ -57,7 +57,7 @@ function poOpen(pid){return arr('purchaseOrders').filter(x=>(!pid||x.projectId==
 function subCommitted(pid){const cs=arr('subcontracts').filter(x=>(!pid||x.projectId===pid)&&x.status!=='cancelled');return cs.reduce((s,c)=>{const paid=arr('claims').filter(q=>q.partyType==='subcontractor'&&q.subcontractId===c.id).reduce((a,q)=>a+num(q.paid),0);return s+Math.max(0,num(c.value)-paid);},0);}
 function clientClaimOut(pid){return arr('claims').filter(x=>x.partyType==='client'&&(!pid||x.projectId===pid)&&x.status!=='cancelled').reduce((s,x)=>s+dueBalance(x),0);}
 function budgetOf(pid){return arr('budgets').find(x=>x.projectId===pid)||null;}
-function commandStats(pid){const p=projs.find(x=>x.id===pid);if(!p)return null;const pl=projPL(pid);const ch=approvedChanges(pid);const effective=num(p.contractValue)+ch;const po=poOpen(pid),sub=subCommitted(pid),forecastCost=pl.cost+po+sub;const b=budgetOf(pid);return {p,pl,ch,effective,po,sub,forecastCost,forecastProfit:effective-forecastCost,budget:b?num(b.total):0,claimOut:clientClaimOut(pid)};}
+function commandStats(pid){const p=projs.find(x=>x.id===pid);if(!p)return null;const pl=projPL(pid);const ch=approvedChanges(pid);const effective=num(p.contractValue)+ch;const po=poOpen(pid),sub=subCommitted(pid),forecastCost=pl.cost+sub;const b=budgetOf(pid);return {p,pl,ch,effective,po,sub,forecastCost,forecastProfit:effective-forecastCost,budget:b?num(b.total):0,claimOut:clientClaimOut(pid)};}
 function opsAlerts(pid){const out=[];const ps=pid?projs.filter(p=>p.id===pid):projs.filter(p=>p.status==='active');ps.forEach(p=>{const s=commandStats(p.id);if(!s)return;if(!budgetOf(p.id))out.push({t:'warn',m:'لا توجد ميزانية معتمدة لمشروع «'+p.name+'».'});if(s.effective>0&&s.forecastProfit/s.effective<.1)out.push({t:'bad',m:'هامش الربح المتوقع منخفض في «'+p.name+'» ('+(s.forecastProfit/s.effective*100).toFixed(1)+'%).'});});
   arr('claims').forEach(c=>{if(pid&&c.projectId!==pid)return;if(c.status!=='paid'&&c.status!=='cancelled'&&c.dueDate&&new Date(c.dueDate)<new Date(today())&&dueBalance(c)>0)out.push({t:'bad',m:'مستخلص متأخر '+(c.number||'')+' — '+money(dueBalance(c))});});
   const unre=arr('bankRecons').filter(x=>Math.abs(num(x.bankAmount)-num(x.bookAmount))>.009);if(unre.length)out.push({t:'warn',m:unre.length+' حركة بنكية غير مسواة.'});
@@ -216,7 +216,7 @@ window.addEventListener('load',()=>setTimeout(()=>{try{renderOpsDashboardStrip()
   if(document.getElementById('tanmiya-integrate')) return;
   const s=document.createElement('script');
   s.id='tanmiya-integrate';
-  s.src='integrate.js?v=1098';
+  s.src='integrate.js?v=1099';
   s.defer=true;
   document.head.appendChild(s);
 })();
