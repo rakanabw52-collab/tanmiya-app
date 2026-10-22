@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-10-22-1102">
+<meta name="app-build" content="2026-10-22-1103">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1102">
+<link rel="manifest" href="manifest.json?v=1103">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -541,7 +541,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1102">
+<link rel="stylesheet" href="ops.css?v=1103">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -693,7 +693,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1102</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1103</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1512,7 +1512,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1102</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1103</bdi></span></div>
   </div>
 </div>
 
@@ -4009,16 +4009,17 @@ async function delGuarantee(pid,gid){
 /* ========== التدفق النقدي المتوقع ========== */
 function renderCashflow(){
   const w=document.getElementById('db-cashflow');if(!w)return;
-  const rows=projs.filter(p=>p.status!=='study'&&p.status!=='done')
+  const rows=projs.filter(p=>p.status!=='study')
     .map(p=>({p,pl:projPL(p.id)})).filter(x=>x.pl.outstanding>0)
     .sort((a,b)=>b.pl.outstanding-a.pl.outstanding);
   const totalIn=rows.reduce((s,x)=>s+x.pl.outstanding,0);
   if(!rows.length){w.innerHTML='';w.style.display='none';return;}
   w.style.display='block';
-  let h='<div class="card" style="padding:12px;margin-bottom:12px"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:13.5px;margin-bottom:3px">💧 التدفق النقدي المتوقع</div><div style="font-size:10.5px;color:var(--t3);margin-bottom:9px">مبالغ متوقّع تحصيلها من المشاريع الجارية</div>';
+  let h='<div class="card" style="padding:12px;margin-bottom:12px"><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:13.5px;margin-bottom:3px">💧 التدفق النقدي المتوقع</div><div style="font-size:10.5px;color:var(--t3);margin-bottom:9px">مبالغ متوقّع تحصيلها من كل المشاريع غير المُحصّلة بالكامل (جارية ومنجزة)</div>';
   h+='<div style="background:linear-gradient(135deg,#0EA5E9,#0369A1);color:#fff;border-radius:10px;padding:11px;text-align:center;margin-bottom:9px"><div style="font-size:10.5px;opacity:.9;font-weight:700">إجمالي المتوقّع تحصيله</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:19px">'+fmtI(totalIn)+' <span style="font-size:11px">ر.س</span></div></div>';
   rows.slice(0,6).forEach(({p,pl})=>{
-    h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-top:1px solid var(--bd)"><span style="font-size:12px;font-weight:700">'+esc(p.name)+(p.client?'<br><span style="font-size:10px;color:var(--t3);font-weight:400">'+esc(p.client)+'</span>':'')+'</span><span style="font-family:Cairo,sans-serif;font-weight:800;font-size:12.5px;color:#0369A1">'+fmtI(pl.outstanding)+'</span></div>';
+    const _stB=p.status==='done'?' <span style="background:#DCFCE7;color:#15803D;padding:1px 6px;border-radius:5px;font-size:9px;font-weight:800">منجز</span>':p.status==='hold'?' <span style="background:#FEF3C7;color:#92400E;padding:1px 6px;border-radius:5px;font-size:9px;font-weight:800">معلق</span>':'';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-top:1px solid var(--bd)"><span style="font-size:12px;font-weight:700">'+esc(p.name)+_stB+(p.client?'<br><span style="font-size:10px;color:var(--t3);font-weight:400">'+esc(p.client)+'</span>':'')+'</span><span style="font-family:Cairo,sans-serif;font-weight:800;font-size:12.5px;color:#0369A1">'+fmtI(pl.outstanding)+'</span></div>';
   });
   if(rows.length>6)h+='<div style="font-size:10.5px;color:var(--t3);text-align:center;margin-top:6px">... و '+(rows.length-6)+' مشاريع أخرى</div>';
   h+='</div>';
@@ -9445,7 +9446,7 @@ async function smartUpdateCheck(){
   }catch(e){}
 }
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='عند وجود مشاريع قليلة تتوسّط بطاقاتها في الصفحة بدل ما تنزوي في طرف وتترك فراغاً';
+const APP_UPD_NOTE='التدفق النقدي المتوقع صار يضم المتبقّي من المشاريع المنجزة أيضاً (مثل الأنوار) وليس الجارية فقط';
 function showUpdatedBanner(){
   try{
     try{if(sessionStorage.getItem('hadaf-upd-shown'))return;}catch(_){}
@@ -9468,7 +9469,7 @@ setTimeout(smartUpdateCheck,6000); // فحص ذكي مرة واحدة بالجل
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1102',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1103',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9531,8 +9532,8 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="ops.js?v=1102"></script>
+<script src="ops.js?v=1103"></script>
 
-<script src="settings.js?v=1102"></script>
+<script src="settings.js?v=1103"></script>
 </body>
 </html>
