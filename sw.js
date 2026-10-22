@@ -1,5 +1,5 @@
-// Service Worker - نظام هدف التنمية (إصدار 1099 - تحديث)
-const CACHE_NAME = 'hadaf-1099';
+// Service Worker - نظام هدف التنمية (إصدار 1100 - تحديث)
+const CACHE_NAME = 'hadaf-1100';
 const ASSETS = [
   './','./index.html','./manifest.json',
   './icon-192.png','./icon-512.png','./apple-touch-icon.png','./brand-logo.png',
@@ -68,4 +68,4 @@ self.addEventListener('fetch',e=>{
 });
 
 self.addEventListener('message',e=>{if(e.data?.type==='SKIP_WAITING')self.skipWaiting();});
-console.log('✓ هدف التنمية إصدار 1099 — تحديث إجباري + إعدادات مرتبة');
+console.log('✓ هدف التنمية إصدار 1100 — تحديث إجباري + إعدادات مرتبة');
