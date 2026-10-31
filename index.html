@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-10-22-1104">
+<meta name="app-build" content="2026-11-01-1105">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1104">
+<link rel="manifest" href="manifest.json?v=1105">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -474,15 +474,18 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 .brand-official{
   width:min(330px,42vw);
   height:50px;
-  background:#fff;
-  border-radius:12px;
-  padding:5px 10px;
+  display:block;
+  background:transparent;
+  border-radius:0;
+  padding:0;
   object-fit:contain;
   object-position:center;
-  box-shadow:0 4px 14px rgba(0,0,0,.12);
+  box-shadow:none;
+  filter:grayscale(1) invert(1) brightness(3);
+  mix-blend-mode:screen;
 }
 @media(max-width:620px){
-  .brand-official{width:205px;height:44px;padding:4px 7px}
+  .brand-official{width:205px;height:44px}
 }
 @media(max-width:430px){
   .brand-official{width:165px;height:40px}
@@ -521,10 +524,12 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 }
 .hd-login-brand{
   width:min(300px,78vw);
-  background:#fff;
-  border-radius:16px;
-  padding:9px 14px;
-  box-shadow:0 14px 40px rgba(0,0,0,.18);
+  background:transparent;
+  border-radius:0;
+  padding:0;
+  box-shadow:none;
+  filter:grayscale(1) invert(1) brightness(3);
+  mix-blend-mode:screen;
   margin-bottom:8px;
 }
 .hd-security-note{
@@ -541,7 +546,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1104">
+<link rel="stylesheet" href="ops.css?v=1105">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -693,7 +698,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1104</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1105</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1512,7 +1517,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1104</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1105</bdi></span></div>
   </div>
 </div>
 
@@ -9455,7 +9460,7 @@ async function smartUpdateCheck(){
   }catch(e){}
 }
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='ربط شامل: أوامر التغيير ترفع قيمة العقد، تكاليف مقاولي الباطن تدخل التكلفة الفعلية، وتحصيل مستخلصات العميل يدخل التحصيل — في كل النظام';
+const APP_UPD_NOTE='دمج الشعار مع الهيدر وشاشة الدخول وإزالة البطاقة البيضاء';
 function showUpdatedBanner(){
   try{
     try{if(sessionStorage.getItem('hadaf-upd-shown'))return;}catch(_){}
@@ -9478,7 +9483,7 @@ setTimeout(smartUpdateCheck,6000); // فحص ذكي مرة واحدة بالجل
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1104',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1105',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9541,8 +9546,8 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="ops.js?v=1104"></script>
+<script src="ops.js?v=1105"></script>
 
-<script src="settings.js?v=1104"></script>
+<script src="settings.js?v=1105"></script>
 </body>
 </html>
