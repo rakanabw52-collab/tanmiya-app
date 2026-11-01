@@ -64,6 +64,11 @@ with sync_playwright() as p:
  page.set_viewport_size({'width':390,'height':844})
  assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth'), 'Mobile viewport overflows'
  print('PASS missing-table fallback read/write, permission error preserved, desktop table fits 1024/1280/1600, mobile page fits')
+ result=page.evaluate('''async()=>{_cloudVersions.set('invoices:_all','2026-01-01');_supa={from:()=>({update(){return this},eq(){return this},select:async()=>({data:null,error:{code:'42501',message:'new row violates row-level security policy <test>'}})})};await cloudPush('invoices','_all',[]);showSyncStatus();return {code:_lastSyncFailure.code,badge:document.getElementById('sync-badge').textContent,details:document.getElementById('sync-details').textContent,html:document.querySelector('#sync-details pre').innerHTML};}''')
+ assert result['code']=='42501' and 'invoices' in result['badge'] and '42501' in result['badge']
+ assert 'new row violates row-level security policy <test>' in result['details']
+ assert '&lt;test&gt;' in result['html']
+ print('PASS upload server code preserved, table identified, details dialog renders server message safely')
  assert not errors,errors
  print('PASS no unhandled JavaScript exceptions');b.close()
 server.shutdown()
