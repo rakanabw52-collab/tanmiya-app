@@ -49,6 +49,21 @@ with sync_playwright() as p:
   page.evaluate('printSupplierStatement()')
  printed=popup.value;assert 'كشف حساب — مورد اختبار' in printed.locator('body').inner_text();printed.close()
  print('PASS complete sync round-trip, project detail breakdown, supplier printable document')
+ # Missing auxiliary tables use the existing settings table, including safe writes.
+ result=page.evaluate('''async()=>{const calls=[];_cloudRoutes.clear();_supa={from(table){calls.push(table);let insert=null;const q={select(){if(insert)return Promise.resolve({data:[{id:insert.id,updated_at:insert.updated_at}],error:null});return this},eq(){return this},insert(p){insert=p;return this},async maybeSingle(){return table==='audit'?{data:null,error:{code:'PGRST205'}}:{data:null,error:null}}};return q;}};const read=await cloudPull('audit','_all');const written=await cloudPush('audit','_all',[{id:'a'}]);return {read,written,calls,route:_cloudRoutes.get('audit:_all')}}''')
+ assert result['written'] and result['route']=={'table':'settings','id':'aux:audit:_all'} and result['calls']==['audit','settings','settings'],result
+ result=page.evaluate('''async()=>{const calls=[];_cloudRoutes.clear();_cloudReadErrors=[];_supa={from(t){calls.push(t);return {select(){return this},eq(){return this},async maybeSingle(){return {data:null,error:{code:'42501'}}}}}};await cloudPull('audit','_all');return {calls,errors:_cloudReadErrors,route:_cloudRoutes.has('audit:_all')}}''')
+ assert result['calls']==['audit'] and not result['route'] and '42501' in result['errors'][0]
+ page.evaluate("opsCloseModal();goTab('proc');renderBuy1077()")
+ for width in [1024,1280,1600]:
+  page.set_viewport_size({'width':width,'height':900});page.wait_for_timeout(100)
+  assert page.locator('#sec-proc').evaluate('(e)=>e.getBoundingClientRect().width')>width*.85
+  size=page.locator('#h1077-buy .h1077-tw').evaluate('(e)=>({scroll:e.scrollWidth,width:e.clientWidth})')
+  assert size['scroll']<=size['width']+1,(width,size)
+ page.screenshot(path='/tmp/tanmiya-1109-desktop.png')
+ page.set_viewport_size({'width':390,'height':844})
+ assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth'), 'Mobile viewport overflows'
+ print('PASS missing-table fallback read/write, permission error preserved, desktop table fits 1024/1280/1600, mobile page fits')
  assert not errors,errors
  print('PASS no unhandled JavaScript exceptions');b.close()
 server.shutdown()

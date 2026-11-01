@@ -20,3 +20,19 @@
 #h1077-buy .buy-paid-label{color:#15803d;font-weight:700}
 
 .finance-filters{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin:12px 0}.finance-filters label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#31516f}.finance-filters input,.finance-filters select{padding:8px;border:1px solid #cfddec;border-radius:8px;background:#fff;font-family:inherit;max-width:200px}#pay-submit{margin-top:14px}.buy-unpaid-amount{color:#b91c1c;font-weight:800}.buy-paid-label{color:#15803d}
+
+/* Desktop purchase workspace: use available width instead of the form limit. */
+#sec-proc.sec:not(#sec-db):not(#sec-proj){max-width:1800px;width:100%;min-width:0}
+#sync-badge{max-width:min(640px,45vw);white-space:normal!important;text-align:center;line-height:1.5}
+@media(min-width:1000px){
+ #sec-proc .h1077-t{min-width:0;table-layout:fixed;width:100%}
+ #sec-proc .h1077-t th,#sec-proc .h1077-t td{overflow-wrap:anywhere;padding:9px 7px}
+ #sec-proc .h1077-acts{flex-wrap:wrap;gap:5px}
+ #h1077-buy .h1077-t th:last-child{width:245px}
+ #h1077-buy .h1077-t th:first-child{width:86px}
+ #h1077-buy .h1077-t th:nth-child(5){width:90px}
+ #h1077-buy .h1077-t th:nth-child(6){width:120px}
+ #h1077-buy .h1077-t th:nth-child(7){width:65px}
+ #h1077-buy .h1077-t th:nth-child(8){width:92px}
+ #h1077-buy .buy-payment-status{min-width:0}
+}
