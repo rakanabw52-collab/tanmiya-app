@@ -18,3 +18,5 @@
 #h1077-buy .buy-unpaid-amount{color:#b91c1c;font-weight:800}
 #h1077-buy .buy-payment-status{min-width:110px;line-height:1.8}
 #h1077-buy .buy-paid-label{color:#15803d;font-weight:700}
+
+.finance-filters{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin:12px 0}.finance-filters label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#31516f}.finance-filters input,.finance-filters select{padding:8px;border:1px solid #cfddec;border-radius:8px;background:#fff;font-family:inherit;max-width:200px}#pay-submit{margin-top:14px}.buy-unpaid-amount{color:#b91c1c;font-weight:800}.buy-paid-label{color:#15803d}

@@ -24,11 +24,11 @@ window._opsView='overview';window._opsEdit=null;window._opsProject='';
 
 window.opsMergeData=function(local,cloud){
   const out=Object.assign({},local||{});const c=cloud||{};
-  AKEYS.forEach(k=>{const map={};(Array.isArray(c[k])?c[k]:[]).forEach(x=>{if(x&&x.id)map[x.id]=x;});(Array.isArray((local||{})[k])?(local||{})[k]:[]).forEach(x=>{if(x&&x.id)map[x.id]=x;});out[k]=Object.values(map);});
+  AKEYS.forEach(k=>{out[k]=_hdMergeById((local||{})[k],c[k],'ops:'+k);});
   out.zatca=Object.assign({},c.zatca||{},(local||{}).zatca||{});return out;
 };
 window.svOps=async function(show){
-  try{await _svRetry(window.SOPS,JSON.stringify(D()));if(typeof cloudPushDebounced==='function')cloudPushDebounced();if(show)toast('✅ تم حفظ بيانات التشغيل','ok');return {ok:true};}catch(e){if(show)toast('فشل حفظ بيانات التشغيل','er');return {ok:false,err:e};}
+  try{if(!await _svRetry(window.SOPS,JSON.stringify(D())))throw Error('تعذر الحفظ المحلي');if(typeof cloudPushDebounced==='function')cloudPushDebounced();if(show)toast('✅ تم حفظ بيانات التشغيل','ok');return {ok:true};}catch(e){if(show)toast('فشل حفظ بيانات التشغيل','er');return {ok:false,err:e};}
 };
 window.hdIsPeriodClosed=function(date){if(!date)return false;const ym=String(date).slice(0,7);return arr('periods').some(p=>p.month===ym&&p.status==='closed');};
 function auditOps(action,detail){try{logEvent(action,detail||'');}catch(e){}}
@@ -216,7 +216,7 @@ window.addEventListener('load',()=>setTimeout(()=>{try{renderOpsDashboardStrip()
   if(document.getElementById('tanmiya-integrate')) return;
   const s=document.createElement('script');
   s.id='tanmiya-integrate';
-  s.src='integrate.js?v=1107';
+  s.src='integrate.js?v=1108';
   s.defer=true;
   document.head.appendChild(s);
 })();
