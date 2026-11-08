@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-08-1117">
+<meta name="app-build" content="2026-11-08-1118">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1117">
+<link rel="manifest" href="manifest.json?v=1118">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -561,7 +561,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1117">
+<link rel="stylesheet" href="ops.css?v=1118">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -711,7 +711,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1117</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1118</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1530,7 +1530,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1117</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1118</bdi></span></div>
   </div>
 </div>
 
@@ -9674,11 +9674,12 @@ function showUpdateBar(latest){
 }
 function dismissUpdate(latest){try{if(latest)localStorage.setItem('hadaf-dismissed-build',latest);}catch(_){}const b=document.getElementById('updBar');if(b)b.remove();}
 function doUpdate(){location.replace(location.pathname+'?v='+Date.now());}
-/* فحص تحديث ذكي: مرة واحدة لكل جلسة، ولا يُظهر إلا إذا الإصدار أحدث فعلاً
-   (رقم أكبر) ولم يُرفض سابقاً — لا مؤقتات متكررة ولا تذبذب مع CDN */
+/* يُعاد الفحص عند الرجوع للتطبيق؛ لا تمنع علامة جلسة قديمة اكتشاف إصدار جديد. */
+let _lastVersionCheck=0,_versionCheckBusy=false;
 async function smartUpdateCheck(){
+  if(_versionCheckBusy||Date.now()-_lastVersionCheck<60000)return;
+  _versionCheckBusy=true;_lastVersionCheck=Date.now();
   try{
-    try{if(sessionStorage.getItem('hadaf-upd-checked'))return;sessionStorage.setItem('hadaf-upd-checked','1');}catch(_){}
     const cur=curBuild();if(!cur)return;
     const res=await fetch(location.pathname+'?_u='+Date.now(),{cache:'no-store'});
     if(!res.ok)return;
@@ -9691,10 +9692,10 @@ async function smartUpdateCheck(){
     let dis=null;try{dis=localStorage.getItem('hadaf-dismissed-build');}catch(_){}
     if(dis===latest)return; // سبق رفضه
     showUpdateBar(latest);
-  }catch(e){}
+  }catch(e){}finally{_versionCheckBusy=false;}
 }
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='عرض سبب فشل الرفع ورمز الخادم واسم الجدول مع نافذة تفاصيل المزامنة';
+const APP_UPD_NOTE='تصحيح مدة المشروع المنجز ونسبة إنجازه وتحسين اكتشاف التحديثات';
 function showUpdatedBanner(){
   try{
     try{if(sessionStorage.getItem('hadaf-upd-shown'))return;}catch(_){}
@@ -9712,12 +9713,14 @@ function showUpdatedBanner(){
   }catch(e){}
 }
 setTimeout(showUpdatedBanner,900);
-setTimeout(smartUpdateCheck,6000); // فحص ذكي مرة واحدة بالجلسة (بدون تكرار/لوب)
+setTimeout(smartUpdateCheck,6000);
+window.addEventListener('focus',smartUpdateCheck);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdateCheck();});
 </script>
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1117',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1118',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9780,8 +9783,8 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="ops.js?v=1117"></script>
+<script src="ops.js?v=1118"></script>
 
-<script src="settings.js?v=1117"></script>
+<script src="settings.js?v=1118"></script>
 </body>
 </html>

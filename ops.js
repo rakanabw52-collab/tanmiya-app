@@ -216,7 +216,7 @@ window.addEventListener('load',()=>setTimeout(()=>{try{renderOpsDashboardStrip()
   if(document.getElementById('tanmiya-integrate')) return;
   const s=document.createElement('script');
   s.id='tanmiya-integrate';
-  s.src='integrate.js?v=1117';
+  s.src='integrate.js?v=1118';
   s.defer=true;
   document.head.appendChild(s);
 })();
