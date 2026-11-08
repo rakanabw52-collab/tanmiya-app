@@ -1,0 +1,36 @@
+name: Hadaf regression checks
+on:
+  push:
+    branches: [fix/audit-finance-sync-1120]
+  pull_request:
+
+jobs:
+  browser-regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright and Chromium
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+          CHROME_PATH="$(python -c 'from playwright.sync_api import sync_playwright; p=sync_playwright().start(); print(p.chromium.executable_path); p.stop()')"
+          sudo ln -sf "$CHROME_PATH" /usr/bin/chromium
+      - name: JavaScript syntax checks
+        run: |
+          node --check ops.js
+          node --check integrate.js
+          node --check settings.js
+          node --check sw.js
+      - name: Existing financial regression checks
+        run: |
+          python tests/test_finance.py
+          python tests/test_financial_consistency.py
+      - name: Synchronization and new audit regression checks
+        run: |
+          python tests/test_sync_conflicts.py
+          python tests/test_audit_regressions_1121.py
