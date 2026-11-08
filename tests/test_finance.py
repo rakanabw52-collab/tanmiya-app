@@ -22,6 +22,31 @@ with sync_playwright() as p:
  page.evaluate("opsData.purchaseOrders[0].paid=45;opsData.purchaseOrders[0].status='partial';svOps=async()=>({ok:false});openBuyPayment('a')")
  page.locator('#pay-amount').fill('10');page.evaluate("saveBuyPayment('a')");assert page.evaluate('opsData.purchaseOrders[0].paid')==45
  print('PASS payment partial/full, invalid excess, failed local-save rollback, supplier ledger, filters, categories')
+ # Completed projects freeze their schedule without changing recorded work quantities.
+ result=page.evaluate('''()=>{
+ const saved={projs,invs,progress,ops:window.opsData};
+ projs=[{id:'metrics',name:'مشروع اختبار المؤشرات',status:'done',startDate:'2026-10-20',endDate:'2026-11-06',actualEndDate:'2026-10-27',contractValue:50000,paidAmount:50000,siteExpensesTotal:28372.25,goals:{}}];
+ invs=[];progress=[];window.opsData={};
+ const time=projTimeStatus(projs[0]),completion=projProgress('metrics'),financial=projPL('metrics');
+ showProj('metrics');const text=document.getElementById('pd-body').textContent;
+ const bytesBefore=JSON.stringify(progress);
+ projs[0].status='active';const reopened=projProgress('metrics').overall;
+ projs[0].status='done';delete projs[0].actualEndDate;const missingDate=projTimeStatus(projs[0]);
+ window.opsData={changeOrders:[{projectId:'metrics',status:'approved',amount:10000}]};showProj('metrics');
+ const changedText=document.getElementById('pd-body').textContent;
+ const noProgressMutation=bytesBefore===JSON.stringify(progress);
+ projs=saved.projs;invs=saved.invs;progress=saved.progress;window.opsData=saved.ops;
+ return {time,completion,financial,text,reopened,missingDate,changedText,noProgressMutation};
+ }''')
+ assert result['time']['dur']==17 and result['time']['elapsed']==7 and result['time']['remaining']==0
+ assert abs(result['time']['timePct']-700/17)<.00001
+ assert result['completion']['overall']==100 and result['completion']['recordedOverall']==0
+ assert result['reopened']==0 and result['missingDate'] is None and result['noProgressMutation']
+ assert result['financial']['outstanding']==7500
+ assert 'رصيد ميزانية العقد بعد المصروفات' in result['text'] and 'المتبقي من العقد' not in result['text']
+ assert '60,000.00' in result['changedText'] and '47.3%' in result['changedText']
+ print('PASS completed project time/progress, reopening, missing actual date, budget label, change-order denominator, customer balance unchanged')
+
  # Three-way reconciliation preserves independent edits and detects conflicting changes/deletions.
  result=page.evaluate('''()=>{_cloudBases.clear();_rememberBase('test',[{id:'1',value:'base'},{id:'2',value:'base'}]);let independent=_hdMergeById([{id:'1',value:'local'},{id:'2',value:'base'}],[{id:'1',value:'base'},{id:'2',value:'remote'}],'test');let conflict=false;try{_hdMergeById([{id:'1',value:'local'}],[{id:'1',value:'remote'}],'test')}catch(e){conflict=true}let deleted=_hdMergeById([{id:'2',value:'base'}],[{id:'1',value:'base'},{id:'2',value:'base'}],'test');return {independent,conflict,deleted}}''')
  assert result['independent']==[{'id':'1','value':'local'},{'id':'2','value':'remote'}] and result['conflict'] and len(result['deleted'])==1

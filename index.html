@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-08-1115">
+<meta name="app-build" content="2026-11-08-1116">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1115">
+<link rel="manifest" href="manifest.json?v=1116">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -554,7 +554,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1115">
+<link rel="stylesheet" href="ops.css?v=1116">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -704,7 +704,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1115</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1116</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1523,7 +1523,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1115</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1116</bdi></span></div>
   </div>
 </div>
 
@@ -5872,15 +5872,18 @@ function _destroyDetailCharts(){for(const k in _detailCharts){try{_detailCharts[
 
 // حالة الزمن للمشروع: نسبة الوقت المنقضي مقابل نسبة الإنجاز
 function projTimeStatus(p){
-  const dur=p.durationDays||(p.startDate&&p.endDate?_daysBetween(p.startDate,p.endDate):0);
+  const dur=p.startDate&&p.endDate?_daysBetween(p.startDate,p.endDate):Number(p.durationDays||0);
   if(!p.startDate||!dur)return null;
-  const start=new Date(p.startDate);
+  const completed=p.status==='done';
+  if(completed&&!p.actualEndDate)return null;
+  const reference=completed?p.actualEndDate:_todayStr();
+  const start=new Date(p.startDate),asOf=new Date(reference);
   const end=p.endDate?new Date(p.endDate):new Date(_addDays(p.startDate,dur));
-  const today=new Date();today.setHours(0,0,0,0);
-  const elapsed=Math.max(0,Math.round((today-start)/86400000));
-  const remaining=Math.round((end-today)/86400000);
-  const timePct=dur>0?Math.min(100,(elapsed/dur)*100):0;
-  return {dur,elapsed,remaining,timePct,end};
+  if(!Number.isFinite(start.getTime())||!Number.isFinite(asOf.getTime())||!Number.isFinite(end.getTime()))return null;
+  const elapsed=Math.max(0,Math.round((asOf-start)/86400000));
+  const remaining=completed?0:Math.round((end-asOf)/86400000);
+  const timePct=Math.min(100,(elapsed/dur)*100);
+  return {dur,elapsed,remaining,timePct,end,completed};
 }
 
 function renderProjDash(){
@@ -6309,8 +6312,9 @@ function projProgress(pid){
       if(target>0){sumPct+=pct;n++;}
     }
   });
-  const overall=n>0?sumPct/n:0;
-  return {items,overall};
+  const recordedOverall=n>0?sumPct/n:0;
+  const overall=p?.status==='done'?100:recordedOverall;
+  return {items,overall,recordedOverall};
 }
 
 function editProj(){
@@ -6782,13 +6786,13 @@ function showProj(id){
   html+=`<div style="margin-bottom:11px"><button onclick="changeProjYear('${id}')" style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;border-radius:8px;padding:8px 12px;font-family:Tajawal,sans-serif;font-weight:700;font-size:12px;cursor:pointer">📅 تعديل سنة كل فواتير المشروع</button></div>`;
 
   if(p.contractValue>0){
-    const cvUsage=(pl.cost/p.contractValue)*100;
+    const cvUsage=pl.contract>0?(pl.cost/pl.contract)*100:0;
     html+=`<div class="vr" style="margin-bottom:12px">
-      <div class="vrow"><span class="lbl">قيمة العقد</span><span class="val">${fmt(p.contractValue)} ر.س</span></div>
+      <div class="vrow"><span class="lbl">قيمة العقد بدون الضريبة</span><span class="val">${fmt(pl.contract)} ر.س</span></div>
       ${p.startDate?`<div class="vrow"><span class="lbl">البداية</span><span class="val" style="font-size:12.5px">${fmtD(p.startDate)}</span></div>`:''}
       ${p.endDate?`<div class="vrow"><span class="lbl">التسليم المتوقع</span><span class="val" style="font-size:12.5px">${fmtD(p.endDate)}</span></div>`:''}
       <div class="vrow"><span class="lbl">استهلاك ميزانية العقد</span><span class="val ${cvUsage>100?'r':cvUsage>80?'a':'g'}">${cvUsage.toFixed(1)}%</span></div>
-      <div class="vrow"><span class="lbl">المتبقي من العقد</span><span class="val">${fmt(p.contractValue-pl.cost)} ر.س</span></div>
+      <div class="vrow"><span class="lbl">رصيد ميزانية العقد بعد المصروفات</span><span class="val">${fmt(pl.contract-pl.cost)} ر.س</span></div>
     </div>`;
   }
 
@@ -6819,6 +6823,7 @@ function showProj(id){
 
   // ===== تتبّع المدة الزمنية =====
   const ts=projTimeStatus(p);
+  if(!ts&&p.status==='done'&&!p.actualEndDate)html+='<div class="ops-note">المشروع منجز؛ تاريخ التسليم الفعلي غير مسجل، لذلك لا تُحسب مدة الإنجاز.</div>';
   if(ts){
     const ovr=projProgress(id).overall;
     const behind=ts.timePct-ovr; // موجب = متأخر زمنياً عن الإنجاز
@@ -6837,7 +6842,7 @@ function showProj(id){
     html+='<div style="background:#fff;padding:8px;border-radius:8px;text-align:center"><div style="font-size:9.5px;color:var(--t2);font-weight:700">المتبقي</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:15px;color:'+(ts.remaining<0?'#B91C1C':'#15803D')+'">'+ts.remaining+' <span style="font-size:9.5px">يوم</span></div></div>';
     html+='</div>';
     // شريطان: الزمن المنقضي + الإنجاز
-    html+='<div style="font-size:11px;color:var(--t2);margin-bottom:3px;display:flex;justify-content:space-between"><span>⏳ الوقت المنقضي</span><span style="color:'+tcol+';font-weight:800">'+ts.timePct.toFixed(0)+'%</span></div>';
+    html+='<div style="font-size:11px;color:var(--t2);margin-bottom:3px;display:flex;justify-content:space-between"><span>⏳ '+(ts.completed?'الوقت المستخدم من المدة المخططة':'الوقت المنقضي')+'</span><span style="color:'+tcol+';font-weight:800">'+ts.timePct.toFixed(0)+'%</span></div>';
     html+='<div style="background:#fff;border-radius:99px;height:8px;overflow:hidden;border:1px solid #FDBA74;margin-bottom:8px"><div style="width:'+Math.min(ts.timePct,100).toFixed(0)+'%;height:100%;background:'+tcol+'"></div></div>';
     html+='<div style="font-size:11px;color:var(--t2);margin-bottom:3px;display:flex;justify-content:space-between"><span>🎯 نسبة الإنجاز</span><span style="color:#15803D;font-weight:800">'+ovr.toFixed(0)+'%</span></div>';
     html+='<div style="background:#fff;border-radius:99px;height:8px;overflow:hidden;border:1px solid #BBF7D0;margin-bottom:9px"><div style="width:'+Math.min(ovr,100).toFixed(0)+'%;height:100%;background:#15803D"></div></div>';
@@ -9705,7 +9710,7 @@ setTimeout(smartUpdateCheck,6000); // فحص ذكي مرة واحدة بالجل
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1115',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1116',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9768,8 +9773,8 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="ops.js?v=1115"></script>
+<script src="ops.js?v=1116"></script>
 
-<script src="settings.js?v=1115"></script>
+<script src="settings.js?v=1116"></script>
 </body>
 </html>
