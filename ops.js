@@ -5,7 +5,7 @@ const AKEYS=['suppliers','rfqs','purchaseOrders','subcontractors','subcontracts'
 const D=()=>window.opsData||(window.opsData={});
 const arr=k=>Array.isArray(D()[k])?D()[k]:(D()[k]=[]);
 const num=v=>{const n=typeof toNum==='function'?toNum(v):Number(v||0);return Number.isFinite(n)?n:0;};
-const today=()=>new Date().toISOString().slice(0,10);
+const today=()=>_today();
 const money=v=>fmtI(num(v))+' ر.س';
 const pName=id=>{const p=(projs||[]).find(x=>x.id===id);return p?p.name:'—';};
 const sName=id=>{const x=arr('suppliers').find(x=>x.id===id);return x?x.name:'—';};
@@ -25,7 +25,11 @@ window._opsView='overview';window._opsEdit=null;window._opsProject='';
 window.opsMergeData=function(local,cloud){
   const out=Object.assign({},local||{});const c=cloud||{};
   AKEYS.forEach(k=>{out[k]=_hdMergeById((local||{})[k],c[k],'ops:'+k);});
-  out.zatca=Object.assign({},c.zatca||{},(local||{}).zatca||{});return out;
+  const localZ=(local||{}).zatca?[{id:'zatca',...(local||{}).zatca}]:[];
+  const cloudZ=c.zatca?[{id:'zatca',...c.zatca}]:[];
+  const merged=_hdMergeById(localZ,cloudZ,'ops:zatca');
+  const {id:_ignored,...zatca}=merged[0]||{id:'zatca'};
+  out.zatca=zatca;return out;
 };
 window.svOps=async function(show){
   try{if(!await _svRetry(window.SOPS,JSON.stringify(D())))throw Error('تعذر الحفظ المحلي');if(typeof cloudPushDebounced==='function')cloudPushDebounced();if(show)toast('✅ تم حفظ بيانات التشغيل','ok');return {ok:true};}catch(e){if(show)toast('فشل حفظ بيانات التشغيل','er');return {ok:false,err:e};}
@@ -216,7 +220,7 @@ window.addEventListener('load',()=>setTimeout(()=>{try{renderOpsDashboardStrip()
   if(document.getElementById('tanmiya-integrate')) return;
   const s=document.createElement('script');
   s.id='tanmiya-integrate';
-  s.src='integrate.js?v=1120';
+  s.src='integrate.js?v=1121';
   s.defer=true;
   document.head.appendChild(s);
 })();
