@@ -29,9 +29,10 @@ with sync_playwright() as p:
       window.opsData={changeOrders:[{projectId:'c1',status:'approved',amount:100}],
         claims:[{projectId:'c1',partyType:'client',paid:25},
                 {projectId:'c1',partyType:'client',paid:999,status:'cancelled'}]};
-      goTab('db');
+      goTab('acc');
     }''')
-    page.locator('#sec-db .client-statement-button').click()
+    assert page.locator('.client-statement-button').count() == 1
+    page.locator('#sec-acc .client-statement-button').click()
     assert page.locator('#client-statement-select').input_value() == ''
     page.locator('#client-statement-select').select_option(label='ماني')
     assert page.locator('#client-statement tbody tr').count() == 2
@@ -46,11 +47,19 @@ with sync_playwright() as p:
     printed = popup.value
     assert '3,090' in printed.locator('body').inner_text()
     assert printed.locator('tbody tr').count() == 2
+    assert printed.locator('.cr-header img').count() == 1
+    assert printed.locator('thead th').count() == 7
+    assert '3,090' in printed.locator('tfoot').inner_text()
+    assert '13.3%' in printed.locator('tfoot .cr-percent').inner_text()
+    printed.emulate_media(media='print')
+    printed.pdf(path='/tmp/client-statement-1112.pdf', prefer_css_page_size=True)
+    printed.screenshot(path='/tmp/client-statement-1112.png',full_page=True)
     printed.close()
     page.locator('#client-statement-select').select_option(label='شركة مسددة')
     assert 'لا توجد مبالغ متبقية' in page.locator('#client-statement').inner_text()
     page.locator('#client-statement-select').select_option(label='شركة <اختبار>')
-    assert page.locator('#client-statement img').count() == 0
+    assert page.locator('#client-statement img').count() == 1
+    assert page.locator('#client-statement tbody img').count() == 0
     assert not page.evaluate('Boolean(window.injected)')
     page.locator('#client-statement-select').select_option(label='ماني')
     page.evaluate("projs[0].paidAmount+=90;clientStatement('ماني')")
