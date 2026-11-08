@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-08-1119">
+<meta name="app-build" content="2026-11-08-1120">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1119">
+<link rel="manifest" href="manifest.json?v=1120">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -561,7 +561,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1119">
+<link rel="stylesheet" href="ops.css?v=1120">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -711,7 +711,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1119</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1120</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1530,7 +1530,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1119</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1120</bdi></span></div>
   </div>
 </div>
 
@@ -1643,6 +1643,7 @@ function _recordSyncFailure(operation,table,id,error){
  setSyncBadge('err',_cloudErrorLabel(table,error)+' — اضغط للتفاصيل');
 }
 function showSyncStatus(){
+ if(_syncConflicts.size)return showSyncConflicts();
  if(!_lastSyncFailure)return cloudSyncNow();
  document.getElementById('sync-details')?.remove();
  const overlay=document.createElement('div');overlay.id='sync-details';overlay.style.cssText='position:fixed;inset:0;z-index:100200;background:#0f172a88;display:flex;align-items:center;justify-content:center;padding:16px';
@@ -1688,37 +1689,137 @@ async function cloudPull(table,recId){
     const data=result.data;_cloudVersions.set(key,data?data.updated_at:null);return data;
   }catch(e){_cloudReadFailed=true;_cloudReadErrors.push(_cloudErrorLabel(table,e));_recordSyncFailure('جلب',table,recId,e);console.warn('cloudPull '+table,e);return null;}
 }
-function _hdMergeById(local,cloud,key){
-  _loadSyncBases();
-  const baseline=key&&_cloudBases.get(key);
-  if(Array.isArray(baseline)){
-    const l=new Map((local||[]).map(x=>[x.id,x])),r=new Map((cloud||[]).map(x=>[x.id,x])),base=new Map(baseline.map(x=>[x.id,x])),out=[];
-    const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
-    for(const id of new Set([...l.keys(),...r.keys(),...base.keys()])){
-      const left=l.get(id),right=r.get(id),before=base.get(id);
-      let chosen;
-      if(equal(left,right))chosen=left;
-      else if(equal(left,before))chosen=right;
-      else if(equal(right,before))chosen=left;
-      else throw Error('تعارض تعديلات للسجل '+id+'؛ لم تُستبدل النسخة المحلية، صدّر نسخة للمراجعة');
-      if(chosen)out.push(chosen);
+// مقارنة دلالية ثابتة لا تعتبر ترتيب الخصائص أو ختم الحفظ تعديلًا ماليًا.
+const _syncConflicts=new Map(),_syncResolutions=new Map();
+function _hdStable(value){
+  if(value===undefined)return 'undefined';
+  if(value===null||typeof value!=='object')return JSON.stringify(value);
+  if(Array.isArray(value))return '['+value.map(_hdStable).join(',')+']';
+  return '{'+Object.keys(value).filter(k=>!['updatedAt','updated_at'].includes(k)).sort().map(k=>JSON.stringify(k)+':'+_hdStable(value[k])).join(',')+'}';
+}
+function _hdSame(a,b){return _hdStable(a)===_hdStable(b);}
+function _hdCopy(v){return v===undefined?undefined:JSON.parse(JSON.stringify(v));}
+function _conflictArchiveKey(){return 'hd-sync-conflict-archive:'+SUPA_URL+':'+(window.HD_USER||'');}
+function _hdConflict(left,right,before,context,path){
+  const id=context.key+':'+context.id,signature=_hdStable([context.left,context.right]);
+  const resolution=_syncResolutions.get(id+'|'+path);
+  if(resolution?.signature===signature)return _hdCopy(resolution.choice==='local'?left:right);
+  let entry=_syncConflicts.get(id);
+  if(!entry||entry.signature!==signature){entry={id,key:context.key,recordId:context.id,name:context.left?.name||context.right?.name||context.left?.number||context.right?.number||context.id,local:_hdCopy(context.left),cloud:_hdCopy(context.right),base:_hdCopy(context.base),signature,fields:[]};_syncConflicts.set(id,entry);}
+  if(!entry.fields.some(f=>f.path===path))entry.fields.push({path,local:_hdCopy(left),cloud:_hdCopy(right)});
+  // لا تعتمد النتيجة المؤقتة؛ سيُرفض الدمج قبل إرجاعها.
+  return _hdCopy(left);
+}
+function _hdMergeValue(left,right,before,context,path,hasBase){
+  if(_hdSame(left,right))return _hdCopy(left);
+  if(hasBase&&_hdSame(left,before))return _hdCopy(right);
+  if(hasBase&&_hdSame(right,before))return _hdCopy(left);
+  const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
+  if(object(left)&&object(right)&&(object(before)||!hasBase)){
+    const out={};
+    for(const k of new Set([...Object.keys(left),...Object.keys(right),...Object.keys(before||{})])){
+      if(['updatedAt','updated_at'].includes(k)){
+        const times=[left[k],right[k]].filter(v=>v!==undefined);
+        if(times.length)out[k]=times.sort((a,b)=>(Number(a)||Date.parse(a)||0)-(Number(b)||Date.parse(b)||0)).at(-1);
+        continue;
+      }
+      const p=path?path+'.'+k:k;
+      if(!hasBase&&(!(k in left)||!(k in right))){out[k]=_hdCopy(k in left?left[k]:right[k]);continue;}
+      const value=_hdMergeValue(left[k],right[k],before?.[k],context,p,hasBase);
+      if(value!==undefined)out[k]=value;
     }
     return out;
   }
+  if(/(^|\.)payments$/.test(path)&&(Array.isArray(left)||Array.isArray(right)))return _hdConflict(left,right,before,context,path);
+  const keyed=a=>Array.isArray(a)&&a.every(x=>object(x)&&x.id!=null);
+  if(keyed(left)&&keyed(right)&&(keyed(before)||!hasBase)){
+    const l=new Map(left.map(x=>[x.id,x])),r=new Map(right.map(x=>[x.id,x])),b=new Map((before||[]).map(x=>[x.id,x])),out=[];
+    for(const id of new Set([...l.keys(),...r.keys(),...b.keys()])){
+      const value=_hdMergeValue(l.get(id),r.get(id),b.get(id),context,path+'['+id+']',hasBase);
+      if(value!==undefined)out.push(value);
+    }
+    return out;
+  }
+  return _hdConflict(left,right,before,context,path);
+}
+async function _persistSyncConflicts(){
+  const key=_conflictArchiveKey();let history=[];
+  try{const raw=await _stGet(key);if(raw)history=JSON.parse(raw).snapshots||[];}catch(_){}
+  for(const entry of _syncConflicts.values()){
+    if(!history.some(x=>x.id===entry.id&&x.signature===entry.signature))history.push({..._hdCopy(entry),at:new Date().toISOString()});
+  }
+  return await _svRetry(key,JSON.stringify({version:1,snapshots:history.slice(-50)}));
+}
+function _syncValueText(v){
+  if(v===undefined)return 'محذوف / غير موجود';
+  if(v===null)return 'فارغ';
+  return typeof v==='object'?JSON.stringify(v,null,2):String(v);
+}
+function showSyncConflicts(){
+  document.getElementById('sync-conflict-dialog')?.remove();
+  const overlay=document.createElement('div');overlay.id='sync-conflict-dialog';overlay.style.cssText='position:fixed;inset:0;z-index:100210;background:#0f172a88;display:flex;align-items:center;justify-content:center;padding:15px';
+  const panel=document.createElement('div');panel.style.cssText='background:white;color:#17324f;max-height:88vh;overflow:auto;width:min(850px,100%);padding:20px;border-radius:15px;direction:rtl;font-family:Tajawal,Arial';
+  const title=document.createElement('h3');title.textContent='مراجعة اختلاف النسخة المحلية والسحابية';panel.appendChild(title);
+  const note=document.createElement('p');note.textContent='تُدمج التعديلات على الحقول المختلفة تلقائيًا. الحقول أدناه تغيرت في النسختين؛ اختر قيمتها الصحيحة. ستُحفظ نسختا السجل للمراجعة قبل تطبيق اختيارك.';panel.appendChild(note);
+  const labels={contractValue:'قيمة العقد',paidAmount:'الدفعة اليدوية',siteExpensesTotal:'مصروفات الموقع',status:'الحالة',name:'اسم المشروع',startDate:'البداية',endDate:'التسليم المتوقع',actualEndDate:'التسليم الفعلي',goals:'أهداف الإنجاز',notes:'الملاحظات',payments:'سجل الدفعات',attachments:'المرفقات',contractFiles:'ملفات العقد'};
+  for(const entry of _syncConflicts.values()){
+    const h=document.createElement('h4');h.textContent=entry.name;panel.appendChild(h);
+    for(const field of entry.fields){
+      const block=document.createElement('div');block.style.cssText='border:1px solid #dbe8f3;padding:12px;border-radius:10px;margin:8px 0';
+      const caption=document.createElement('strong');caption.textContent=labels[field.path]||field.path||'السجل كاملًا (تعديل مقابل حذف)';block.appendChild(caption);
+      const grid=document.createElement('div');grid.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px';
+      for(const [choice,label,value] of [['local','على هذا الجهاز',field.local],['cloud','في السحابة',field.cloud]]){
+        const col=document.createElement('div'),p=document.createElement('p');p.textContent=label;col.appendChild(p);
+        const pre=document.createElement('pre');pre.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;background:#f1f5f9;padding:10px;max-height:180px;overflow:auto';pre.textContent=_syncValueText(value);col.appendChild(pre);
+        const button=document.createElement('button');button.className='h1077-btn';button.textContent='اعتماد قيمة '+label;
+        button.onclick=async()=>{
+          button.disabled=true;
+          try{
+            const current=_syncConflicts.get(entry.id);
+            if(!current||current.signature!==entry.signature)throw Error('تغيرت النسخة؛ أعد فتح مراجعة التعارض');
+            if(!await _persistSyncConflicts())throw Error('تعذر حفظ نسختي المراجعة؛ لم يُطبّق الاختيار');
+            _syncResolutions.set(entry.id+'|'+field.path,{signature:entry.signature,choice});
+            const result=await cloudSyncNow();
+            if(result){overlay.remove();toast('تم حل الاختلاف وحفظ المزامنة','ok');}
+            else if(_syncConflicts.size)showSyncConflicts();
+            else toast('سُجل الاختيار لهذه المحاولة، لكن المزامنة لم تكتمل؛ راجع تفاصيل الاتصال','er');
+          }catch(e){toast(e.message,'er');button.disabled=false;}
+        };
+        col.appendChild(button);grid.appendChild(col);
+      }
+      block.appendChild(grid);panel.appendChild(block);
+    }
+  }
+  const exportButton=document.createElement('button');exportButton.className='h1077-btn alt';exportButton.textContent='تنزيل نسختي التعارض للمراجعة';
+  exportButton.onclick=()=>{
+    const blob=new Blob([JSON.stringify({at:new Date().toISOString(),conflicts:[..._syncConflicts.values()]},null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='مراجعة_تعارض_المزامنة_'+Date.now()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  };
+  panel.appendChild(exportButton);
+  const close=document.createElement('button');close.className='h1077-btn alt';close.style.margin='8px';close.textContent='لاحقًا';close.onclick=()=>overlay.remove();panel.appendChild(close);
+  overlay.appendChild(panel);document.body.appendChild(overlay);
+}
 
-  const map=new Map();
-  (Array.isArray(cloud)?cloud:[]).forEach(r=>{if(r&&r.id!=null)map.set(r.id,r);});
-  (Array.isArray(local)?local:[]).forEach(r=>{
-    if(!r||r.id==null)return;
-    const remote=map.get(r.id);
-    if(!remote||JSON.stringify(remote)===JSON.stringify(r)){map.set(r.id,r);return;}
-    const time=x=>Number(x.updatedAt)||Date.parse(x.updated_at||'')||0;
-    if((r.payments?.length||remote.payments?.length)&&JSON.stringify(r.payments||[])!==JSON.stringify(remote.payments||[]))throw Error('تعارض دفعات؛ احتفظ بنسخة محلية لمراجعة السداد');
-    const lt=time(r),rt=time(remote);
-    if(lt&&rt&&lt!==rt){if(lt>rt)map.set(r.id,r);return;}
-    throw Error('تعارض سجل '+r.id+'؛ احتفظ بنسخة احتياطية قبل مراجعة النسختين');
-  });
-  return [...map.values()];
+function _hdMergeById(local,cloud,key){
+  _loadSyncBases();
+  const baseline=key&&_cloudBases.get(key),hasBase=Array.isArray(baseline);
+  const l=new Map((Array.isArray(local)?local:[]).filter(x=>x&&x.id!=null).map(x=>[x.id,x]));
+  const r=new Map((Array.isArray(cloud)?cloud:[]).filter(x=>x&&x.id!=null).map(x=>[x.id,x]));
+  const b=new Map((hasBase?baseline:[]).map(x=>[x.id,x])),out=[];
+  for(const id of new Set([...l.keys(),...r.keys(),...b.keys()])){
+    const left=l.get(id),right=r.get(id),before=b.get(id),context={key:key||'records',id,left,right,base:before};
+    _syncConflicts.delete(context.key+':'+id);
+    let chosen;
+    if(!hasBase&&(left===undefined||right===undefined))chosen=_hdCopy(left===undefined?right:left);
+    else chosen=_hdMergeValue(left,right,before,context,'',hasBase);
+    const pending=_syncConflicts.get(context.key+':'+id);
+    if(pending&&pending.fields.some(f=>_syncResolutions.get(pending.id+'|'+f.path)?.signature!==pending.signature)){
+      const error=Error('يوجد اختلاف يحتاج مراجعة في '+pending.name+' — اضغط هنا لاختيار القيمة الصحيحة');
+      error.code='SYNC_CONFLICT';error.table=(key||'records').split(':')[0];error.recordId=id;throw error;
+    }
+    if(chosen!==undefined)out.push(chosen);
+  }
+  return out;
 }
 function _stampChanges(records,key){
   const cache=window._hdRecordSnapshots||(window._hdRecordSnapshots={}),previous=cache[key]||{};
@@ -1738,7 +1839,7 @@ async function cloudPushAll(){
     for(const [table,id,data] of frozen){if(!await cloudPush(table,id,data))return false;_rememberBase(_syncKey(table,id),data);if(table==='settings'&&id==='ops-v1')Object.entries(data).forEach(([k,v])=>{if(Array.isArray(v))_rememberBase('ops:'+k,v);});}
     const current=[invs,projs,sett,progress,lets,auditLog,trash,audits,cfoReports,coa,journals,window.opsData||{}];
     if(frozen.some((g,i)=>JSON.stringify(g[2])!==JSON.stringify(current[i]))){setSyncBadge('syncing','تعديلات جديدة — جارٍ الحفظ');cloudPushDebounced();return false;}
-    window._hdSettingsBase=JSON.stringify(sett);_lastSyncFailure=null;_lastSync=Date.now();setSyncBadge('ok','مُزامن');return true;
+    window._hdSettingsBase=JSON.stringify(sett);_lastSyncFailure=null;_syncConflicts.clear();_syncResolutions.clear();_lastSync=Date.now();setSyncBadge('ok','مُزامن');return true;
   })().catch(e=>{setSyncBadge('err',e.message||'تعذرت المزامنة');return false;}).finally(()=>{_cloudPushJob=null;});
   return _cloudPushJob;
 }
@@ -1749,7 +1850,7 @@ async function cloudPullAll(opts){
   if(!_cloudOn||!window.HD_AUTHED||!cloudInit())return {changed:false,ok:false};
   setSyncBadge('syncing','جاري السحب');
   let changed=false;
-  _cloudReadFailed=false;_cloudReadErrors=[];
+  _cloudReadFailed=false;_cloudReadErrors=[];_syncConflicts.clear();
   try{
     const ci=await cloudPull('invoices','_all');
     const cp=await cloudPull('projects','_all');
@@ -1813,7 +1914,12 @@ async function cloudPullAll(opts){
       toast&&toast('🔄 تم تحديث البيانات من السحابة','ok');
     }
   }catch(e){
-    setSyncBadge('err',e.message||'تعذر الجلب');return {changed,ok:false};
+    if(e.code==='SYNC_CONFLICT'){
+      await _persistSyncConflicts();
+      _lastSyncFailure={operation:'دمج النسختين',table:e.table,id:e.recordId,code:e.code,message:e.message,at:new Date().toLocaleString('ar-SA')};
+      setSyncBadge('err','اختلاف بين نسختين — اضغط للمراجعة');
+    }else setSyncBadge('err',e.message||'تعذر الجلب');
+    return {changed,ok:false};
   }
   return {changed,ok:true};
 }
@@ -9774,7 +9880,7 @@ async function smartUpdateCheck(){
   }catch(e){}finally{_versionCheckBusy=false;}
 }
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='توحيد التحصيل والعقود والضريبة والتقارير وإصلاح الأخطاء المالية المثبتة';
+const APP_UPD_NOTE='دمج التعديلات المستقلة ومراجعة التعارض الحقيقي دون استبدال بياناتك عشوائيًا';
 function showUpdatedBanner(){
   try{
     try{if(sessionStorage.getItem('hadaf-upd-shown'))return;}catch(_){}
@@ -9799,7 +9905,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1119',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1120',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9862,8 +9968,8 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="ops.js?v=1119"></script>
+<script src="ops.js?v=1120"></script>
 
-<script src="settings.js?v=1119"></script>
+<script src="settings.js?v=1120"></script>
 </body>
 </html>
