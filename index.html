@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-08-1113">
+<meta name="app-build" content="2026-11-08-1114">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1113">
+<link rel="manifest" href="manifest.json?v=1114">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -546,7 +546,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1113">
+<link rel="stylesheet" href="ops.css?v=1114">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -698,7 +698,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1113</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1114</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1517,7 +1517,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1113</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1114</bdi></span></div>
   </div>
 </div>
 
@@ -8699,6 +8699,110 @@ async function unlinkBackupFolder(){
   refreshBackupStatus();
 }
 
+// استرجاع الملفات وحدها، دون استيراد أو تغيير السجلات المالية.
+function _backupAttachmentEntries(){
+  const entries=[];
+  (projs||[]).forEach(p=>[...(p.attachments||[]),...(p.contractFiles||[])].forEach(a=>entries.push({a,owner:p.name||'مشروع'})));
+  (docs||[]).forEach(a=>entries.push({a,owner:'وثيقة'}));
+  (lets||[]).forEach(a=>entries.push({a,owner:'خطاب'}));
+  return entries;
+}
+async function _missingBackupAttachments(){
+  const missing=new Map();
+  for(const {a,owner} of _backupAttachmentEntries()){
+    if(!a.fileRef||missing.has(a.fileRef))continue;
+    const stored=await _fileGet(a.fileRef);
+    if(stored?.size)continue;
+    const inline=a.fileData&&_dataUrlToBlob(a.fileData);
+    if(inline?.size){await _filePut(a.fileRef,inline);continue;}
+    missing.set(a.fileRef,{...a,owner});
+  }
+  return missing;
+}
+async function _recoverAttachmentData(data,missing){
+  let restored=0;
+  const candidates=new Map();
+  if(data.files&&typeof data.files==='object'){
+    for(const ref of missing.keys()){
+      if(Object.prototype.hasOwnProperty.call(data.files,ref)&&typeof data.files[ref]==='string')candidates.set(ref,data.files[ref]);
+    }
+  }
+  // النسخ القديمة قد تحتوي الملف داخل سجل المرفق نفسه.
+  const collect=a=>{if(a?.fileRef&&missing.has(a.fileRef)&&typeof a.fileData==='string'&&!candidates.has(a.fileRef))candidates.set(a.fileRef,a.fileData);};
+  (Array.isArray(data.projs)?data.projs:[]).forEach(p=>{
+    (Array.isArray(p.attachments)?p.attachments:[]).forEach(collect);
+    (Array.isArray(p.contractFiles)?p.contractFiles:[]).forEach(collect);
+  });
+  for(const key of ['docs','lets'])if(Array.isArray(data[key]))data[key].forEach(collect);
+  for(const [ref,url] of candidates){
+    const blob=_dataUrlToBlob(url),expected=missing.get(ref);
+    if(!blob?.size||(expected.fileSize&&Number(expected.fileSize)!==blob.size))continue;
+    await _filePut(ref,blob);
+    const verified=await _fileGet(ref);
+    if(!verified||verified.size!==blob.size)throw Error('لم يتم التحقق من استعادة المرفق');
+    missing.delete(ref);restored++;
+  }
+  return restored;
+}
+async function _recoverBackupFolderAttachments(handle,missing){
+  if(!missing.size||typeof handle.values!=='function')return {restored:0,checked:0,errors:0};
+  const candidates=[];let restored=0,checked=0,errors=0;
+  // يفحص ملفات النسخ في المجلد المربوط فقط، ولا يكتب عليها.
+  try{
+    for await(const entry of handle.values()){
+      if(entry.kind==='file'&&/\.json$/i.test(entry.name))candidates.push(entry);
+    }
+  }catch(_){return {restored,checked,errors:1};}
+  candidates.sort((a,b)=>b.name.localeCompare(a.name));
+  for(const entry of candidates){
+    if(!missing.size)break;
+    try{
+      const file=await entry.getFile();
+      const data=JSON.parse(await file.text());
+      if(!data||typeof data!=='object')continue;
+      checked++;restored+=await _recoverAttachmentData(data,missing);
+    }catch(_){errors++;}
+  }
+  return {restored,checked,errors};
+}
+async function recoverBackupAttachmentsNow(){
+  const handle=await _bkpLoadHandle();
+  if(!handle)return toast('اربط مجلد النسخ أولًا','er');
+  if(!(await _bkpVerifyPermission(handle,true)))return toast('يلزم السماح بقراءة مجلد النسخ','er');
+  toast('جاري البحث عن المرفقات داخل النسخ السابقة...','ok');
+  try{
+    const missing=await _missingBackupAttachments();
+    const result=await _recoverBackupFolderAttachments(handle,missing);
+    if(result.restored||!missing.size){await autoBackup(true);return;}
+    toast('فُحصت '+result.checked+' نسخة؛ المرفقات الناقصة غير موجودة فيها. اختر نسخة أخرى أو ملفاتها الأصلية من زر الاستعادة','er');
+  }catch(e){toast('تعذرت الاستعادة: '+e.message,'er');}
+}
+function chooseBackupRecoveryFiles(){
+  const input=document.createElement('input');input.type='file';input.multiple=true;input.accept='.json,.pdf,image/*';
+  input.onchange=async()=>{
+    try{
+      const missing=await _missingBackupAttachments();let restored=0,unmatched=0;
+      for(const file of input.files){
+        if(/\.json$/i.test(file.name)){
+          try{restored+=await _recoverAttachmentData(JSON.parse(await file.text()),missing);}catch(_){unmatched++;}
+        }else{
+          const norm=n=>String(n||'').normalize('NFC').trim();
+          const matches=[...missing].filter(([ref,a])=>norm(a.fileName)===norm(file.name)&&(!a.fileSize||Number(a.fileSize)===file.size));
+          // لا يربط ملفًا بمشروع خاطئ عند تشابه الأسماء.
+          if(matches.length!==1){unmatched++;continue;}
+          const [ref]=matches[0];await _filePut(ref,file);
+          const verified=await _fileGet(ref);
+          if(!verified||verified.size!==file.size)throw Error('فشل التحقق من حفظ الملف');
+          missing.delete(ref);restored++;
+        }
+      }
+      if(restored){toast('استُعيد '+restored+' مرفق'+(unmatched?'؛ '+unmatched+' ملف لم يطابق مرفقًا ناقصًا':''),'ok');await autoBackup(true);}
+      else toast('لم يوجد تطابق مع المرفقات الناقصة؛ لم تتغير بياناتك','er');
+    }catch(e){toast('تعذرت الاستعادة: '+e.message,'er');}
+  };
+  input.click();
+}
+
 async function autoBackup(showToast){
   const handle=await _bkpLoadHandle();
   if(!handle){if(showToast)toast('اربط المجلد أولاً','er');return false;}
@@ -8707,6 +8811,9 @@ async function autoBackup(showToast){
     return false;
   }
   try{
+    const missing=await _missingBackupAttachments();
+    const recovery=await _recoverBackupFolderAttachments(handle,missing);
+    if(recovery.restored&&showToast)toast('استُعيد '+recovery.restored+' مرفق من النسخ السابقة','ok');
     const data=await buildBackupData(Infinity);
     const partial=!!data.backupWarnings?.length;
     data.ver='hadaf-auto-v3';data.counts={invs:invs.length,projs:projs.length,docs:docs.length,lets:lets.length};
@@ -8784,7 +8891,7 @@ async function refreshBackupStatus(){
   const folderName=localStorage.getItem(_BKP_FOLDER_NAME_KEY)||handle.name;
   let partial=null;try{partial=JSON.parse(localStorage.getItem('hd-backup-partial-v1')||'null');}catch(_){}
   if(partial&&Number(partial.at)>=lastTs){
-    wrap.innerHTML='<div style="background:#FEF3C7;border:1px solid #FDE68A;padding:12px;border-radius:8px;color:#92400E;font-size:12px;line-height:1.8"><strong>⚠️ حُفظت نسخة غير مكتملة — البيانات والمرفقات المتاحة فقط</strong><br>الملف: '+esc(partial.fileName)+'<br>آخر نسخة مكتملة: '+lastTxt+'<details><summary>عرض المرفقات التي لم تُضمّن ('+partial.warnings.length+')</summary><ul>'+partial.warnings.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul></details><p>لم يُستبدل ملف النسخة المكتملة. لاستعادة المرفقات غير المتاحة، استورد نسخة سابقة تحتوي عليها أو أعد رفعها من ملفاتك الأصلية.</p></div>';return;
+    wrap.innerHTML='<div style="background:#FEF3C7;border:1px solid #FDE68A;padding:12px;border-radius:8px;color:#92400E;font-size:12px;line-height:1.8"><strong>⚠️ حُفظت نسخة غير مكتملة — البيانات والمرفقات المتاحة فقط</strong><br>الملف: '+esc(partial.fileName)+'<br>آخر نسخة مكتملة: '+lastTxt+'<details><summary>عرض المرفقات التي لم تُضمّن ('+partial.warnings.length+')</summary><ul>'+partial.warnings.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul></details><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button type="button" class="btn btn-p btn-sm" onclick="recoverBackupAttachmentsNow()">استعادة من نسخ المجلد</button><button type="button" class="btn btn-g btn-sm" onclick="chooseBackupRecoveryFiles()">اختيار نسخة أو ملفات أصلية</button></div><p>لم يُستبدل ملف النسخة المكتملة. لاستعادة المرفقات غير المتاحة، استورد نسخة سابقة تحتوي عليها أو أعد رفعها من ملفاتك الأصلية.</p></div>';return;
   }
   const fresh=lastTs&&(Date.now()-lastTs)<(24*60*60*1000);
   wrap.innerHTML='<div style="background:'+(fresh?'#DCFCE7':'#FEF3C7')+';border:1px solid '+(fresh?'#86EFAC':'#FDE68A')+';padding:9px 10px;border-radius:8px;color:'+(fresh?'#166534':'#92400E')+';font-size:11.5px;line-height:1.6"><strong>'+(fresh?'✅ مرتبط ومُحدّث':'⚠️ مرتبط - يحتاج تحديث')+'</strong><br>📁 المجلد: <strong>'+esc(folderName)+'</strong><br>🕒 آخر نسخة: '+lastTxt+'<br>'+ (localStorage.getItem('hd-backup-verified')===String(lastTs)?'✅ تم التحقق من قراءة الملف بعد الحفظ':'لم يُتحقق من الملف السابق')+'</div>';
@@ -8793,6 +8900,14 @@ async function refreshBackupStatus(){
 // تشغيل عند تحميل الصفحة (بعد ٢ ث لإتاحة تحميل البيانات)
 window.addEventListener('load',()=>{
   setTimeout(async ()=>{
+    try{
+      const handle=await _bkpLoadHandle();
+      if(handle&&localStorage.getItem('hd-backup-partial-v1')&&await _bkpVerifyPermission(handle,false)){
+        const missing=await _missingBackupAttachments();
+        const recovery=await _recoverBackupFolderAttachments(handle,missing);
+        if(recovery.restored)await autoBackup(false);
+      }
+    }catch(e){console.warn('attachment recovery:',e);}
     await checkDailyBackup();
     await refreshBackupStatus();
     setTimeout(checkBackupReminder,4000);
@@ -9584,7 +9699,7 @@ setTimeout(smartUpdateCheck,6000); // فحص ذكي مرة واحدة بالجل
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1113',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1114',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9647,8 +9762,8 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="ops.js?v=1113"></script>
+<script src="ops.js?v=1114"></script>
 
-<script src="settings.js?v=1113"></script>
+<script src="settings.js?v=1114"></script>
 </body>
 </html>
