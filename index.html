@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-08-1116">
+<meta name="app-build" content="2026-11-08-1117">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1116">
+<link rel="manifest" href="manifest.json?v=1117">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -492,15 +492,21 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 }
 #sec-db>.sec-ttl{
   display:grid;
-  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-columns:4px minmax(0,1fr) auto;
+  direction:rtl;
+  text-align:right;
   gap:4px 8px;
   font-family:'Cairo','Tajawal',sans-serif;
   font-size:20px;
   letter-spacing:-.2px;
   margin-bottom:12px;
 }
+#sec-db>.sec-ttl::before{grid-column:1;grid-row:1}
+#sec-db>.sec-ttl>.dashboard-title{grid-column:2;grid-row:1;min-width:0}
+#sec-db>.sec-ttl>.dashboard-actions{grid-column:3;grid-row:1}
 #sec-db>.sec-ttl::after{
-  grid-column:1 / -1;
+  grid-column:2 / -1;
+  grid-row:2;
   content:'ملخص مباشر للمشاريع والسيولة والربحية والالتزامات';
   display:block;
   margin-top:2px;
@@ -512,6 +518,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 .dashboard-actions{display:inline-flex;align-items:center;gap:6px}
 .dashboard-actions #privacy-btn{margin:0;min-height:32px}
 #ask-launcher{height:32px;box-sizing:border-box;line-height:1;min-height:32px;padding:4px 12px;background:#EFF6FF;color:#2771ab;border:1px solid #BFDBFE;border-radius:9px;font-family:Tajawal,sans-serif;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap}
+@media(max-width:430px){#sec-db>.sec-ttl{font-size:16px}#ask-launcher{padding-inline:9px}}
 #ask-launcher:focus-visible{outline:2px solid #2771ab;outline-offset:2px}
 #sec-db .db-col>*{
   border-radius:14px;
@@ -554,7 +561,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1116">
+<link rel="stylesheet" href="ops.css?v=1117">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -646,7 +653,7 @@ window.opsData={
 <main>
 <!-- الرئيسية -->
 <section class="sec active" id="sec-db">
-  <h2 class="sec-ttl">لوحة الإدارة التنفيذية <span class="dashboard-actions"><button id="privacy-btn" onclick="togglePrivacy()" title="إخفاء/إظهار الأرقام (خصوصية)">👁️</button><button id="ask-launcher" type="button" onclick="openAsk()">اسال</button></span></h2>
+  <h2 class="sec-ttl"><span class="dashboard-title">لوحة الإدارة التنفيذية</span><span class="dashboard-actions"><button id="privacy-btn" onclick="togglePrivacy()" title="إخفاء/إظهار الأرقام (خصوصية)">👁️</button><button id="ask-launcher" type="button" onclick="openAsk()">اسال</button></span></h2>
   <div class="db-grid">
     <!-- العمود ١: Hero + المستحقات + التنبيهات -->
     <div class="db-col">
@@ -704,7 +711,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1116</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1117</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1523,7 +1530,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1116</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1117</bdi></span></div>
   </div>
 </div>
 
@@ -9710,7 +9717,7 @@ setTimeout(smartUpdateCheck,6000); // فحص ذكي مرة واحدة بالجل
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1116',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1117',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9773,8 +9780,8 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="ops.js?v=1116"></script>
+<script src="ops.js?v=1117"></script>
 
-<script src="settings.js?v=1116"></script>
+<script src="settings.js?v=1117"></script>
 </body>
 </html>
