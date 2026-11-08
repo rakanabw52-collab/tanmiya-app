@@ -3442,12 +3442,12 @@ function _expAccFor(inv){
 }
 // المصدر الموحد للفواتير المالية؛ المشتريات المباشرة تحتاج إثبات أهلية ضريبي صريح.
 function _financialInvoices(){
-  const active=invs.filter(i=>i.status!=='cancelled').map(i=>({...i,subtotal:toNum(i.subtotal),vat:toNum(i.vat),total:toNum(i.total),_source:'inv',_sourceId:i.id}));
+  const active=invs.filter(i=>i.status!=='cancelled').map(i=>({...i,subtotal:i.subtotal==null?Math.max(0,toNum(i.total)-toNum(i.vat)):toNum(i.subtotal),vat:toNum(i.vat),total:toNum(i.total),_source:'inv',_sourceId:i.id}));
   const suppliers=window.opsData?.suppliers||[];
   for(const p of window.opsData?.purchaseOrders||[]){
     if(!p.directPurchase||p.status==='cancelled'||(p.invoiceId&&invs.some(i=>i.id===p.invoiceId&&i.status!=='cancelled'&&i.type!=='revenue')))continue;
     const supplier=suppliers.find(s=>s.id===p.supplierId);
-    active.push({...p,id:'purchase:'+p.id,_source:'purchase',_sourceId:p.id,type:'purchase',subtotal:toNum(p.amount),vat:toNum(p.vat),total:toNum(p.total),vendor:p.supplierName||supplier?.name||'',vendorVAT:p.vendorVAT||supplier?.vat||'',taxDecl:p.taxDecl===true});
+    active.push({...p,id:'purchase:'+p.id,_source:'purchase',_sourceId:p.id,type:'purchase',subtotal:p.amount==null?Math.max(0,toNum(p.total)-toNum(p.vat)):toNum(p.amount),vat:toNum(p.vat),total:toNum(p.total),vendor:p.supplierName||supplier?.name||'',vendorVAT:p.vendorVAT||supplier?.vat||'',taxDecl:p.taxDecl===true});
   }
   return active;
 }
