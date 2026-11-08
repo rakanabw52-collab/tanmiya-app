@@ -13,7 +13,8 @@ threading.Thread(target=server.serve_forever, daemon=True).start()
 with sync_playwright() as p:
     browser = p.chromium.launch(executable_path='/usr/bin/chromium', args=['--no-sandbox'])
     page = browser.new_page()
-    page.route('https://**', lambda route: route.abort())
+    page.context.route('https://**', lambda route: route.abort())
+    page.context.add_init_script('window.print=()=>{}')
     page.goto(f'http://127.0.0.1:{server.server_port}', wait_until='domcontentloaded')
     page.wait_for_function('typeof clientStatement === "function" && document.querySelector(".client-statement-button")')
     page.evaluate('''()=>{
@@ -51,9 +52,16 @@ with sync_playwright() as p:
     assert printed.locator('thead th').count() == 7
     assert '3,090' in printed.locator('tfoot').inner_text()
     assert '13.3%' in printed.locator('tfoot .cr-percent').inner_text()
+    assert printed.locator('.cr-brand h2').inner_text() == 'هدف التنمية للمقاولات'
+    assert printed.locator('.cr-header img').get_attribute('src').startswith('data:image/png;base64,')
+    printed.evaluate('async()=>{await Promise.race([Promise.all([document.fonts.ready,...Array.from(document.images).map(img=>img.decode())]),new Promise(r=>setTimeout(r,3000))]);}')
+    assert printed.locator('.cr-header img').evaluate('(e)=>e.complete && e.naturalWidth > 0')
     printed.emulate_media(media='print')
-    printed.pdf(path='/tmp/client-statement-1112.pdf', prefer_css_page_size=True)
-    printed.screenshot(path='/tmp/client-statement-1112.png',full_page=True)
+    bounds=printed.locator('.cr-header').bounding_box()
+    assert bounds['x'] > 50 and bounds['y'] > 50
+    assert printed.locator('.cr-header img').evaluate('(e)=>e.parentElement.clientWidth') == 24
+    printed.pdf(path='/tmp/client-statement-1113.pdf', prefer_css_page_size=True)
+    printed.screenshot(path='/tmp/client-statement-1113.png',full_page=True)
     printed.close()
     page.locator('#client-statement-select').select_option(label='شركة مسددة')
     assert 'لا توجد مبالغ متبقية' in page.locator('#client-statement').inner_text()
@@ -66,6 +74,8 @@ with sync_playwright() as p:
     assert '3,000' in page.locator('#client-statement').inner_text()
     page.set_viewport_size({'width':390,'height':844})
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+    page.evaluate("projs[0].name='مشروع الأنوار 1607';projs[0].code='1607';clientStatement('ماني')")
+    assert page.locator('#client-statement tbody tr').first.locator('td').first.inner_text() == 'الأنوار 1607'
     page.evaluate('projs=[];clientStatement()')
     assert 'أضف اسم الشركة' in page.locator('#ops-modal-body').inner_text()
     browser.close()
