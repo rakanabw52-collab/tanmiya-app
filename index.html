@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-08-1120">
+<meta name="app-build" content="2026-11-08-1121">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1120">
+<link rel="manifest" href="manifest.json?v=1121">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -561,7 +561,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1120">
+<link rel="stylesheet" href="ops.css?v=1121">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -711,7 +711,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1120</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1121</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1530,7 +1530,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1120</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1121</bdi></span></div>
   </div>
 </div>
 
@@ -1744,11 +1744,21 @@ function _hdMergeValue(left,right,before,context,path,hasBase){
 }
 async function _persistSyncConflicts(){
   const key=_conflictArchiveKey();let history=[];
-  try{const raw=await _stGet(key);if(raw)history=JSON.parse(raw).snapshots||[];}catch(_){}
+  try{
+    const stored=await _stGet(key);
+    if(stored){
+      const parsed=JSON.parse(stored.value);
+      if(!Array.isArray(parsed.snapshots))throw Error('سجل الأرشيف غير صالح');
+      history=parsed.snapshots;
+    }
+  }catch(e){
+    console.warn('تعذر قراءة أرشيف التعارضات السابق',e);
+    return false; // لا نستبدل أرشيفًا سابقًا قد يكون تالفًا.
+  }
   for(const entry of _syncConflicts.values()){
     if(!history.some(x=>x.id===entry.id&&x.signature===entry.signature))history.push({..._hdCopy(entry),at:new Date().toISOString()});
   }
-  return await _svRetry(key,JSON.stringify({version:1,snapshots:history.slice(-50)}));
+  return await _svRetry(key,JSON.stringify({version:1,snapshots:history}));
 }
 function _syncValueText(v){
   if(v===undefined)return 'محذوف / غير موجود';
@@ -1836,7 +1846,7 @@ async function cloudPushAll(){
     const groups=[['invoices','_all',invs],['projects','_all',projs],['settings','main',sett],['progress','_all',progress],['letters','_all',lets],['audit','_all',auditLog],['trash','_all',trash],['audits','_all',audits],['cfo','_all',cfoReports],['coa','_all',coa],['journals','_all',journals],['settings','ops-v1',window.opsData||{}]];
     // Freeze each payload so editing during a request cannot change that request.
     const frozen=groups.map(([t,id,d])=>[t,id,JSON.parse(JSON.stringify(d))]);
-    for(const [table,id,data] of frozen){if(!await cloudPush(table,id,data))return false;_rememberBase(_syncKey(table,id),data);if(table==='settings'&&id==='ops-v1')Object.entries(data).forEach(([k,v])=>{if(Array.isArray(v))_rememberBase('ops:'+k,v);});}
+    for(const [table,id,data] of frozen){if(!await cloudPush(table,id,data))return false;_rememberBase(_syncKey(table,id),data);if(table==='settings'&&id==='ops-v1'){Object.entries(data).forEach(([k,v])=>{if(Array.isArray(v))_rememberBase('ops:'+k,v);});if(data.zatca)_rememberBase('ops:zatca',[{id:'zatca',...data.zatca}]);}}
     const current=[invs,projs,sett,progress,lets,auditLog,trash,audits,cfoReports,coa,journals,window.opsData||{}];
     if(frozen.some((g,i)=>JSON.stringify(g[2])!==JSON.stringify(current[i]))){setSyncBadge('syncing','تعديلات جديدة — جارٍ الحفظ');cloudPushDebounced();return false;}
     window._hdSettingsBase=JSON.stringify(sett);_lastSyncFailure=null;_syncConflicts.clear();_syncResolutions.clear();_lastSync=Date.now();setSyncBadge('ok','مُزامن');return true;
@@ -1862,14 +1872,14 @@ async function cloudPullAll(opts){
       const m=_hdMergeById(invs,ci.data,'invoices:_all');
       if(JSON.stringify(m)!==JSON.stringify(invs)){
         invs=m;changed=true;
-        await _svRetry(SK,JSON.stringify(invs));
+        if(!await _svRetry(SK,JSON.stringify(invs)))throw Object.assign(Error('فشل التخزين المحلي أثناء السحب السحابي؛ أوقف المزامنة واحفظ نسخة احتياطية'),{code:'SYNC_LOCAL_SAVE'});
       }
     }
     if(cp&&Array.isArray(cp.data)){
       const m=_hdMergeById(projs,cp.data,'projects:_all');
       if(JSON.stringify(m)!==JSON.stringify(projs)){
         projs=m;changed=true;
-        await _svRetry(SP,JSON.stringify(projs));
+        if(!await _svRetry(SP,JSON.stringify(projs)))throw Object.assign(Error('فشل التخزين المحلي أثناء السحب السحابي؛ أوقف المزامنة واحفظ نسخة احتياطية'),{code:'SYNC_LOCAL_SAVE'});
       }
     }
     if(cs&&cs.data&&typeof cs.data==='object'){
@@ -1877,33 +1887,33 @@ async function cloudPullAll(opts){
         const base=window._hdSettingsBase;
         if(base&&JSON.stringify(sett)!==base&&JSON.stringify(cs.data)!==base)throw Error('تعارض الإعدادات بين جهازين');
         if(!base||JSON.stringify(sett)===base){sett=cs.data;changed=true;}
-        await _svRetry(SS,JSON.stringify(sett));
+        if(!await _svRetry(SS,JSON.stringify(sett)))throw Object.assign(Error('فشل التخزين المحلي أثناء السحب السحابي؛ أوقف المزامنة واحفظ نسخة احتياطية'),{code:'SYNC_LOCAL_SAVE'});
       }
     }
     if(cops&&cops.data&&typeof cops.data==='object'&&typeof window.opsMergeData==='function'){
       const om=window.opsMergeData(window.opsData,cops.data);
-      if(JSON.stringify(om)!==JSON.stringify(window.opsData)){window.opsData=om;changed=true;await _svRetry(window.SOPS,JSON.stringify(window.opsData));}
+      if(JSON.stringify(om)!==JSON.stringify(window.opsData)){window.opsData=om;changed=true;if(!await _svRetry(window.SOPS,JSON.stringify(window.opsData)))throw Object.assign(Error('فشل التخزين المحلي أثناء السحب السحابي؛ أوقف المزامنة واحفظ نسخة احتياطية'),{code:'SYNC_LOCAL_SAVE'});}
     }
     const pg=await cloudPull('progress','_all');
-    if(pg&&Array.isArray(pg.data)){progress=_hdMergeById(progress,pg.data,'progress:_all');await _svRetry(SPR,JSON.stringify(progress));}
+    if(pg&&Array.isArray(pg.data)){progress=_hdMergeById(progress,pg.data,'progress:_all');if(!await _svRetry(SPR,JSON.stringify(progress)))throw Object.assign(Error('فشل التخزين المحلي أثناء السحب السحابي؛ أوقف المزامنة واحفظ نسخة احتياطية'),{code:'SYNC_LOCAL_SAVE'});}
     const cl=await cloudPull('letters','_all');
     if(cl&&Array.isArray(cl.data)){
       const m=_hdMergeById(lets,cl.data,'letters:_all');
       if(JSON.stringify(m)!==JSON.stringify(lets)){
         lets=m;changed=true;
-        await _svRetry(SL,JSON.stringify(lets));
+        if(!await _svRetry(SL,JSON.stringify(lets)))throw Object.assign(Error('فشل التخزين المحلي أثناء السحب السحابي؛ أوقف المزامنة واحفظ نسخة احتياطية'),{code:'SYNC_LOCAL_SAVE'});
       }
     }
-    try{const ca=await cloudPull('audit','_all');if(ca&&Array.isArray(ca.data)){auditLog=_hdMergeById(auditLog,ca.data,'audit:_all').sort((a,b)=>(b.t||0)-(a.t||0));await _svRetry(SAUD,JSON.stringify(auditLog));}}catch(e){throw e;}
-    try{const ct=await cloudPull('trash','_all');if(ct&&Array.isArray(ct.data)){trash=_hdMergeById(trash,ct.data,'trash:_all').sort((a,b)=>(b.t||0)-(a.t||0));await _svRetry(STRA,JSON.stringify(trash));}}catch(e){throw e;}
-    try{const cu=await cloudPull('audits','_all');if(cu&&Array.isArray(cu.data)){audits=_hdMergeById(audits,cu.data,'audits:_all').sort((a,b)=>(b.t||0)-(a.t||0));await _svRetry(SAU,JSON.stringify(audits));}}catch(e){throw e;}
-    try{const cf=await cloudPull('cfo','_all');if(cf&&Array.isArray(cf.data)){cfoReports=_hdMergeById(cfoReports,cf.data,'cfo:_all').sort((a,b)=>(b.t||0)-(a.t||0));await _svRetry(SCFO,JSON.stringify(cfoReports));}}catch(e){throw e;}
-    try{const cc=await cloudPull('coa','_all');if(cc&&Array.isArray(cc.data)&&cc.data.length){coa=_hdMergeById(coa,cc.data,'coa:_all');await _svRetry(SCOA,JSON.stringify(coa));}}catch(e){throw e;}
-    try{const cj=await cloudPull('journals','_all');if(cj&&Array.isArray(cj.data)){journals=_hdMergeById(journals,cj.data,'journals:_all').sort((a,b)=>(b.t||0)-(a.t||0));await _svRetry(SJRN,JSON.stringify(journals));}}catch(e){throw e;}
+    try{const ca=await cloudPull('audit','_all');if(ca&&Array.isArray(ca.data)){auditLog=_hdMergeById(auditLog,ca.data,'audit:_all').sort((a,b)=>(b.t||0)-(a.t||0));if(!await _svRetry(SAUD,JSON.stringify(auditLog)))throw Object.assign(Error('فشل التخزين المحلي أثناء السحب السحابي؛ أوقف المزامنة واحفظ نسخة احتياطية'),{code:'SYNC_LOCAL_SAVE'});}}catch(e){throw e;}
+    try{const ct=await cloudPull('trash','_all');if(ct&&Array.isArray(ct.data)){trash=_hdMergeById(trash,ct.data,'trash:_all').sort((a,b)=>(b.t||0)-(a.t||0));if(!await _svRetry(STRA,JSON.stringify(trash)))throw Object.assign(Error('فشل التخزين المحلي أثناء السحب السحابي؛ أوقف المزامنة واحفظ نسخة احتياطية'),{code:'SYNC_LOCAL_SAVE'});}}catch(e){throw e;}
+    try{const cu=await cloudPull('audits','_all');if(cu&&Array.isArray(cu.data)){audits=_hdMergeById(audits,cu.data,'audits:_all').sort((a,b)=>(b.t||0)-(a.t||0));if(!await _svRetry(SAU,JSON.stringify(audits)))throw Object.assign(Error('فشل التخزين المحلي أثناء السحب السحابي؛ أوقف المزامنة واحفظ نسخة احتياطية'),{code:'SYNC_LOCAL_SAVE'});}}catch(e){throw e;}
+    try{const cf=await cloudPull('cfo','_all');if(cf&&Array.isArray(cf.data)){cfoReports=_hdMergeById(cfoReports,cf.data,'cfo:_all').sort((a,b)=>(b.t||0)-(a.t||0));if(!await _svRetry(SCFO,JSON.stringify(cfoReports)))throw Object.assign(Error('فشل التخزين المحلي أثناء السحب السحابي؛ أوقف المزامنة واحفظ نسخة احتياطية'),{code:'SYNC_LOCAL_SAVE'});}}catch(e){throw e;}
+    try{const cc=await cloudPull('coa','_all');if(cc&&Array.isArray(cc.data)&&cc.data.length){coa=_hdMergeById(coa,cc.data,'coa:_all');if(!await _svRetry(SCOA,JSON.stringify(coa)))throw Object.assign(Error('فشل التخزين المحلي أثناء السحب السحابي؛ أوقف المزامنة واحفظ نسخة احتياطية'),{code:'SYNC_LOCAL_SAVE'});}}catch(e){throw e;}
+    try{const cj=await cloudPull('journals','_all');if(cj&&Array.isArray(cj.data)){journals=_hdMergeById(journals,cj.data,'journals:_all').sort((a,b)=>(b.t||0)-(a.t||0));if(!await _svRetry(SJRN,JSON.stringify(journals)))throw Object.assign(Error('فشل التخزين المحلي أثناء السحب السحابي؛ أوقف المزامنة واحفظ نسخة احتياطية'),{code:'SYNC_LOCAL_SAVE'});}}catch(e){throw e;}
     if(_cloudReadFailed)throw Error('لم تكتمل المزامنة — '+[...new Set(_cloudReadErrors)].join('، '));
     window._hdSettingsBase=JSON.stringify(cs?.data||sett);
     for(const [key,rows] of [['invoices:_all',ci?.data],['projects:_all',cp?.data],['letters:_all',cl?.data],['progress:_all',pg?.data]]){if(Array.isArray(rows))_rememberBase(key,rows);}
-    if(cops?.data)Object.entries(cops.data).forEach(([k,v])=>{if(Array.isArray(v))_rememberBase('ops:'+k,v);});
+    if(cops?.data){Object.entries(cops.data).forEach(([k,v])=>{if(Array.isArray(v))_rememberBase('ops:'+k,v);});if(cops.data.zatca)_rememberBase('ops:zatca',[{id:'zatca',...cops.data.zatca}]);}
     window._hdRecordSnapshots={};[[invs,SK],[projs,SP],[lets,SL]].forEach(([r,k])=>_stampChanges(r,k));
     setSyncBadge('off','تم الجلب — الحفظ عند التعديل');
     if(changed&&!opts.silent){
@@ -2271,9 +2281,9 @@ async function _stSet(k,v){
       return {ok:false,err:e.message||'localStorage error'};
     }
   }
-  // ذاكرة
+  // الذاكرة مؤقتة ولا يجوز الإبلاغ عن حفظ مالي دائم.
   ST.mem[k]=v;
-  return {ok:true,warn:'memory'};
+  return {ok:false,err:'تعذر الحفظ الدائم: المتصفح لا يتيح تخزينًا مستمرًا'};
 }
 async function _stGet(k){
   await _stInit();
@@ -2297,14 +2307,14 @@ async function _svDetailed(k,v){
   return {ok:false,err:lastErr};
 }
 async function _svRetry(k,v){const r=await _svDetailed(k,v);return r.ok;}
-async function sv(){_stampChanges(invs,SK);const r=await _svRetry(SK,JSON.stringify(invs));cloudPushDebounced();return r;}
-async function svP(){_stampChanges(projs,SP);const r=await _svRetry(SP,JSON.stringify(projs));cloudPushDebounced();return r;}
-async function svS(){const r=await _svRetry(SS,JSON.stringify(sett));cloudPushDebounced();return r;}
+async function sv(){_stampChanges(invs,SK);const r=await _svRetry(SK,JSON.stringify(invs));if(r)cloudPushDebounced();return r;}
+async function svP(){_stampChanges(projs,SP);const r=await _svRetry(SP,JSON.stringify(projs));if(r)cloudPushDebounced();return r;}
+async function svS(){const r=await _svRetry(SS,JSON.stringify(sett));if(r)cloudPushDebounced();return r;}
 async function svD(){return _svRetry(SD,JSON.stringify(docs));}
-async function svL(){_stampChanges(lets,SL);const r=await _svRetry(SL,JSON.stringify(lets));if(typeof cloudPushDebounced==='function')cloudPushDebounced();return r;}
-async function svPR(){const r=await _svRetry(SPR,JSON.stringify(progress));if(typeof cloudPushDebounced==='function')cloudPushDebounced();return r;}
-async function svPDetailed(){_stampChanges(projs,SP);const r=await _svDetailed(SP,JSON.stringify(projs));if(typeof cloudPushDebounced==='function')cloudPushDebounced();return r;}
-async function svDetailed(){_stampChanges(invs,SK);const r=await _svDetailed(SK,JSON.stringify(invs));if(typeof cloudPushDebounced==='function')cloudPushDebounced();return r;}
+async function svL(){_stampChanges(lets,SL);const r=await _svRetry(SL,JSON.stringify(lets));if(r&&typeof cloudPushDebounced==='function')cloudPushDebounced();return r;}
+async function svPR(){const r=await _svRetry(SPR,JSON.stringify(progress));if(r&&typeof cloudPushDebounced==='function')cloudPushDebounced();return r;}
+async function svPDetailed(){_stampChanges(projs,SP);const r=await _svDetailed(SP,JSON.stringify(projs));if(r.ok&&typeof cloudPushDebounced==='function')cloudPushDebounced();return r;}
+async function svDetailed(){_stampChanges(invs,SK);const r=await _svDetailed(SK,JSON.stringify(invs));if(r.ok&&typeof cloudPushDebounced==='function')cloudPushDebounced();return r;}
 function apSett(){
   const a=document.getElementById('set-nm'),b=document.getElementById('set-vn'),c=document.getElementById('set-cr');
   if(a)a.value=sett.name;if(b)b.value=sett.vn;if(c)c.value=sett.cr;
@@ -2542,7 +2552,7 @@ async function doAS(d){
   const type=d.type==='sale'?'revenue':(d.type||'purchase');
   const catName=d.category||'';
   const catId=type==='revenue'?(RCATS.includes(catName)?catName:'إيراد عام'):classify(catName+' '+(d.notes||'')+' '+(d.vendorName||''));
-  const inv={id:uid('inv'),type,number:d.invoiceNumber||('A-'+Date.now()),date:d.date||new Date().toISOString().slice(0,10),vendor:d.vendorName||'—',vendorVAT:d.vendorVAT||'',subtotal:Number(d.subtotal)||0,vatRate:Number(d.vatRate)||15,vat:Number(d.vatAmount)||0,total:Number(d.totalAmount)||0,category:catId,projectId:document.getElementById('f-proj').value||'',notes:d.notes||'',createdAt:Date.now(),auto:true};
+  const inv={id:uid('inv'),type,number:d.invoiceNumber||('A-'+Date.now()),date:d.date||_today(),vendor:d.vendorName||'—',vendorVAT:d.vendorVAT||'',subtotal:Number(d.subtotal)||0,vatRate:Number(d.vatRate)||15,vat:Number(d.vatAmount)||0,total:Number(d.totalAmount)||0,category:catId,projectId:document.getElementById('f-proj').value||'',notes:d.notes||'',createdAt:Date.now(),auto:true};
   invs.unshift(inv);await sv();
   const st=document.getElementById('ai-s');st.className='ai-s show ok';
   document.getElementById('ai-sp').style.display='none';
@@ -3027,7 +3037,7 @@ function qNewInv(projId,type){
   qeId=null;qeNewType=type;
   document.getElementById('qe-type-info').innerHTML='<strong>إضافة جديدة:</strong> <span class="tag '+type+'">'+TL[type]+'</span>';
   document.getElementById('qe-vnd').value='';
-  document.getElementById('qe-dt').value=new Date().toISOString().slice(0,10);
+  document.getElementById('qe-dt').value=_today();
   document.getElementById('qe-amt').value='';
   document.getElementById('qe-no').value='';
   document.getElementById('qe-nt').value='';
@@ -3112,7 +3122,7 @@ function autoInvNo(){const el=document.getElementById('f-no');if(el){el.value=ne
 function startTaxInvoice(){
   if(typeof setType==='function')setType('revenue');
   const el=document.getElementById('f-no');if(el&&!el.value.trim())el.value=nextInvNumber();
-  const dt=document.getElementById('f-dt');if(dt&&!dt.value)dt.value=new Date().toISOString().slice(0,10);
+  const dt=document.getElementById('f-dt');if(dt&&!dt.value)dt.value=_today();
   if(!sett.vn||!sett.name)toast('⚠️ أضف اسم المؤسسة والرقم الضريبي من الإعدادات ليظهر الباركود','er');
   else toast('عبّئ العميل والمبلغ ثم احفظ — يظهر باركود ZATCA في تفاصيل الفاتورة','ok');
   const v=document.getElementById('f-vnd');if(v)v.focus();
@@ -3419,7 +3429,7 @@ const _ACT={asset:'الأصول',liability:'الخصوم',equity:'حقوق ال�
 function _seedCOA(){if(!Array.isArray(coa)||!coa.length){coa=_COA_DEFAULT.map(a=>({...a}));try{svCOA();}catch(e){}}}
 function accById(id){return coa.find(a=>a.id===id);}
 function _accM(n){return fmt(toNum(n));}
-function _today(){return new Date().toISOString().slice(0,10);}
+function _today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function _expAccFor(inv){
   const t=((typeof catLabel==='function'?catLabel(inv):'')+' '+(inv.category||'')+' '+(inv.notes||''));
   const has=k=>t.indexOf(k)>=0;
@@ -3435,7 +3445,7 @@ function _financialInvoices(){
   const active=invs.filter(i=>i.status!=='cancelled').map(i=>({...i,subtotal:toNum(i.subtotal),vat:toNum(i.vat),total:toNum(i.total),_source:'inv',_sourceId:i.id}));
   const suppliers=window.opsData?.suppliers||[];
   for(const p of window.opsData?.purchaseOrders||[]){
-    if(!p.directPurchase||p.status==='cancelled'||(p.invoiceId&&invs.some(i=>i.id===p.invoiceId)))continue;
+    if(!p.directPurchase||p.status==='cancelled'||(p.invoiceId&&invs.some(i=>i.id===p.invoiceId&&i.status!=='cancelled'&&i.type!=='revenue')))continue;
     const supplier=suppliers.find(s=>s.id===p.supplierId);
     active.push({...p,id:'purchase:'+p.id,_source:'purchase',_sourceId:p.id,type:'purchase',subtotal:toNum(p.amount),vat:toNum(p.vat),total:toNum(p.total),vendor:p.supplierName||supplier?.name||'',vendorVAT:p.vendorVAT||supplier?.vat||'',taxDecl:p.taxDecl===true});
   }
@@ -3549,7 +3559,7 @@ function _finReal(year){
     if(inYr(p.siteExpensesDate)){add({date:p.siteExpensesDate,category:'site',notes:'مصروف موقع'},p.siteExpensesTotal);manualAdj+=toNum(p.siteExpensesTotal);}
   }
   for(const o of window.opsData?.purchaseOrders||[]){
-    if(o.status==='cancelled'||projs.find(p=>p.id===o.projectId)?.status==='study'||(o.invoiceId&&invs.some(i=>i.id===o.invoiceId)))continue;
+    if(o.status==='cancelled'||projs.find(p=>p.id===o.projectId)?.status==='study'||(o.invoiceId&&invs.some(i=>i.id===o.invoiceId&&i.status!=='cancelled'&&i.type!=='revenue')))continue;
     if(!o.date){unallocatedOperational+=toNum(o.total);continue;}
     add({date:o.date,category:o.category||'materials'},o.total);
   }
@@ -4288,6 +4298,18 @@ function renderCashflow(){
 }
 
 /* ========== تقرير شهري PDF ========== */
+function _monthlyInvoiceTotals(records){
+  const sales=records.filter(i=>i.type==='revenue');
+  const purchases=records.filter(i=>i.type!=='revenue');
+  const expenseCost=i=>toNum(i.subtotal)+(_vatEligPurchase(i)?0:toNum(i.vat));
+  const rev=sales.reduce((s,i)=>s+toNum(i.subtotal),0);
+  const cost=purchases.reduce((s,i)=>s+expenseCost(i),0);
+  const outVat=sales.filter(_vatEligRevenue).reduce((s,i)=>s+toNum(i.vat),0);
+  const inVat=purchases.filter(_vatEligPurchase).reduce((s,i)=>s+toNum(i.vat),0);
+  const byCat={};
+  purchases.forEach(i=>{const category=catLabel(i)||'أخرى';byCat[category]=(byCat[category]||0)+expenseCost(i);});
+  return {rev,cost,outVat,inVat,profit:rev-cost,netVat:outVat-inVat,byCat};
+}
 async function monthlyReportPDF(){
   if(typeof html2canvas==='undefined'||!(window.jspdf&&window.jspdf.jsPDF)){toast('تعذّر تحميل أداة PDF — تحقّق من الإنترنت','er');return;}
   const now=new Date();
@@ -4296,18 +4318,13 @@ async function monthlyReportPDF(){
   if(!ym)return;
   const mInvs=_financialInvoices().filter(i=>(i.date||'').slice(0,7)===ym);
   if(!mInvs.length){toast('لا توجد فواتير في هذا الشهر','er');return;}
-  const rev=mInvs.filter(i=>i.type==='revenue').reduce((s,i)=>s+(i.total||0),0);
-  const cost=mInvs.filter(i=>i.type!=='revenue').reduce((s,i)=>s+(i.total||0),0);
-  const outVat=mInvs.filter(i=>i.type==='revenue').reduce((s,i)=>s+(i.vat||0),0);
-  const inVat=mInvs.filter(i=>i.type!=='revenue').reduce((s,i)=>s+(i.vat||0),0);
-  const profit=rev-cost, netVat=outVat-inVat;
-  const byCat={};
-  mInvs.filter(i=>i.type!=='revenue').forEach(i=>{const c=catLabel(i)||'أخرى';byCat[c]=(byCat[c]||0)+(i.total||0);});
+  const totals=_monthlyInvoiceTotals(mInvs);
+  const {rev,cost,outVat,inVat,profit,netVat,byCat}=totals;
   const cats=Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
   const kpi=(lbl,val,col)=>'<div style="flex:1;background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:12px;text-align:center"><div style="font-size:11px;color:#6B7280;font-weight:700;margin-bottom:5px">'+lbl+'</div><div style="font-family:Cairo,sans-serif;font-weight:800;font-size:18px;color:'+col+'">'+fmtI(val)+'</div><div style="font-size:9px;color:#9CA3AF">ر.س</div></div>';
   let s='<div class="lsheet" style="width:794px;background:#fff;padding:38px 40px;font-family:Tajawal,Arial,sans-serif;color:#1F2937;direction:rtl">';
-  s+='<div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1e3a5f;padding-bottom:14px;margin-bottom:20px"><div><div style="font-family:Cairo,sans-serif;font-size:24px;font-weight:800;color:#1e3a5f">التقرير المالي الشهري</div><div style="font-size:13px;color:#6B7280;margin-top:4px">عن شهر '+esc(ym)+'</div></div><div style="text-align:left;font-size:12px;color:#6B7280"><b style="color:#15803D;font-size:15px">'+esc(sett.name||'هدف التنمية للمقاولات')+'</b>'+(sett.vn?'<br>الرقم الضريبي: '+esc(sett.vn):'')+(sett.cr?'<br>س.ت: '+esc(sett.cr):'')+'</div></div>';
-  s+='<div style="display:flex;gap:12px;margin-bottom:14px">'+kpi('الإيرادات',rev,'#15803D')+kpi('المصروفات',cost,'#B45309')+kpi('صافي الربح',profit,profit>=0?'#15803D':'#B91C1C')+'</div>';
+  s+='<div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1e3a5f;padding-bottom:14px;margin-bottom:20px"><div><div style="font-family:Cairo,sans-serif;font-size:24px;font-weight:800;color:#1e3a5f">ملخص الفواتير المالي الشهري</div><div style="font-size:13px;color:#6B7280;margin-top:4px">عن شهر '+esc(ym)+'</div></div><div style="text-align:left;font-size:12px;color:#6B7280"><b style="color:#15803D;font-size:15px">'+esc(sett.name||'هدف التنمية للمقاولات')+'</b>'+(sett.vn?'<br>الرقم الضريبي: '+esc(sett.vn):'')+(sett.cr?'<br>س.ت: '+esc(sett.cr):'')+'</div></div>';
+  s+='<div style="display:flex;gap:12px;margin-bottom:14px">'+kpi('الإيرادات',rev,'#15803D')+kpi('المصروفات',cost,'#B45309')+kpi('فائض الفواتير المسجلة',profit,profit>=0?'#15803D':'#B91C1C')+'</div>';
   s+='<div style="display:flex;gap:12px;margin-bottom:20px">'+kpi('ضريبة المخرجات',outVat,'#2771ab')+kpi('ضريبة المدخلات',inVat,'#2771ab')+kpi('صافي الضريبة المستحقة',netVat,'#7C3AED')+'</div>';
   if(cats.length){
     s+='<div style="font-family:Cairo,sans-serif;font-size:15px;font-weight:800;color:#1e3a5f;margin-bottom:8px">توزيع المصروفات حسب البنود</div>';
@@ -4315,6 +4332,7 @@ async function monthlyReportPDF(){
     cats.forEach(([c,a],idx)=>{s+='<tr style="background:'+(idx%2?'#f7fafd':'#fff')+'"><td style="padding:7px 10px;border:1px solid #E5E7EB">'+esc(c)+'</td><td style="padding:7px 10px;border:1px solid #E5E7EB;text-align:left;font-family:Cairo,sans-serif;font-weight:700">'+fmtI(a)+'</td><td style="padding:7px 10px;border:1px solid #E5E7EB;text-align:left;color:#6B7280">'+(cost>0?(a/cost*100).toFixed(1):'0')+'%</td></tr>';});
     s+='</tbody></table>';
   }
+  s+='<div style="margin-top:12px;font-size:11px;color:#92400E;background:#FFFBEB;padding:9px;border-radius:6px">ملخص الفواتير فقط، وليس قائمة دخل أو إقرارًا ضريبيًا معتمدًا. قد لا يشمل مصروفات الموقع ومستخلصات الباطن أو التسويات غير المسجلة كفواتير.</div>';
   s+='<div style="margin-top:14px;font-size:12px;color:#6B7280">عدد الفواتير في الشهر: <b>'+fmtI(mInvs.length)+'</b></div>';
   s+='<div style="margin-top:30px;padding-top:12px;border-top:1px solid #E5E7EB;text-align:center;font-size:11px;color:#9CA3AF">صادر من نظام هدف التنمية الشامل • تقرير '+esc(ym)+'</div>';
   s+='</div>';
@@ -4360,7 +4378,7 @@ function projPL(pid){
   const invoicePur=pinvs.filter(i=>i.type==='purchase').reduce((s,i)=>s+(i.total||0),0);
   const exp=pinvs.filter(i=>i.type==='expense').reduce((s,i)=>s+(i.total||0),0);
   // مشتريات وحدة المشتريات (أوامر الشراء) محفوظة بمخزن منفصل — تُضاف للتكلفة الفعلية دائماً
-  const opsList=_OA('purchaseOrders').filter(o=>o&&o.projectId===pid&&o.status!=='cancelled'&&!(o.invoiceId&&invs.some(i=>i.id===o.invoiceId)));
+  const opsList=_OA('purchaseOrders').filter(o=>o&&o.projectId===pid&&o.status!=='cancelled'&&!(o.invoiceId&&invs.some(i=>i.id===o.invoiceId&&i.status!=='cancelled'&&i.type!=='revenue')));
   const opsPur=opsList.reduce((s,o)=>s+(+o.total||0),0);
   const opsPurCount=opsList.length;
   // تكلفة مقاولي الباطن = مستخلصات الباطن غير الملغاة (العمل المعتمد)
@@ -5070,7 +5088,7 @@ function openProjDocs(projId){
   });
   // ضبط الحقول
   document.getElementById('pdoc-name').value='';
-  document.getElementById('pdoc-date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('pdoc-date').value=_today();
   document.getElementById('pdoc-amt').value='';
   document.getElementById('pdoc-notes').value='';
   document.getElementById('pdoc-file').value='';
@@ -5184,7 +5202,7 @@ async function saveProjDoc(){
     id:uid('att'),
     type,
     name,
-    date:document.getElementById('pdoc-date').value||new Date().toISOString().slice(0,10),
+    date:document.getElementById('pdoc-date').value||_today(),
     amount:toNum(document.getElementById('pdoc-amt').value),
     notes:document.getElementById('pdoc-notes').value.trim(),
     fileRef:fileRef,
@@ -5429,7 +5447,7 @@ document.getElementById('pdoc-bulk-file').addEventListener('change',async e=>{
       type:suggested,
       suggestedType:suggested,
       name:f.name.replace(/\.[^.]+$/,'').replace(/[_\-]+/g,' ').trim(),
-      date:new Date().toISOString().slice(0,10),
+      date:_today(),
       amount:0,
       notes:'',
       blob:f,
@@ -5717,7 +5735,7 @@ function openBatchExp(projId){
     hdr+='<div style="margin-top:6px;padding:6px 8px;background:rgba(255,255,255,.6);border-radius:7px;font-size:11.5px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><span>📋 الدراسة: <strong>'+fmt(planTot)+'</strong></span><span>✅ المُسجّل: <strong>'+fmt(actualTot)+'</strong></span><span style="color:'+remCol+'">المتبقي: <strong>'+fmt(Math.abs(remTot))+(remTot<0?' (تجاوز)':'')+'</strong></span></div>';
   }
   document.getElementById('bx-proj-info').innerHTML=hdr;
-  document.getElementById('bx-dt').value=new Date().toISOString().slice(0,10);
+  document.getElementById('bx-dt').value=_today();
   document.getElementById('bx-vnd').value='';
   document.getElementById('bx-nt').value='';
   document.getElementById('bx-xls-status').style.display='none';
@@ -6390,7 +6408,7 @@ function newProj(){
   const peq=document.getElementById('pe-qty');if(peq)peq.value='';
   const peu=document.getElementById('pe-unit');if(peu)peu.value='م.ط';
   document.getElementById('pe-st').value='study';
-  document.getElementById('pe-sd').value=new Date().toISOString().slice(0,10);
+  document.getElementById('pe-sd').value=_today();
   document.getElementById('pe-ed').value='';
   document.getElementById('pe-apply-extensions').checked=false;
   const ped=document.getElementById('pe-dur');if(ped)ped.value='';
@@ -7269,7 +7287,7 @@ function openProgForm(pid,editEntryId){
   const ent=editEntryId?progress.find(x=>x.id===editEntryId):null;
   document.getElementById('prog-ttl').textContent=ent?'✏️ تعديل الإنجاز':'📊 إنجاز اليوم';
   const sb=document.getElementById('prog-save-btn');if(sb)sb.textContent=ent?'💾 حفظ التعديل':'💾 حفظ الإنجاز';
-  document.getElementById('prog-date').value=ent?ent.date:new Date().toISOString().slice(0,10);
+  document.getElementById('prog-date').value=ent?ent.date:_today();
   document.getElementById('prog-wt').value=ent?ent.workType:'';
   document.getElementById('prog-qty').value=ent?(ent.qty||''):'';
   document.getElementById('prog-notes').value=ent?(ent.notes||''):'';
@@ -7846,7 +7864,7 @@ async function confirmImp(){
   }
   // أنشئ فاتورة إيراد إن كان هناك مبلغ
   if(rev>0){
-    invs.unshift({id:uid('inv'),type:'revenue',number:'REV-IMP-'+Date.now().toString().slice(-6),date:new Date().toISOString().slice(0,10),vendor:'العميل',vendorVAT:'',subtotal:rev,vatRate:0,vat:0,total:rev,category:'إيراد عام',projectId:proj.id,notes:'إيراد مستورد من '+impData.source,createdAt:Date.now(),imp:true});
+    invs.unshift({id:uid('inv'),type:'revenue',number:'REV-IMP-'+Date.now().toString().slice(-6),date:_today(),vendor:'العميل',vendorVAT:'',subtotal:rev,vatRate:0,vat:0,total:rev,category:'إيراد عام',projectId:proj.id,notes:'إيراد مستورد من '+impData.source,createdAt:Date.now(),imp:true});
   }
   // أنشئ كل بند مشمول
   let cnt=0;
@@ -8012,7 +8030,12 @@ function vatPrev(yr,sel){
 // أهلية دخول الفاتورة في الإقرار الضريبي:
 // المشتريات: تدخل فقط إن كان لها رقم ضريبي للمورد (فاتورة ضريبية صحيحة) — إلا إذا عُلّمت يدوياً taxDecl=true.
 // أي فاتورة عُلّمت taxDecl=false تُستبعد دائماً. البنود المستوردة/دفعات المستخلصات بلا رقم ضريبي تُستبعد تلقائياً.
-function _vatEligPurchase(i){if(i.taxDecl===false)return false;if(i.taxDecl===true)return true;const v=String(i.vendorVAT||'').replace(/\D/g,'');return v.length>=10;}
+function _vatEligPurchase(i){
+  // وجود رقم ضريبي لا يثبت أهلية خصم المدخلات؛ يلزم إقرار صريح ومستند.
+  if(i.taxDecl!==true)return false;
+  const digits=String(i.vendorVAT||'').replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/\D/g,'');
+  return digits.length===15&&!!String(i.number||'').trim();
+}
 // المبيعات: تُستبعد تلقائياً الإيرادات المستوردة/الداخلية (ليست فواتير مبيعات ضريبية صادرة للعميل)
 function _vatEligRevenue(i){
   if(i.taxDecl===false)return false;
@@ -8093,7 +8116,7 @@ function buildVatSheet(yr,sel){
   const lastDay=new Date(yr,rg.em+1,0).getDate();
   const fromD='01/'+String(rg.sm+1).padStart(2,'0')+'/'+yr;
   const toD=String(lastDay).padStart(2,'0')+'/'+String(rg.em+1).padStart(2,'0')+'/'+yr;
-  const today=lFmtD(new Date().toISOString().slice(0,10));
+  const today=lFmtD(_today());
   const _by=i=>((i.notes||'').trim()||(typeof catLabel==='function'?catLabel(i):'')||'—');
   const rowsOf=arr=>{let x='';arr.forEach((i,idx)=>{x+='<tr><td>'+(idx+1)+'</td><td>'+lFmtD(i.date)+'</td><td class="r">'+esc(i.vendor||'—')+'</td><td>'+esc(i.number||'')+'</td><td>'+esc(i.vendorVAT||'—')+'</td><td class="r">'+esc(_by(i))+'</td><td class="n">'+fmt(i.subtotal||0)+'</td><td class="n">'+fmt(i.vat||0)+'</td><td class="n">'+fmt(i.total||0)+'</td></tr>';});return x;};
   const hdr=nameLbl=>'<tr><th>م</th><th>التاريخ</th><th>'+nameLbl+'</th><th>رقم الفاتورة</th><th>الرقم الضريبي</th><th>البيان</th><th>المبلغ (قبل الضريبة)</th><th>الضريبة (15%)</th><th>الإجمالي (شامل)</th></tr>';
@@ -8158,7 +8181,7 @@ function expXls(){
   ws['!cols']=[{wch:14},{wch:12},{wch:10},{wch:24},{wch:14},{wch:18},{wch:18},{wch:13},{wch:8},{wch:12},{wch:13},{wch:22}];
   if(!ws['!views'])ws['!views']=[{}];ws['!views'][0].rightToLeft=true;
   XLSX.utils.book_append_sheet(wb,ws,'الفواتير');
-  XLSX.writeFile(wb,'هدف_الفواتير_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  XLSX.writeFile(wb,'هدف_الفواتير_'+_today()+'.xlsx');
   toast('تم التصدير ✓','ok');
 }
 function expVAT(){
@@ -8274,7 +8297,7 @@ function expProjReport(){
     const safeName=p.name.replace(/[\\\/\?\*\[\]:]/g,'').substring(0,28);
     XLSX.utils.book_append_sheet(wb,ws,safeName||'مشروع');
   });
-  XLSX.writeFile(wb,'تقرير_المشاريع_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  XLSX.writeFile(wb,'تقرير_المشاريع_'+_today()+'.xlsx');
   toast('تم التصدير ✓','ok');
 }
 function expProjPDF(){
@@ -8292,7 +8315,7 @@ function expProjPDF(){
   const ws=XLSX.utils.aoa_to_sheet(rows);if(!ws['!views'])ws['!views']=[{}];ws['!views'][0].rightToLeft=true;
   ws['!cols']=[{wch:14},{wch:18},{wch:10},{wch:24},{wch:18},{wch:13},{wch:22}];
   XLSX.utils.book_append_sheet(wb,ws,'تقرير المشروع');
-  XLSX.writeFile(wb,'مشروع_'+(p.name.replace(/[\\\/\?\*\[\]:]/g,'')||'تقرير')+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  XLSX.writeFile(wb,'مشروع_'+(p.name.replace(/[\\\/\?\*\[\]:]/g,'')||'تقرير')+'_'+_today()+'.xlsx');
   toast('تم التصدير ✓','ok');
 }
 
@@ -8424,7 +8447,7 @@ function openDocEdit(id){
     document.getElementById('doc-mb-ttl').textContent='➕ إضافة وثيقة';
     document.getElementById('doc-name').value='';
     document.getElementById('doc-number').value='';
-    document.getElementById('doc-issue').value=new Date().toISOString().slice(0,10);
+    document.getElementById('doc-issue').value=_today();
     document.getElementById('doc-expire').value='';
     document.getElementById('doc-notes').value='';
     document.getElementById('doc-file-status').innerHTML='';
@@ -8568,7 +8591,7 @@ function renewDoc(id){
   // فتح المودال مع إعادة ضبط التواريخ
   openDocEdit(id);
   setTimeout(()=>{
-    document.getElementById('doc-issue').value=new Date().toISOString().slice(0,10);
+    document.getElementById('doc-issue').value=_today();
     document.getElementById('doc-expire').value='';
     onDocIssueChange();
   },100);
@@ -8729,7 +8752,7 @@ async function expBak(){
   const sizeKB=Math.round(json.length/1024);
   const a=document.createElement('a');
   a.href=u;
-  a.download=(data.backupWarnings.length?'غير_مكتملة_':'')+'هدف_'+new Date().toISOString().slice(0,10)+'_'+invs.length+'فاتورة_'+projs.length+'مشاريع_'+docs.length+'وثيقة.json';
+  a.download=(data.backupWarnings.length?'غير_مكتملة_':'')+'هدف_'+_today()+'_'+invs.length+'فاتورة_'+projs.length+'مشاريع_'+docs.length+'وثيقة.json';
   a.click();
   URL.revokeObjectURL(u);
   if(data.backupWarnings.length){toast('تم تنزيل نسخة غير مكتملة: '+data.backupWarnings.length+' مرفق لم يُضمّن؛ راجع قائمة النواقص داخل الملف','er');}
@@ -9020,7 +9043,7 @@ async function autoBackup(showToast){
     const data=await buildBackupData(Infinity);
     const partial=!!data.backupWarnings?.length;
     data.ver='hadaf-auto-v3';data.counts={invs:invs.length,projs:projs.length,docs:docs.length,lets:lets.length};
-    const dt=new Date().toISOString().slice(0,10);
+    const dt=_today();
     const fileName=partial?'هدف_غير_مكتملة_'+new Date().toISOString().replace(/[:.]/g,'-')+'.json':'هدف_بكاب_'+dt+'.json';
     const fileHandle=await handle.getFileHandle(fileName,{create:true});
     const writable=await fileHandle.createWritable();
@@ -9191,7 +9214,7 @@ function lFmtD(s){if(!s)return'';const d=new Date(s);if(isNaN(d))return s;return
 function padL(n){return String(n).padStart(LET_PAD,'0');}
 function buildLRef(seq,iso){const p=(iso||'').split('-');return padL(seq)+'/'+(p[1]||'01')+'-'+(p[0]||'2026');}
 function suggestLSeq(iso){const y=(iso||'').slice(0,4);let mx=0;lets.forEach(l=>{if(l.id!==letEditId&&l.date&&l.date.slice(0,4)===y)mx=Math.max(mx,l.seq||0);});return Math.max(mx+1,LET_START);}
-function letRefPrev(){const iso=document.getElementById('lf-dt').value||new Date().toISOString().slice(0,10);const sq=parseInt(document.getElementById('lf-seq').value)||LET_START;document.getElementById('lf-refp').textContent=buildLRef(sq,iso);}
+function letRefPrev(){const iso=document.getElementById('lf-dt').value||_today();const sq=parseInt(document.getElementById('lf-seq').value)||LET_START;document.getElementById('lf-refp').textContent=buildLRef(sq,iso);}
 function fillLetProjSel(sel){const s=document.getElementById('lf-proj');if(!s)return;s.innerHTML='<option value="">\u2014 \u0628\u062f\u0648\u0646 \u2014</option>'+projs.map(p=>'<option value="'+p.id+'">'+esc(p.name)+'</option>').join('');if(sel)s.value=sel;}
 function openLetForm(id){
   letEditId=id||null;
@@ -9201,7 +9224,7 @@ function openLetForm(id){
     document.getElementById('lf-rcp').value=l.recipient||'';document.getElementById('lf-sub').value=l.subject||'';
     document.getElementById('lf-body').value=l.body||'';document.getElementById('lf-st').value=l.status||'\u0645\u064f\u0635\u062f\u064e\u0631';
     fillLetProjSel(l.projectId||'');document.getElementById('lf-signed').checked=(l.signed!==false);
-  }else{t.textContent='\u062e\u0637\u0627\u0628 \u062c\u062f\u064a\u062f';const today=new Date().toISOString().slice(0,10);
+  }else{t.textContent='\u062e\u0637\u0627\u0628 \u062c\u062f\u064a\u062f';const today=_today();
     document.getElementById('lf-dt').value=today;document.getElementById('lf-seq').value=suggestLSeq(today);
     document.getElementById('lf-rcp').value='';document.getElementById('lf-sub').value='';
     document.getElementById('lf-body').value='';document.getElementById('lf-st').value='\u0645\u064f\u0635\u062f\u064e\u0631';fillLetProjSel('');document.getElementById('lf-signed').checked=true;
@@ -9368,7 +9391,7 @@ async function aiReadLetter(){
 function closeLetUploadDialog(){const o=document.getElementById('letup-ov');if(o)o.remove();}
 function openLetUploadDialog(defSubject){
   closeLetUploadDialog();
-  const today=new Date().toISOString().slice(0,10);
+  const today=_today();
   const ov=document.createElement('div');
   ov.id='letup-ov';
   ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10030;display:flex;align-items:flex-end;justify-content:center';
@@ -9392,7 +9415,7 @@ function openLetUploadDialog(defSubject){
 }
 async function finishLetUpload(){
   if(!_letPendingUpload){closeLetUploadDialog();return;}
-  const iso=(document.getElementById('letup-dt').value)||new Date().toISOString().slice(0,10);
+  const iso=(document.getElementById('letup-dt').value)||_today();
   const seq=suggestLSeq(iso);
   const sub=(document.getElementById('letup-sub').value||'').trim();
   const rcp=(document.getElementById('letup-rcp').value||'').trim();
@@ -9826,7 +9849,7 @@ window.addEventListener('pagehide',()=>{try{if(_pushTimer&&_cloudOn){clearTimeou
 window.addEventListener('resize',()=>{if(typeof equalizeColumns==='function')clearTimeout(window._eqT),window._eqT=setTimeout(equalizeColumns,150);});
 (async()=>{
   fillCats('purchase');
-  document.getElementById('f-dt').value=new Date().toISOString().slice(0,10);
+  document.getElementById('f-dt').value=_today();
   await ld();
   window._hdSettingsBase=JSON.stringify(sett);
   [[invs,SK],[projs,SP],[lets,SL]].forEach(([r,k])=>_stampChanges(r,k));
@@ -9905,7 +9928,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1120',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1121',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -9968,8 +9991,8 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="ops.js?v=1120"></script>
+<script src="ops.js?v=1121"></script>
 
-<script src="settings.js?v=1120"></script>
+<script src="settings.js?v=1121"></script>
 </body>
 </html>
