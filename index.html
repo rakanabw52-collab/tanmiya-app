@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-09-1127">
+<meta name="app-build" content="2026-11-09-1128">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1127">
+<link rel="manifest" href="manifest.json?v=1128">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -561,7 +561,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1127">
+<link rel="stylesheet" href="ops.css?v=1128">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -722,7 +722,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1127</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1128</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1542,7 +1542,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1127</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1128</bdi></span></div>
   </div>
 </div>
 
@@ -9938,27 +9938,23 @@ window.addEventListener('resize',()=>{if(typeof equalizeColumns==='function')cle
 /* ===== فحص الإصدار: شريط «نسخة جديدة» عند رفع رقم البناء ===== */
 function curBuild(){const m=document.querySelector('meta[name="app-build"]');return m?m.content:'';}
 let UPD_SHOWN=false;
-async function checkVersion(){
-  if(UPD_SHOWN)return;
-  try{
-    const res=await fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'});
-    if(!res.ok)return;
-    const t=await res.text();
-    const mm=t.match(/name="app-build"\s+content="([^"]+)"/);
-    const latest=mm?mm[1]:'';
-    if(latest&&latest!==curBuild())showUpdateBar(latest);
-  }catch(e){}
-}
+function buildNumber(build){const m=String(build||'').match(/-(\d+)$/);return m?Number(m[1]):0;}
+function isNewerBuild(candidate,current){return buildNumber(candidate)>buildNumber(current);}
+async function checkVersion(){return smartUpdateCheck();}
 function showUpdateBar(latest){
-  if(UPD_SHOWN)return;UPD_SHOWN=true;
+  if(!isNewerBuild(latest,curBuild()))return;
+  const existing=document.getElementById('updBar');
+  if(existing?.dataset.build===latest)return;
+  UPD_SHOWN=true;
   const vnum=(latest||'').split('-').pop();
   let bar=document.getElementById('updBar');
   if(!bar){bar=document.createElement('div');bar.id='updBar';bar.className='upd-bar';document.body.appendChild(bar);}
+  bar.dataset.build=latest;
   bar.innerHTML='<span>🔄 تتوفّر نسخة جديدة'+(vnum?' (إصدار <bdi>'+esc(vnum)+'</bdi>)':'')+'</span><button onclick="doUpdate()">حدّث الآن</button><button onclick="dismissUpdate(&quot;'+esc(latest||'')+'&quot;)" style="background:transparent;border:0;color:inherit;opacity:.65;cursor:pointer;padding:0 8px;font-family:inherit">لاحقاً</button>';
   requestAnimationFrame(()=>bar.classList.add('show'));
 }
 function dismissUpdate(latest){try{if(latest)localStorage.setItem('hadaf-dismissed-build',latest);}catch(_){}const b=document.getElementById('updBar');if(b)b.remove();}
-function doUpdate(){location.replace(location.pathname+'?v='+Date.now());}
+function doUpdate(){const target=document.getElementById('updBar')?.dataset.build;location.replace(location.pathname+'?v='+(buildNumber(target)||Date.now()));}
 /* يُعاد الفحص عند الرجوع للتطبيق؛ لا تمنع علامة جلسة قديمة اكتشاف إصدار جديد. */
 let _lastVersionCheck=0,_versionCheckBusy=false;
 async function smartUpdateCheck(){
@@ -9971,24 +9967,28 @@ async function smartUpdateCheck(){
     const t=await res.text();
     const mm=t.match(/name="app-build"\s+content="([^"]+)"/);
     const latest=mm?mm[1]:'';
-    if(!latest||latest===cur)return;
-    const curN=parseInt(cur.split('-').pop()||'0',10),latN=parseInt(latest.split('-').pop()||'0',10);
-    if(!(latN>curN))return; // أحدث فعلاً فقط
+    if(!isNewerBuild(latest,cur)){
+      const bar=document.getElementById('updBar');
+      if(bar&&!isNewerBuild(bar.dataset.build,cur)){bar.remove();UPD_SHOWN=false;}
+      return;
+    }
     let dis=null;try{dis=localStorage.getItem('hadaf-dismissed-build');}catch(_){}
     if(dis===latest)return; // سبق رفضه
     showUpdateBar(latest);
   }catch(e){}finally{_versionCheckBusy=false;}
 }
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='حماية المرفقات والنسخ وربط سداد المورد بالقيود وضبط الفواتير والتعارضات المالية';
+const APP_UPD_NOTE='إصلاح تكرار إشعار التحديث';
+let _updatedBannerHandled=false;
 function showUpdatedBanner(){
   try{
-    try{if(sessionStorage.getItem('hadaf-upd-shown'))return;}catch(_){}
+    if(_updatedBannerHandled)return;
     const b=curBuild();if(!b)return;
+    _updatedBannerHandled=true;
     let seen=null;try{seen=localStorage.getItem('hadaf-seen-build');}catch(_){}
-    try{localStorage.setItem('hadaf-seen-build',b);}catch(_){}
-    if(!seen||seen===b)return; // أول تشغيل أو نفس الإصدار → لا بانر
-    try{sessionStorage.setItem('hadaf-upd-shown','1');}catch(_){}
+    // سجل أعلى إصدار فقط؛ تبويب قديم أو استجابة مؤقتة أقدم لا تعيد العلامة للخلف.
+    if(!seen||isNewerBuild(b,seen)){try{localStorage.setItem('hadaf-seen-build',b);}catch(_){}}
+    if(!seen||!isNewerBuild(b,seen))return;
     const vnum=b.split('-').pop();
     let bar=document.getElementById('updDoneBar');
     if(!bar){bar=document.createElement('div');bar.id='updDoneBar';document.body.appendChild(bar);}
@@ -10005,7 +10005,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1127',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1128',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10068,9 +10068,9 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1127"></script>
-<script src="ops.js?v=1127"></script>
+<script src="purchase-payments.js?v=1128"></script>
+<script src="ops.js?v=1128"></script>
 
-<script src="settings.js?v=1127"></script>
+<script src="settings.js?v=1128"></script>
 </body>
 </html>
