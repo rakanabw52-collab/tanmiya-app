@@ -21,6 +21,9 @@ with sync_playwright() as p:
       document.getElementById('hdGate').style.setProperty('display','none','important');
       projs=[{id:'c1',name:'مشروع أول',client:' ماني ',contractValue:1000,paidAmount:100},
              {id:'c2',name:'مشروع ثان',client:'ماني',contractValue:2000,paidAmount:300},
+             {id:'study',name:'إعمار تحت الدراسة',status:'study',client:'ماني',contractValue:2700000},
+             {id:'study-only',name:'دراسة فقط',status:'study',client:'شركة الدراسة',contractValue:9000},
+             {id:'tiny',name:'فرق هللة',status:'done',client:'ماني',contractValue:100,paidAmount:114.99},
              {id:'paid',name:'مسدد',client:'ماني',contractValue:100,paidAmount:115},
              {id:'other',name:'شركة أخرى',client:'غير ماني',contractValue:9000},
              {id:'zero',name:'بلا رصيد',client:'شركة مسددة',contractValue:0},
@@ -42,6 +45,8 @@ with sync_playwright() as p:
     assert '3,090' in text and '1,090' in text and '2,000' in text
     assert 'مشروع أول' in text and 'مشروع ثان' in text
     assert 'شركة أخرى' not in text and 'مسدد' not in text
+    assert 'إعمار' not in text and 'فرق هللة' not in text and '3,105,000' not in text
+    assert 'شركة الدراسة' not in page.locator('#client-statement-select').inner_text()
     assert page.locator('#client-statement-select option').count() == 5
     with page.expect_popup() as popup:
         page.get_by_role('button', name='طباعة / حفظ PDF').click()
