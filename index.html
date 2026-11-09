@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-09-1131">
+<meta name="app-build" content="2026-11-09-1132">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1131">
+<link rel="manifest" href="manifest.json?v=1132">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -561,7 +561,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1131">
+<link rel="stylesheet" href="ops.css?v=1132">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -723,7 +723,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1131</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1132</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1146,7 +1146,7 @@ window.opsData={
       <div class="field"><label>رقم/كود المشروع</label><input type="text" id="pe-cd" placeholder="P-001"></div>
       <div class="field"><label>العميل</label><input type="text" id="pe-cl" placeholder="اسم العميل"></div>
       <div class="field"><label>جوال العميل (لتذكير واتساب)</label><input type="text" inputmode="tel" id="pe-ph" placeholder="05xxxxxxxx" style="direction:ltr;text-align:right"></div>
-      <div class="field full"><label>قيمة العقد (ر.س)</label>
+      <div class="field full"><label>قيمة العقد (ر.س) — حدّد هل تشمل الضريبة</label>
         <input type="text" inputmode="decimal" id="pe-cv" placeholder="0.00" oninput="updateCvBreak()">
         <div id="cv-vatmode" style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px">
           <button type="button" class="qe-vbtn" data-mode="excl" onclick="setCvVat('excl')">بدون الضريبة</button>
@@ -1543,7 +1543,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1131</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1132</bdi></span></div>
   </div>
 </div>
 
@@ -2966,6 +2966,14 @@ function setQeVat(m){qeVatMode=m;document.querySelectorAll('#qe-vatmode .qe-vbtn
 function qeSplit(amt,mode){const rate=qeVatRate;if(mode==='excl'){const vat=+(amt*rate/100).toFixed(2);return{subtotal:+amt.toFixed(2),vat:vat,total:+(amt+vat).toFixed(2),vatRate:rate};}const sub=+(amt/(1+rate/100)).toFixed(2);return{subtotal:sub,vat:+(amt-sub).toFixed(2),total:+amt.toFixed(2),vatRate:rate};}
 function updateQeBreak(){const box=document.getElementById('qe-vatbreak');if(!box)return;const amt=toNum(document.getElementById('qe-amt').value);if(amt<=0||!qeVatMode){box.style.display='none';return;}const s=qeSplit(amt,qeVatMode);box.style.display='block';box.innerHTML='<div class="vb-row"><span>المبلغ الأصلي (قبل الضريبة)</span><b>'+fmt(s.subtotal)+' ر.س</b></div><div class="vb-row"><span>ضريبة القيمة المضافة ('+qeVatRate+'%)</span><b style="color:#B45309">'+fmt(s.vat)+' ر.س</b></div><div class="vb-row" style="border-top:1px solid var(--bd);margin-top:3px;padding-top:5px"><span>الإجمالي شامل الضريبة</span><b style="color:#15803D">'+fmt(s.total)+' ر.س</b></div>';}
 function resetQeVat(mode){qeVatMode=mode||'';document.querySelectorAll('#qe-vatmode .qe-vbtn').forEach(b=>b.classList.toggle('on',mode?b.dataset.mode===mode:false));updateQeBreak();}
+function applyExtractedContractAmount(parsed){
+  const net=toNum(parsed.contractValueWithoutVAT),gross=toNum(parsed.contractValueIncludingVAT);
+  if(net>0&&gross>0&&Math.abs(Math.round(net*115)/100-gross)>0.02)return 'لم تُعبّأ قيمة العقد: المبلغ والضريبة المستخرجان غير متطابقين؛ راجع أصل العقد';
+  if(net>0){document.getElementById('pe-cv').value=net;setCvVat('excl');return 'قيمة العقد بدون الضريبة: '+fmt(net)+' ر.س';}
+  if(gross>0){document.getElementById('pe-cv').value=gross;setCvVat('incl');return 'قيمة العقد شاملة الضريبة: '+fmt(gross)+' ر.س';}
+  return 'لم تُعبّأ قيمة العقد: لم يتضح من الملف هل المبلغ يشمل الضريبة؛ أدخل القيمة وحدّد نوعها من أصل العقد';
+}
+
 let cvVatMode='excl';
 function setCvVat(m){cvVatMode=m;document.querySelectorAll('#cv-vatmode .qe-vbtn').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));updateCvBreak();}
 function cvNetFromInput(){const raw=toNum(document.getElementById('pe-cv').value);return cvVatMode==='incl'?+(raw/1.15).toFixed(2):+raw.toFixed(2);}
@@ -6679,7 +6687,9 @@ document.getElementById('pe-cf').addEventListener('change',async e=>{
     stEl.innerHTML='🤖 جاري استخراج بيانات العقد...';
     const content=imgs.map(b=>({type:'image',source:{type:'base64',media_type:'image/jpeg',data:b}}));
     content.push({type:'text',text:`استخرج من صور عقد المقاولات:
-- contractValue: قيمة العقد كرقم (بدون فواصل أو عملة)
+- contractValueWithoutVAT: قيمة العقد بدون الضريبة، فقط إذا كانت مذكورة صراحة
+- contractValueIncludingVAT: قيمة العقد شاملة الضريبة، فقط إذا كانت مذكورة صراحة
+- لا تضع إجمالي التحصيل أو مبلغ الفاتورة مكان قيمة العقد، ولا تستنتج شمول الضريبة دون نص واضح
 - projectName: اسم المشروع
 - clientName: اسم العميل/المالك (الطرف الأول)
 - contractCode: رقم/كود العقد إن وُجد
@@ -6688,7 +6698,7 @@ document.getElementById('pe-cf').addEventListener('change',async e=>{
 - description: وصف موجز للأعمال
 
 JSON فقط بدون شرح:
-{"contractValue":0,"projectName":"","clientName":"","contractCode":"","startDate":"","endDate":"","description":""}
+{"contractValueWithoutVAT":0,"contractValueIncludingVAT":0,"projectName":"","clientName":"","contractCode":"","startDate":"","endDate":"","description":""}
 
 ملاحظات: اتركها فارغة "" أو 0 إن لم تكن واضحة. لا تخمّن.`});
     const rs=await fetch('https://api.anthropic.com/v1/messages',{
@@ -6709,10 +6719,7 @@ JSON فقط بدون شرح:
 
     // تعبئة الحقول
     const ext=[];
-    if(parsed.contractValue&&toNum(parsed.contractValue)>0){
-      document.getElementById('pe-cv').value=parsed.contractValue;
-      ext.push('قيمة العقد: '+fmt(parsed.contractValue)+' ر.س');
-    }
+    ext.push(applyExtractedContractAmount(parsed));
     if(parsed.projectName&&!document.getElementById('pe-nm').value.trim()){
       document.getElementById('pe-nm').value=parsed.projectName;
       ext.push('الاسم');
@@ -6777,6 +6784,7 @@ async function savePe(){
     retentionPct:existingP?.retentionPct||0,
     guarantees:existingP?.guarantees||[],
     contractValue:_cvNet,
+    contractInputAudit:{amount:toNum(document.getElementById('pe-cv').value),includesVAT:cvVatMode==='incl',net:_cvNet,at:Date.now()},
     paidAmount:toNum(document.getElementById('pe-pa').value),
     siteExpensesTotal:toNum(document.getElementById('pe-se').value),
     siteExpensesDate:document.getElementById('pe-se-date').value||'',
@@ -7910,7 +7918,7 @@ function showImpPreview(){
   const d=impData;
   let html=`<div class="imp-sum">
     <div class="imp-sum-row"><span>📁 اسم المشروع</span><strong><input type="text" id="imp-pn" value="${esc(d.projName)}" style="text-align:left;border:1px solid var(--bd);border-radius:6px;padding:4px 8px;font-family:'Cairo';font-weight:700;color:var(--pk);font-size:13px;width:60%;max-width:200px"></strong></div>
-    <div class="imp-sum-row"><span>💰 الإيرادات المكتشفة</span><strong><input type="number" id="imp-rev" value="${d.revenue}" style="text-align:left;border:1px solid var(--bd);border-radius:6px;padding:4px 8px;font-family:'Cairo';font-weight:700;color:#15803D;font-size:13px;width:60%;max-width:200px"></strong></div>
+    <div class="imp-sum-row"><span>💰 قيمة العقد بدون الضريبة — راجع المبلغ المستورد</span><strong><input type="number" id="imp-rev" value="${d.revenue}" style="text-align:left;border:1px solid var(--bd);border-radius:6px;padding:4px 8px;font-family:'Cairo';font-weight:700;color:#15803D;font-size:13px;width:60%;max-width:200px"></strong></div>
     <div class="imp-sum-row"><span>📋 عدد البنود</span><strong>${d.rows.length}</strong></div>
     <div class="imp-sum-row"><span>💸 إجمالي المصروفات</span><strong>${fmt(d.rows.reduce((s,r)=>s+r.amount,0))} ر.س</strong></div>
   </div>`;
@@ -9984,7 +9992,7 @@ async function smartUpdateCheck(){
   }catch(e){}finally{_versionCheckBusy=false;}
 }
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='تفصيل تكلفة وسعر المتر لكل مشروع';
+const APP_UPD_NOTE='مراجعة ضريبة العقود وتوضيح الإدخال والاستخراج';
 let _updatedBannerHandled=false;
 function showUpdatedBanner(){
   try{
@@ -10011,7 +10019,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1131',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1132',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10074,9 +10082,9 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1131"></script>
-<script src="ops.js?v=1131"></script>
+<script src="purchase-payments.js?v=1132"></script>
+<script src="ops.js?v=1132"></script>
 
-<script src="settings.js?v=1131"></script>
+<script src="settings.js?v=1132"></script>
 </body>
 </html>

@@ -193,7 +193,7 @@ with sync_playwright() as p:
       return {dashboardValue:document.getElementById('r-total').textContent,
         detailValue:row?.querySelector('.val')?.textContent,
         dashboardPercentage:document.getElementById('r-pct').textContent};
-    }""", lambda r: equal(r,{"dashboardValue":"57,500","detailValue":"57,500.00 ر.س","dashboardPercentage":"87.0%"}))
+    }""", lambda r: equal(r,{"dashboardValue":"57,500","detailValue":"57,500 ر.س","dashboardPercentage":"87.0%"}))
 
     check("Approved extension requires explicit opt-in and is not applied twice", """()=>{
       opsData.changeOrders=[{id:'extension',projectId:'p',status:'approved',days:5,amount:0}];
@@ -249,8 +249,8 @@ with sync_playwright() as p:
       invs=[{id:'l',projectId:'linear',type:'expense',total:1000,date:'2026-01-01'},
             {id:'a',projectId:'area',type:'expense',total:1000,date:'2026-01-01'}];
       renderUnitCost();return document.getElementById('db-unitcost').textContent;
-    }""", lambda r: (assert_contains(r,"10.00"),assert_contains(r,"100.00"),
-                     assert_not_contains(r,"18.18"),assert_not_contains(r,"110.00")))
+    }""", lambda r: (assert_contains(r,"10 ر.س/م.ط"),assert_contains(r,"100 ر.س/م²"),
+                     assert_not_contains(r,"18 ر.س/"),assert_not_contains(r,"110 ر.س/")))
 
     check("Journal correction preserves closed periods and reports the issue", """async()=>{
       invs=[{id:'posted',type:'revenue',number:'POST',date:'2026-11-01',subtotal:100,vat:15,vatRate:15,total:115,projectId:'p'}];
