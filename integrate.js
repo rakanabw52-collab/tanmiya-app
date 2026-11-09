@@ -3,7 +3,7 @@
 'use strict';
 if(window.__HD1077FIX__)return;window.__HD1077FIX__=1;
 const D=()=>window.opsData||(window.opsData={}),A=k=>Array.isArray(D()[k])?D()[k]:(D()[k]=[]),N=v=>{const n=typeof toNum==='function'?toNum(v):Number(v||0);return Number.isFinite(n)?n:0};
-const P=()=>typeof projs!=='undefined'&&Array.isArray(projs)?projs:[],M=v=>N(v).toLocaleString('en-US',{maximumFractionDigits:2})+' ر.س',T=()=>new Date().toISOString().slice(0,10),B=x=>Math.max(0,N(x.total||x.amount)-N(x.paid));
+const P=()=>typeof projs!=='undefined'&&Array.isArray(projs)?projs:[],M=v=>N(v).toLocaleString('en-US',{maximumFractionDigits:0})+' ر.س',T=()=>new Date().toISOString().slice(0,10),B=x=>Math.max(0,N(x.total||x.amount)-N(x.paid));
 const E=s=>typeof esc==='function'?esc(s):String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pName=id=>P().find(x=>x.id===id)?.name||'—',sName=id=>A('suppliers').find(x=>x.id===id)?.name||'—';
 const poSupName=po=>{if(po&&po.supplierId){const s=A('suppliers').find(y=>y.id===po.supplierId);if(s)return s.name;}return (po&&po.supplierName)?po.supplierName:'—';};
@@ -116,7 +116,7 @@ function clientBalances(name){
 function clientReport(name,rows){
   const sum=key=>rows.reduce((s,x)=>s+Math.round(N(x.pl[key])*100),0)/100;
   const contract=sum('contract'),gross=sum('contractGross'),paid=sum('paid'),remaining=sum('outstanding');
-  const number=v=>N(v).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2});
+  const number=v=>N(v).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});
   const percent=(p,g)=>g>0?(p/g*100).toFixed(1)+'%':'0.0%';
   const cells=(c,g,p,r)=>'<td class="cr-net">'+number(c)+'</td><td class="cr-vat">'+number(g-c)+'</td><td class="cr-gross">'+number(g)+'</td><td class="cr-paid">'+number(p)+'</td><td class="cr-remaining">'+number(r)+'</td><td class="cr-percent">'+percent(p,g)+'</td>';
   const date=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Riyadh'}).replace(/\//g,'-');
