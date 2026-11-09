@@ -12,15 +12,15 @@ with sync_playwright() as p:
  assert page.locator('#h1077-buy tr.buy-unpaid').count()==1
  page.evaluate("setBuyFilter('status','unpaid')");assert page.locator('#h1077-buy tbody tr').count()==1
  page.evaluate("setBuyFilter('from','2026-11-20')");assert page.locator('#h1077-buy tbody tr').count()==0;page.evaluate('resetBuyFilters()')
- page.evaluate("openBuyPayment('a')");page.locator('#pay-amount').fill('30');page.evaluate("saveBuyPayment('a')")
+ page.evaluate("openBuyPayment('a')");page.locator('#pay-account').select_option('1010');page.locator('#pay-amount').fill('30');page.evaluate("saveBuyPayment('a')")
  r=page.evaluate('opsData.purchaseOrders[0]');assert r['paid']==45 and r['payments'][0]['amount']==30 and r['status']=='partial'
- page.evaluate("openBuyPayment('a')");page.locator('#pay-amount').fill('1000');page.evaluate("saveBuyPayment('a')");assert page.evaluate('opsData.purchaseOrders[0].paid')==45
- page.locator('#pay-amount').fill('70');page.evaluate("saveBuyPayment('a')");assert page.evaluate('opsData.purchaseOrders[0].status')=='paid'
+ page.evaluate("openBuyPayment('a')");page.locator('#pay-account').select_option('1010');page.locator('#pay-amount').fill('1000');page.evaluate("saveBuyPayment('a')");assert page.evaluate('opsData.purchaseOrders[0].paid')==45
+ page.locator('#pay-account').select_option('1010');page.locator('#pay-amount').fill('70');page.evaluate("saveBuyPayment('a')");assert page.evaluate('opsData.purchaseOrders[0].status')=='paid'
  page.evaluate("supplierStatement('name:مورد اختبار')");text=page.locator('#supplier-statement').inner_text();assert '115' in text and '30' in text and '70' in text
  page.evaluate("opsOpen('purchase','a')");assert page.locator('#of-paid').get_attribute('readonly') is not None;assert page.locator('#expense-categories option').count()==9
  # Local persistence failure rolls back the attempted payment.
  page.evaluate("opsData.purchaseOrders[0].paid=45;opsData.purchaseOrders[0].status='partial';svOps=async()=>({ok:false});openBuyPayment('a')")
- page.locator('#pay-amount').fill('10');page.evaluate("saveBuyPayment('a')");assert page.evaluate('opsData.purchaseOrders[0].paid')==45
+ page.locator('#pay-account').select_option('1010');page.locator('#pay-amount').fill('10');page.evaluate("saveBuyPayment('a')");assert page.evaluate('opsData.purchaseOrders[0].paid')==45
  print('PASS payment partial/full, invalid excess, failed local-save rollback, supplier ledger, filters, categories')
  # Completed projects freeze their schedule without changing recorded work quantities.
  result=page.evaluate('''()=>{
