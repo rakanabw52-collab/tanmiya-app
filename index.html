@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-09-1130">
+<meta name="app-build" content="2026-11-09-1131">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1130">
+<link rel="manifest" href="manifest.json?v=1131">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -561,7 +561,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1130">
+<link rel="stylesheet" href="ops.css?v=1131">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -580,6 +580,7 @@ window.opsData={
  #sec-db .db-col>.db-tail>.card{flex:1;margin-bottom:0!important}
 }
 </style>
+<style>.unit-table-scroll{overflow-x:auto;margin-top:12px;max-width:100%}.unit-project-table{width:100%;border-collapse:collapse;font-size:11.5px;text-align:right;min-width:330px}.unit-project-table th{background:#e0effc;color:#23527c;padding:8px 5px;font-weight:800;vertical-align:top}.unit-project-table td{padding:9px 5px;border-bottom:1px solid #cfe1f0;vertical-align:middle}.unit-project-table td:not(:first-child){white-space:nowrap;font-weight:800}.unit-project-table th:first-child{width:35%}.unit-project-link{background:none;border:0;padding:0;color:#23527c;font:inherit;font-weight:800;cursor:pointer;text-align:right;overflow-wrap:anywhere}.unit-project-link:hover{text-decoration:underline}</style>
 </head>
 <body>
 
@@ -722,7 +723,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1130</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1131</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1542,7 +1543,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1130</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1131</bdi></span></div>
   </div>
 </div>
 
@@ -4653,15 +4654,20 @@ function renderActiveProj(){
 function renderUnitCost(){
   const w=document.getElementById('db-unitcost');if(!w)return;
   const groups=new Map();
-  projs.filter(p=>p.status==='done'&&p.quantity>0).forEach(p=>{
+  projs.filter(p=>p.status==='done'&&toNum(p.quantity)>0).forEach(p=>{
     const pl=projPL(p.id);if(!(pl.cost>0))return;
     const unit=p.unit||'م.ط',rows=groups.get(unit)||[];rows.push({p,pl});groups.set(unit,rows);
   });
-  w.innerHTML=[...groups].map(([unit,rows])=>{
+  const quantity=n=>Number(n).toLocaleString('en-US',{maximumFractionDigits:3});
+  w.innerHTML=[...groups].map(([unit,rows],group)=>{
     const qty=rows.reduce((s,x)=>s+toNum(x.p.quantity),0),cost=rows.reduce((s,x)=>s+x.pl.cost,0);
-    const sorted=[...rows].sort((a,b)=>a.pl.costPerUnit-b.pl.costPerUnit);
-    return '<div class="card" style="padding:11px;background:#F0F9FF;border:1px solid #BAE6FD"><strong>📐 تكلفة '+esc(unit)+' — مشاريع منجزة بنفس الوحدة</strong><div style="font-size:22px;font-weight:800">'+fmt(cost/qty)+' ر.س/'+esc(unit)+'</div><div>متوسط '+rows.length+' مشروع — '+fmt(qty)+' '+esc(unit)+'</div>'+(rows.length>1?'<div>الأقل '+fmt(sorted[0].pl.costPerUnit)+' · الأعلى '+fmt(sorted.at(-1).pl.costPerUnit)+'</div>':'')+'</div>';
+    const sorted=[...rows].sort((a,b)=>a.pl.costPerUnit-b.pl.costPerUnit),meter=unit==='م.ط';
+    const header=meter?'عدد الأمتار':'الكمية ('+esc(unit)+')',unitTitle=meter?'المتر':esc(unit);
+    return '<div class="card unit-project-card" style="padding:11px;background:#F0F9FF;border:1px solid #BAE6FD"><strong>📐 تكلفة '+esc(unit)+' — مشاريع منجزة بنفس الوحدة</strong><div style="font-size:22px;font-weight:800">'+fmt(cost/qty)+' ر.س/'+esc(unit)+'</div><div>متوسط '+rows.length+' مشروع — '+quantity(qty)+' '+esc(unit)+'</div>'+(rows.length>1?'<div>الأقل '+fmt(sorted[0].pl.costPerUnit)+' · الأعلى '+fmt(sorted.at(-1).pl.costPerUnit)+'</div>':'')+
+    '<div class="unit-table-scroll"><table class="unit-project-table"><thead><tr><th>المشروع</th><th>'+header+'</th><th>تكلفة '+unitTitle+' الفعلية</th><th>سعر '+unitTitle+' بدون الضريبة</th></tr></thead><tbody>'+rows.map(({p,pl},index)=>'<tr><td><button class="unit-project-link" type="button" data-unit-group="'+group+'" data-unit-index="'+index+'">'+esc(p.name)+'</button></td><td>'+quantity(toNum(p.quantity))+'</td><td class="num">'+fmt(pl.cost/toNum(p.quantity))+'</td><td class="num">'+fmt(pl.contract/toNum(p.quantity))+'</td></tr>').join('')+'</tbody></table></div><div style="font-size:10.5px;color:var(--t2);margin-top:8px">المبالغ بالريال. التكلفة = المصروفات ÷ الكمية، وسعر الوحدة = قيمة العقد بدون الضريبة ÷ الكمية.</div></div>';
   }).join('');
+  const grouped=[...groups.values()];
+  w.querySelectorAll('[data-unit-group]').forEach(button=>button.onclick=()=>showProj(grouped[Number(button.dataset.unitGroup)][Number(button.dataset.unitIndex)].p.id));
 }
 function renderProjRanking(){
   const w=document.getElementById('db-ranking');if(!w)return;
@@ -9978,7 +9984,7 @@ async function smartUpdateCheck(){
   }catch(e){}finally{_versionCheckBusy=false;}
 }
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='إصلاح رقم الإصدار الذي كان يسبب تكرار رسالة التحديث';
+const APP_UPD_NOTE='تفصيل تكلفة وسعر المتر لكل مشروع';
 let _updatedBannerHandled=false;
 function showUpdatedBanner(){
   try{
@@ -10005,7 +10011,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1130',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1131',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10068,9 +10074,9 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1130"></script>
-<script src="ops.js?v=1130"></script>
+<script src="purchase-payments.js?v=1131"></script>
+<script src="ops.js?v=1131"></script>
 
-<script src="settings.js?v=1130"></script>
+<script src="settings.js?v=1131"></script>
 </body>
 </html>
