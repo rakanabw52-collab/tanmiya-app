@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-09-1122">
+<meta name="app-build" content="2026-11-09-1123">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1122">
+<link rel="manifest" href="manifest.json?v=1123">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -186,7 +186,6 @@ main{padding:16px 14px 90px;max-width:1800px;margin:0 auto}
 .sec-ttl{font-family:'Cairo',sans-serif;font-size:17px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 /* وضع الخصوصية: تمويه كل الأرقام المالية */
 body.hd-privacy [style*="Cairo"],
-body.hd-privacy .exec-kpi strong,body.hd-privacy .exec-table .exec-money,body.hd-privacy .exec-table td:nth-child(6),
 body.hd-privacy .hp-val,body.hd-privacy .kp-v,body.hd-privacy .mtc-v,body.hd-privacy .rc-v,
 body.hd-privacy .ii-tot,body.hd-privacy .ii-vat,body.hd-privacy .pgi-val,body.hd-privacy .ppl-val,
 body.hd-privacy .bdg-val,body.hd-privacy .vrow .val,body.hd-privacy .num,body.hd-privacy .vattbl td,
@@ -562,7 +561,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1122">
+<link rel="stylesheet" href="ops.css?v=1123">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -570,11 +569,6 @@ window.opsData={
   zatca:{environment:'none',certificateStatus:'none',notes:'',updatedAt:0}
 };
 </script>
-<style>
-/* التصميم الأول: صفوف متوازنة وجدول المشاريع أولاً */
-.executive-dashboard{display:grid;gap:18px;min-width:0}.executive-dashboard .card{margin:0}.executive-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.exec-kpi{display:flex;flex-direction:column;justify-content:center;gap:8px;min-height:130px;padding:20px;border-top:3px solid var(--pr)}.exec-kpi>span{font-size:13px;font-weight:700;color:var(--t2)}.exec-kpi strong{font-size:clamp(19px,2.1vw,30px);font-family:Cairo,sans-serif;direction:ltr;text-align:right}.exec-kpi small{color:var(--t3)}.exec-kpi.received{border-color:#15803d}.exec-kpi.received strong{color:#15803d}.exec-kpi.outstanding{border-color:#d97706}.exec-kpi.outstanding strong{color:#b45309}.exec-card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.exec-card-heading h3{margin:0;font-size:15px;font-family:Cairo,sans-serif}.exec-caption{font-size:12px;color:var(--t3);margin:0 0 14px}.executive-projects{min-width:0;padding:20px}.exec-table-scroll{overflow:auto;max-height:440px}.exec-table{width:100%;border-collapse:collapse;white-space:nowrap;text-align:right}.exec-table th{background:#edf5fc;color:#285782;font-size:12px;position:sticky;top:0;z-index:1}.exec-table th,.exec-table td{padding:14px 12px;border-bottom:1px solid var(--bd)}.exec-table td{font-size:13px}.exec-table tbody tr:nth-child(even){background:var(--bg)}.exec-table .exec-money{font-weight:800;direction:ltr;text-align:right}.exec-table .received{color:#15803d}.exec-table .outstanding{color:#b45309}.exec-progress{width:90px;height:5px;background:#e2e8f0;border-radius:8px;margin-top:5px;overflow:hidden}.exec-progress span{display:block;height:100%;background:var(--pr)}.executive-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:stretch;min-width:0}.executive-pair>.exec-panel{height:360px;overflow:auto;min-width:0}.exec-panel.card{padding:20px}#db-ranking>.card{min-height:100%;box-sizing:border-box;padding:20px!important;margin:0}.exec-details{padding:16px 20px}.exec-details>summary{cursor:pointer;font-weight:800;color:var(--pk)}.exec-expanded{margin-top:18px}.exec-expanded>div{min-width:0}.exec-more{margin-top:10px;color:var(--pr)}
-@media(max-width:760px){.executive-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.exec-kpi{padding:14px;min-height:110px}.executive-pair{grid-template-columns:1fr}.executive-pair>.exec-panel{height:auto;max-height:360px;min-height:240px}.executive-projects{padding:14px}.exec-card-heading{flex-wrap:wrap}.executive-dashboard{gap:14px}}
-</style>
 </head>
 <body>
 
@@ -660,26 +654,64 @@ window.opsData={
 <!-- الرئيسية -->
 <section class="sec active" id="sec-db">
   <h2 class="sec-ttl"><span class="dashboard-title">لوحة الإدارة التنفيذية</span><span class="dashboard-actions"><button id="privacy-btn" onclick="togglePrivacy()" title="إخفاء/إظهار الأرقام (خصوصية)">👁️</button><button id="ask-launcher" type="button" onclick="openAsk()">اسال</button></span></h2>
-  <div class="executive-dashboard">
-    <div class="executive-kpis">
-      <div class="card exec-kpi"><span>قيمة العقود شاملة الضريبة</span><strong id="r-total">0</strong><small>ريال سعودي</small></div>
-      <div class="card exec-kpi"><span>المصروفات</span><strong id="s-cst">0</strong><small>ريال سعودي</small></div>
-      <div class="card exec-kpi received"><span>المحصّل شامل الضريبة</span><strong id="r-paid">0</strong><small>ريال سعودي</small></div>
-      <div class="card exec-kpi outstanding"><span>المتبقي شامل الضريبة</span><strong id="r-out">0</strong><small>ريال سعودي</small></div>
+  <div class="db-grid">
+    <!-- العمود ١: Hero + المستحقات + التنبيهات -->
+    <div class="db-col">
+      <div class="hero-profit" id="hero-profit"></div>
+      <div id="db-compliance" style="display:none;margin-bottom:12px"></div>
+      <div id="db-docs-alert" style="display:none;margin-bottom:12px"></div>
+      <div class="receivables-card">
+        <div class="rc-hdr">💰 ملخص المستحقات</div>
+        <div class="rc-grid">
+          <div class="rc-i"><div class="rc-l">قيمة المشاريع شاملة الضريبة</div><div class="rc-v" id="r-total">0</div></div>
+          <div class="rc-i g"><div class="rc-l">المستلم</div><div class="rc-v" id="r-paid">0</div></div>
+          <div class="rc-i r"><div class="rc-l">المتبقي</div><div class="rc-v" id="r-out">0</div></div>
+        </div>
+        <div class="rc-bar"><div class="rc-fill" id="r-fill"></div></div>
+        <div class="rc-meta"><span id="r-pct">0%</span> محصّل من العقود</div>
+        <div id="r-projects" style="margin-top:12px"></div>
+      </div>
     </div>
-    <div class="card executive-projects">
-      <div class="exec-card-heading"><h3>المشاريع والتحصيل</h3><button class="btn btn-o btn-sm" onclick="goTab('proj')">كل المشاريع</button></div>
-      <p class="exec-caption">العقود والمحصّل والمتبقي شاملة الضريبة • المشاريع تحت الدراسة خارج الإجماليات</p>
-      <div class="exec-table-scroll"><table class="exec-table"><thead><tr><th>المشروع</th><th>الشركة</th><th>قيمة العقد</th><th>المحصّل</th><th>المتبقي</th><th>نسبة التحصيل</th><th>الحالة</th><th></th></tr></thead><tbody id="executive-project-rows"></tbody></table></div>
+    
+    <!-- العمود ٢: KPIs + المؤشرات -->
+    <div class="db-col">
+      <div class="kpi-mini">
+        <div class="kp s"><div class="kp-l">الإيرادات</div><div class="kp-v" id="s-rev">0</div></div>
+        <div class="kp a"><div class="kp-l">التكاليف</div><div class="kp-v" id="s-cst">0</div></div>
+        <div class="kp p"><div class="kp-l">فرق العقود والتكاليف</div><div class="kp-v" id="s-pft">0</div></div>
+        <div class="kp d"><div class="kp-l">الضريبة</div><div class="kp-v" id="s-vat">0</div></div>
+      </div>
+      <div class="metrics-row">
+        <div class="mtc g"><div class="mtc-v" id="m-margin">—</div><div class="mtc-l">هامش الربح</div></div>
+        <div class="mtc b"><div class="mtc-v" id="m-projects">0</div><div class="mtc-l">المشاريع</div></div>
+        <div class="mtc a"><div class="mtc-v" id="m-invoices">0</div><div class="mtc-l">الفواتير</div></div>
+        <div class="mtc r"><div class="mtc-v" id="m-collected" style="font-size:11px">—</div><div class="mtc-l">التحصيل</div></div>
+      </div>
+      <div id="db-insights"></div>
+      <div id="db-active"></div>
     </div>
-    <div class="executive-pair">
-      <div class="card exec-panel" id="db-allcats-card"><div class="exec-card-heading"><h3>توزيع المصروفات</h3><span id="db-allcats-total"></span></div><div id="db-allcats-projs" hidden></div><div class="exec-panel-content" id="db-allcats"></div></div>
-      <div class="exec-panel" id="db-ranking"></div>
+    
+    <!-- العمود ٣: ترتيب المشاريع -->
+    <div class="db-col">
+      <div id="db-cashflow"></div>
+      <div id="db-ranking"></div>
+      <div id="db-unitcost"></div>
+      <div id="db-alerts"></div>
     </div>
-    <details class="card exec-details"><summary>التنبيهات والرؤى السريعة</summary><div class="executive-pair exec-expanded"><div id="db-alerts"></div><div id="db-insights"></div></div><div id="db-compliance" style="display:none"></div><div id="db-docs-alert" style="display:none"></div></details>
-    <details class="card exec-details"><summary>المؤشرات والتفاصيل المالية</summary><div class="executive-pair exec-expanded"><div><div class="hero-profit" id="hero-profit"></div><div class="kpi-mini"><div class="kp"><div class="kp-l">العقود والإيرادات بدون الضريبة</div><div class="kp-v" id="s-rev"></div></div><div class="kp"><div class="kp-l">فرق العقود والتكاليف</div><div class="kp-v" id="s-pft"></div></div><div class="kp"><div class="kp-l">الضريبة</div><div class="kp-v" id="s-vat"></div></div></div><div class="metrics-row"><div class="mtc"><span id="m-margin"></span> هامش الربح</div><div class="mtc"><span id="m-projects"></span> المشاريع</div><div class="mtc"><span id="m-invoices"></span> الفواتير</div><div class="mtc"><span id="m-collected"></span> التحصيل</div></div><div class="rc-bar"><div class="rc-fill" id="r-fill"></div></div><div class="rc-meta"><span id="r-pct"></span> محصّل من العقود</div><div id="db-unitcost"></div></div><div><div id="db-cashflow"></div><details><summary>المستحقات والتذكير لكل مشروع</summary><div id="r-projects"></div></details><div id="db-active"></div></div></div></details>
+    
+    <!-- العمود ٤: قائمة الـ ١٥ بند -->
+    <div class="db-col">
+      <div class="card" id="db-allcats-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:800">📊 إجمالي البنود (كل المشاريع)</span>
+          <span id="db-allcats-total" style="font-size:11.5px;color:var(--t3);font-weight:700"></span>
+        </div>
+        <div id="db-allcats-projs" style="font-size:11px;color:var(--t2);background:var(--bg);padding:7px 10px;border-radius:7px;margin-bottom:11px;line-height:1.6"></div>
+        <div id="db-allcats"></div>
+      </div>
+    </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1122</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1123</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1498,7 +1530,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1122</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1123</bdi></span></div>
   </div>
 </div>
 
@@ -4696,13 +4728,11 @@ function renderAllCats(byCat,tcs){
   const all=UCATS.map(c=>({c,amt:byCat[c.id]||0})).sort((a,b)=>b.amt-a.amt);
   if(tw)tw.textContent='إجمالي: '+fmtI(tcs)+' ر.س';
   let html='';
-  all.forEach(({c,amt},index)=>{
-    if(index===5)html+='<details class="exec-more"><summary>عرض بقية البنود</summary><div style="padding-top:12px">';
+  all.forEach(({c,amt})=>{
     const pct=tcs>0?(amt/tcs*100):0;
     const hasAmt=amt>0;
     html+='<div style="margin-bottom:11px;'+(hasAmt?'':'opacity:.45')+'"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:14px;font-weight:700"><span style="color:'+c.color+'">'+c.icon+'</span> '+esc(c.name)+'</span><span style="font-family:Cairo,sans-serif;font-weight:800;font-size:14px;color:'+c.color+'">'+(hasAmt?fmtI(amt):'—')+(hasAmt?' <span style="color:var(--t3);font-size:11px;font-weight:600">('+pct.toFixed(1)+'%)</span>':'')+'</span></div><div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="height:100%;background:'+c.color+';width:'+Math.min(pct,100)+'%;transition:.3s"></div></div></div>';
   });
-  if(all.length>5)html+='</div></details>';
   w.innerHTML=html;
 }
 
@@ -7937,16 +7967,6 @@ function equalizeColumns(){
 function _generalPurchaseOrders(){
  return (window.opsData?.purchaseOrders||[]).filter(o=>!o.projectId&&o.status!=='cancelled'&&!(o.invoiceId&&invs.some(i=>i.id===o.invoiceId&&i.status!=='cancelled')));
 }
-function renderExecutiveProjects(){
-  const w=document.getElementById('executive-project-rows');if(!w)return;
-  const rows=projs.filter(p=>p.status!=='study');
-  w.innerHTML=rows.length?rows.map((p,index)=>{const pl=projPL(p.id),pct=pl.contractGross>0?pl.paid/pl.contractGross*100:0;
-    return '<tr><td><button class="btn btn-o btn-sm" data-exec-project="'+index+'">'+esc(p.name)+'</button></td><td>'+esc(p.client||'—')+'</td><td class="exec-money">'+fmtI(pl.contractGross)+'</td><td class="exec-money received">'+fmtI(pl.paid)+'</td><td class="exec-money outstanding">'+fmtI(pl.outstanding)+'</td><td>'+pct.toFixed(1)+'%<div class="exec-progress"><span style="width:'+Math.max(0,Math.min(100,pct))+'%"></span></div></td><td>'+esc(STL[p.status]||p.status||'—')+'</td><td>'+(pl.outstanding>0?'<button class="btn btn-o btn-sm" data-exec-reminder="'+index+'">تذكير</button>':'')+'</td></tr>';
-  }).join(''):'<tr><td colspan="8" style="text-align:center;padding:30px">لا توجد مشاريع نشطة أو منجزة بعد</td></tr>';
-  w.querySelectorAll('[data-exec-project]').forEach(b=>b.onclick=()=>showProj(rows[Number(b.dataset.execProject)].id));
-  w.querySelectorAll('[data-exec-reminder]').forEach(b=>b.onclick=()=>waReminder(rows[Number(b.dataset.execReminder)].id));
-}
-
 function renderDB(){
   if(typeof renderDocsAlert==='function')renderDocsAlert();
   if(typeof renderOpsDashboardStrip==='function')renderOpsDashboardStrip();
@@ -7981,7 +8001,6 @@ function renderDB(){
   // المؤشرات
   const mc=document.getElementById('m-collected');
   if(mc){mc.textContent=collPct.toFixed(0)+'%';mc.style.color=collPct>=50?'#15803D':'#D97706';}
-  renderExecutiveProjects();
   // بطاقة المستحقات
   const rt=document.getElementById('r-total');if(rt)rt.textContent=fmtI(totalProjGross);
   const rp=document.getElementById('r-paid');if(rp)rp.textContent=fmtI(totalPaid);
@@ -9948,7 +9967,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1122',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1123',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10011,9 +10030,9 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1122"></script>
-<script src="ops.js?v=1122"></script>
+<script src="purchase-payments.js?v=1123"></script>
+<script src="ops.js?v=1123"></script>
 
-<script src="settings.js?v=1122"></script>
+<script src="settings.js?v=1123"></script>
 </body>
 </html>
