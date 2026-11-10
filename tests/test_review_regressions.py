@@ -124,7 +124,7 @@ with sync_playwright() as p:
         vendor:'مورد',vendorVAT:'300000000000003',subtotal:100,vat:15,vatRate:15,total:115,
         category:'materials',projectId:'p',notes:'original',taxDecl:false,status:'cancelled',
         cancelledAt:123,sourceId:'original-import'}];
-      revInv('advanced');document.getElementById('f-nt').value='changed note';await saveInv();
+      revInv('advanced');setVatRecovery('f-vat-recovery',false);document.getElementById('f-nt').value='changed note';await saveInv();
       return {taxDecl:invs[0].taxDecl,status:invs[0].status,cancelledAt:invs[0].cancelledAt,
         sourceId:invs[0].sourceId,notes:invs[0].notes,total:invs[0].total};
     }""", lambda r: equal(r,{"taxDecl":False,"status":"cancelled","cancelledAt":123,

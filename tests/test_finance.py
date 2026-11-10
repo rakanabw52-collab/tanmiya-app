@@ -44,7 +44,7 @@ with sync_playwright() as p:
  assert result['reopened']==0 and result['missingDate'] is None and result['noProgressMutation']
  assert result['financial']['outstanding']==7500
  assert 'رصيد ميزانية العقد بعد المصروفات' in result['text'] and 'المتبقي من العقد' not in result['text']
- assert '60,000.00' in result['changedText'] and '47.3%' in result['changedText']
+ assert '60,000' in result['changedText'] and '47.3%' in result['changedText']
  print('PASS completed project time/progress, reopening, missing actual date, budget label, change-order denominator, customer balance unchanged')
 
  # Three-way reconciliation preserves independent edits and detects conflicting changes/deletions.

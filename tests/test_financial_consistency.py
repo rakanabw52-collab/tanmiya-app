@@ -140,14 +140,14 @@ with sync_playwright() as p:
 
     check("Exempt invoice is preserved by quick edit", """async()=>{
       invs=[{id:'zero',type:'expense',number:'ZERO',date:'2026-11-01',vendor:'مورد',subtotal:100,vat:0,vatRate:0,total:100,category:'other',projectId:'p'}];
-      qEditInv('zero');await saveQe();
+      qEditInv('zero');setVatRecovery('qe-vat-recovery',false);await saveQe();
       return {subtotal:invs[0].subtotal,vat:invs[0].vat,vatRate:invs[0].vatRate,total:invs[0].total};
     }""", lambda r: equal(r,{"subtotal":100,"vat":0,"vatRate":0,"total":100}))
 
     check("Saving an exempt invoice retains zero rate and audit does not invent tax", """async()=>{
       setType('purchase');document.getElementById('f-no').value='EXEMPT';
       document.getElementById('f-dt').value='2026-11-01';document.getElementById('f-vnd').value='مورد';
-      document.getElementById('f-sub').value='100';fExempt();await saveInv();
+      document.getElementById('f-sub').value='100';fExempt();setVatRecovery('f-vat-recovery',false);await saveInv();
       return {vatRate:invs[0].vatRate,vat:invs[0].vat,total:invs[0].total,
         mathErrors:_qfDetect('all','').mathErrs.length};
     }""", lambda r: equal(r,{"vatRate":0,"vat":0,"total":100,"mathErrors":0}))
@@ -176,7 +176,7 @@ with sync_playwright() as p:
     check("Legacy zero-tax invoice is not converted despite stale 15 percent metadata", """async()=>{
       invs=[{id:'legacy-zero',type:'expense',number:'LEGACY-ZERO',date:'2026-11-01',vendor:'مورد',
         subtotal:100,vat:0,vatRate:15,total:100,category:'other',projectId:'p'}];
-      qEditInv('legacy-zero');await saveQe();
+      qEditInv('legacy-zero');setVatRecovery('qe-vat-recovery',false);await saveQe();
       return {subtotal:invs[0].subtotal,vat:invs[0].vat,vatRate:invs[0].vatRate,total:invs[0].total};
     }""", lambda r: equal(r,{"subtotal":100,"vat":0,"vatRate":0,"total":100}))
 
@@ -219,7 +219,7 @@ with sync_playwright() as p:
     check("Quick edit respects closed accounting period", """async()=>{
       opsData.periods=[{month:'2026-11',status:'closed'}];
       invs=[{id:'locked',type:'expense',number:'LOCK',date:'2026-11-01',vendor:'مورد',subtotal:100,vat:15,vatRate:15,total:115,category:'other',projectId:'p'}];
-      qEditInv('locked');document.getElementById('qe-amt').value='230';setQeVat('incl');await saveQe();
+      qEditInv('locked');setVatRecovery('qe-vat-recovery',false);document.getElementById('qe-amt').value='230';setQeVat('incl');await saveQe();
       return {total:invs[0].total,subtotal:invs[0].subtotal};
     }""", lambda r: equal(r,{"total":115,"subtotal":100}))
 
@@ -282,7 +282,7 @@ with sync_playwright() as p:
 
     check("Direct purchase tax is visible in eligible input tax", """()=>{
       opsData.purchaseOrders=[{id:'taxpo',directPurchase:true,projectId:'p',supplierId:'s',
-        number:'TAXPO',vendorVAT:'300000000000003',date:'2026-11-01',amount:100,total:115,paid:0,vat:15,vatRate:15,status:'open',taxDecl:true}];
+        number:'TAXPO',vendorVAT:'300000000000003',date:'2026-11-01',amount:100,total:115,paid:0,vat:15,vatRate:15,status:'open',taxDecl:true,vatRecoverable:true}];
       return {input:vatTotals(2026,'m11').inVat,cost:projPL('p').cost};
     }""", lambda r: equal(r,{"input":15,"cost":115}))
 
