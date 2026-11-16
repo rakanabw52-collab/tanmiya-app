@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-10-1146">
+<meta name="app-build" content="2026-11-16-1147">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1146">
+<link rel="manifest" href="manifest.json?v=1147">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -537,6 +537,9 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
     radial-gradient(circle at 12% 15%,rgba(255,255,255,.12),transparent 28%),
     linear-gradient(155deg,#2771AB 0%,#1E5D8D 52%,#17496F 100%) !important;
 }
+#hdGate{overflow-y:auto}
+#hdGate>*{flex-shrink:0}
+@media(max-height:800px){#hdGate{justify-content:flex-start!important}#hdGate .hd-login-brand{width:min(230px,65vw)}}
 .hd-login-brand{
   width:min(300px,78vw);
   background:transparent;
@@ -561,7 +564,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1146">
+<link rel="stylesheet" href="ops.css?v=1147">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -592,47 +595,35 @@ window.opsData={
   <div style="background:#fff;border-radius:18px;padding:22px 20px;margin-top:22px;width:100%;max-width:340px;box-shadow:0 18px 50px -18px rgba(0,0,0,.5)">
     <div id="hd-pin-box">
       <div style="font-size:15px;font-weight:800;color:#143b62;margin-bottom:6px">رمز الدخول</div>
-      <div style="font-size:11.5px;color:#64748b;margin-bottom:13px">أدخل الرمز المكوّن من 4 أرقام</div>
-      <input id="hd-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"
-        oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)"
+      <div style="font-size:11.5px;color:#64748b;margin-bottom:13px">أدخل رمز حسابك من 4 أرقام — يعمل على جميع الأجهزة</div>
+      <input id="hd-pin" aria-label="رمز الدخول من أربعة أرقام" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"
+        oninput="hdPinInput(this)"
         style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:12px;font-size:26px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif">
       <button id="hd-pin-btn" onclick="hdPinLogin()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#2771ab,#1a4d7d);color:#fff;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">دخول</button>
-      <button onclick="hdShowAccountLogin()" style="margin-top:11px;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">جهاز جديد أو استخدام حساب مختلف</button>
-    </div>
-
-    <div id="hd-setup-box" style="display:none">
-      <div style="font-size:15px;font-weight:800;color:#143b62;margin-bottom:6px">تثبيت رمز الدخول</div>
-      <div style="font-size:11.5px;color:#64748b;margin-bottom:13px;line-height:1.7">اختر 4 أرقام لهذا الجهاز. تقدر تكتب نفس رمزك القديم.</div>
-      <input id="hd-newpin" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="الرمز الجديد"
-        oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)"
-        style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:9px;font-size:22px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif;margin-bottom:9px">
-      <input id="hd-newpin2" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="تأكيد الرمز"
-        oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)"
-        style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:9px;font-size:22px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif">
-      <button onclick="hdSavePinAndEnter()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#2771ab,#1a4d7d);color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">حفظ الرمز والدخول</button>
-      <button onclick="hdShowAccountLogin()" style="margin-top:11px;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">استخدام حساب مختلف</button>
+      <button onclick="hdShowAccountLogin()" style="margin-top:11px;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">تفعيل الرمز أو استعادته</button>
     </div>
 
     <div id="hd-account-box" style="display:none">
-      <div style="font-size:15px;font-weight:800;color:#143b62;margin-bottom:6px">تهيئة الجهاز</div>
-      <div style="font-size:11.5px;color:#64748b;margin-bottom:13px;line-height:1.7">الدخول بالحساب مطلوب مرة واحدة على الجهاز، وبعدها يكون دخولك بالرمز فقط.</div>
+      <div style="font-size:15px;font-weight:800;color:#143b62;margin-bottom:6px">تفعيل رمز الحساب</div>
+      <div style="font-size:11.5px;color:#64748b;margin-bottom:13px;line-height:1.7">فعّل رمزك مرة واحدة بالبريد وكلمة المرور. بعدها تدخل بالأرقام الأربعة فقط من أي جهاز. استخدم هذه الشاشة أيضًا إذا نسيت الرمز.</div>
       <input id="hd-email" type="email" inputmode="email" autocomplete="username" placeholder="البريد الإلكتروني"
         style="width:100%;box-sizing:border-box;direction:ltr;text-align:left;font-size:15px;font-weight:600;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif;margin-bottom:9px">
       <input id="hd-pass" type="password" autocomplete="current-password" placeholder="كلمة المرور"
         style="width:100%;box-sizing:border-box;direction:ltr;text-align:left;font-size:15px;font-weight:600;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif;margin-bottom:9px">
       <input id="hd-auth-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="اختر رمزًا من 4 أرقام"
-        oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)"
+        oninput="hdPinInput(this)"
         style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:8px;font-size:20px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif">
+      <input id="hd-auth-pin2" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="تأكيد الرمز" oninput="hdPinInput(this)" aria-label="تأكيد رمز الحساب" style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:8px;font-size:20px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;margin-top:9px">
       <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:#143b62;font-weight:600;cursor:pointer;user-select:none">
         <input type="checkbox" id="hd-remember" style="width:17px;height:17px;accent-color:#2771ab;cursor:pointer">
         تذكّر البريد الإلكتروني
       </label>
-      <button id="hd-login-btn" onclick="hdAccountLogin()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#2771ab,#1a4d7d);color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">تهيئة والدخول</button>
+      <button id="hd-login-btn" onclick="hdAccountLogin()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#2771ab,#1a4d7d);color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">حفظ الرمز والدخول</button>
       <button onclick="hdBackToPin()" style="margin-top:11px;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">العودة للرمز</button>
     </div>
 
-    <div id="hd-pin-err" style="color:#b91c1c;font-size:12.5px;font-weight:700;margin-top:8px;min-height:16px"></div>
-    <div class="hd-security-note">🔒 الرمز من 4 أرقام يقفل التطبيق على جهازك، بينما الوصول للبيانات السحابية يبقى مرتبطًا بالحساب المصرّح به.</div>
+    <div id="hd-pin-err" role="alert" aria-live="polite" style="color:#b91c1c;font-size:12.5px;font-weight:700;margin-top:8px;min-height:16px"></div>
+    <div class="hd-security-note">🔒 يجري التحقق من الرمز على الخادم مع الحفاظ على صلاحيات حسابك. يلزم الإنترنت للدخول، وتُقيّد المحاولات الخاطئة.</div>
   </div>
   <div style="color:#aecbe6;font-size:11.5px;margin-top:18px;line-height:1.9">حقوق الطبع محفوظة — مؤسسة هدف التنمية للمقاولات</div>
 </div>
@@ -722,7 +713,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1146</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1147</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1556,7 +1547,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1146</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1147</bdi></span></div>
   </div>
 </div>
 
@@ -9832,14 +9823,12 @@ async function removeAllDups(){
 
 
 
-/* ===== الحماية: Supabase Auth + قفل محلي برمز من 4 أرقام ===== */
+/* ===== الحماية: Supabase Auth + رمز حساب من 4 أرقام يعمل على جميع الأجهزة ===== */
 window.HD_ROLE=null;
 window.HD_AUTHED=false;
 window.HD_PENDING_SESSION=null;
 window.ACC_ALLOW=['add','ls','vt','acc','ops'];
-const HD_PIN_KEY='hd-local-pin-v1';
-const HD_PIN_FAIL_KEY='hd-pin-fails-v1';
-const HD_PIN_LOCK_KEY='hd-pin-lock-until-v1';
+let HD_PIN_BUSY=false;
 
 function hdApplyRole(role){
   window.HD_ROLE=role;
@@ -9859,6 +9848,7 @@ function _hdBox(which){
 }
 function hdBackToPin(){_hdBox('hd-pin-box');setTimeout(()=>document.getElementById('hd-pin')?.focus(),60);}
 async function hdShowAccountLogin(){
+  if(HD_PIN_BUSY)return;
   try{if(cloudInit())await _supa.auth.signOut();}catch(e){}
   window.HD_PENDING_SESSION=null;
   _hdBox('hd-account-box');
@@ -9869,54 +9859,24 @@ async function hdShowAccountLogin(){
   }catch(e){}
   setTimeout(()=>document.getElementById('hd-email')?.focus(),60);
 }
-function _hdBytesToB64(bytes){
-  let s='';for(let i=0;i<bytes.length;i++)s+=String.fromCharCode(bytes[i]);
-  return btoa(s);
-}
-function _hdB64ToBytes(s){
-  const b=atob(s);const a=new Uint8Array(b.length);
-  for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;
-}
-async function _hdPinHash(pin,saltB64){
-  const enc=new TextEncoder();
-  const key=await crypto.subtle.importKey('raw',enc.encode(pin),'PBKDF2',false,['deriveBits']);
-  const bits=await crypto.subtle.deriveBits(
-    {name:'PBKDF2',hash:'SHA-256',salt:_hdB64ToBytes(saltB64),iterations:220000},
-    key,256
-  );
-  return _hdBytesToB64(new Uint8Array(bits));
-}
-function _hdGetPinRec(){
-  try{return JSON.parse(localStorage.getItem(HD_PIN_KEY)||'null');}catch(e){return null;}
-}
-async function _hdSavePin(pin,uid){
-  const salt=new Uint8Array(16);crypto.getRandomValues(salt);
-  const saltB64=_hdBytesToB64(salt);
-  const hash=await _hdPinHash(pin,saltB64);
-  localStorage.setItem(HD_PIN_KEY,JSON.stringify({uid:uid,salt:saltB64,hash:hash,v:1,at:Date.now()}));
-  localStorage.removeItem(HD_PIN_FAIL_KEY);
-  localStorage.removeItem(HD_PIN_LOCK_KEY);
-}
-async function _hdVerifyPin(pin,uid){
-  const rec=_hdGetPinRec();
-  if(!rec||!rec.uid||rec.uid!==uid||!rec.salt||!rec.hash)return false;
-  const hash=await _hdPinHash(pin,rec.salt);
-  return hash===rec.hash;
-}
-function _hdRateState(){
-  const until=Number(localStorage.getItem(HD_PIN_LOCK_KEY)||0);
-  return {until,fails:Number(localStorage.getItem(HD_PIN_FAIL_KEY)||0)};
-}
-function _hdRegisterPinFail(){
-  let st=_hdRateState(),fails=st.fails+1;
-  localStorage.setItem(HD_PIN_FAIL_KEY,String(fails));
-  if(fails>=5){
-    localStorage.setItem(HD_PIN_LOCK_KEY,String(Date.now()+30000));
-    localStorage.setItem(HD_PIN_FAIL_KEY,'0');
+function hdNormalizePin(value){return String(value||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776));}
+function hdPinInput(el){el.value=hdNormalizePin(el.value).replace(/\D/g,'').slice(0,4);}
+async function _hdPinCall(action,pin,session){
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);
+ try{
+  const response=await fetch(SUPA_URL+'/functions/v1/pin-auth',{
+   method:'POST',cache:'no-store',signal:controller.signal,
+   headers:{'Content-Type':'application/json',apikey:SUPA_KEY,...(session?{Authorization:'Bearer '+session.access_token}:{})},
+   body:JSON.stringify({action,pin})
+  });
+  const data=await response.json();
+  if(!response.ok){
+   const messages={invalid_pin:'رمز غير صحيح أو لم يُفعّل بعد. استخدم تفعيل الرمز أول مرة.',pin_format:'أدخل 4 أرقام فقط',pin_unavailable:'تعذّر اختيار هذا الرمز. اختر رمزًا آخر.',auth_required:'أعد الدخول بالحساب لتفعيل الرمز',password_required:'أعد إدخال البريد وكلمة المرور لتغيير الرمز'};
+   const error=new Error(data.error==='rate_limited'?'محاولات كثيرة. حاول بعد '+Math.max(1,Math.ceil(Number(data.retry_after||60)/60))+' دقيقة. يمكنك استخدام استعادة الرمز.':messages[data.error]||'تعذّر الاتصال بخدمة الدخول. حاول مرة أخرى.');
+   throw error;
   }
-}
-function _hdClearPinFails(){
-  localStorage.removeItem(HD_PIN_FAIL_KEY);localStorage.removeItem(HD_PIN_LOCK_KEY);
+  return data;
+ }finally{clearTimeout(timer);}
 }
 async function hdFetchRole(uid){
   try{
@@ -9943,132 +9903,67 @@ async function _hdAfterAuth(session){
   try{cloudSubscribe&&cloudSubscribe();}catch(e){}
 }
 async function hdPinLogin(){
-  if(!cloudInit()){_hdErr('تعذّر الاتصال بالخادم');return;}
-  const pin=(document.getElementById('hd-pin')?.value||'').replace(/\D/g,'');
-  if(pin.length!==4){_hdErr('أدخل 4 أرقام');return;}
-  const st=_hdRateState();
-  if(st.until>Date.now()){
-    const sec=Math.ceil((st.until-Date.now())/1000);
-    _hdErr('محاولات كثيرة. حاول بعد '+sec+' ثانية');return;
-  }
-  const btn=document.getElementById('hd-pin-btn');
-  if(btn){btn.disabled=true;btn.textContent='جاري الدخول...';}
-  try{
-    const {data}=await _supa.auth.getSession();
-    const session=data&&data.session;
-    if(!session||!session.user){
-      _hdErr('انتهت جلسة الحساب. يلزم تهيئة الجهاز مرة واحدة.');
-      setTimeout(hdShowAccountLogin,800);return;
-    }
-    const rec=_hdGetPinRec();
-    if(!rec||rec.uid!==session.user.id){
-      window.HD_PENDING_SESSION=session;
-      _hdBox('hd-setup-box');
-      _hdErr('ثبّت رمزًا من 4 أرقام لهذا الحساب على الجهاز');
-      setTimeout(()=>document.getElementById('hd-newpin')?.focus(),60);
-      return;
-    }
-    const ok=await _hdVerifyPin(pin,session.user.id);
-    if(!ok){
-      _hdRegisterPinFail();
-      _hdErr('رمز غير صحيح');
-      const el=document.getElementById('hd-pin');if(el){el.value='';el.focus();}
-      return;
-    }
-    _hdClearPinFails();
-    await _hdAfterAuth(session);
-  }catch(e){
-    console.warn(e);_hdErr('تعذّر الدخول، حاول مرة أخرى');
-  }finally{
-    if(btn){btn.disabled=false;btn.textContent='دخول';}
-  }
+ if(HD_PIN_BUSY)return;
+ if(!cloudInit()){_hdErr('تعذّر الاتصال بالخادم');return;}
+ const pin=hdNormalizePin(document.getElementById('hd-pin')?.value);
+ if(!/^\d{4}$/.test(pin)){_hdErr('أدخل 4 أرقام');return;}
+ HD_PIN_BUSY=true;_hdErr('');
+ const btn=document.getElementById('hd-pin-btn');if(btn){btn.disabled=true;btn.textContent='جاري الدخول...';}
+ try{
+  const tokens=await _hdPinCall('login',pin);
+  const {data,error}=await _supa.auth.setSession(tokens);
+  if(error||!data?.session)throw new Error('تعذّر تثبيت جلسة الدخول. حاول مرة أخرى.');
+  const field=document.getElementById('hd-pin');if(field)field.value='';
+  await _hdAfterAuth(data.session);
+ }catch(e){_hdErr(e.name==='AbortError'?'انتهت مهلة الاتصال. حاول مرة أخرى.':e.message||'تعذّر الدخول');}
+ finally{HD_PIN_BUSY=false;if(btn){btn.disabled=false;btn.textContent='دخول';}}
 }
-async function hdSavePinAndEnter(){
-  const p1=(document.getElementById('hd-newpin')?.value||'').replace(/\D/g,'');
-  const p2=(document.getElementById('hd-newpin2')?.value||'').replace(/\D/g,'');
-  if(p1.length!==4){_hdErr('اختر رمزًا من 4 أرقام');return;}
-  if(p1!==p2){_hdErr('تأكيد الرمز غير مطابق');return;}
-  try{
-    let session=window.HD_PENDING_SESSION;
-    if(!session){const {data}=await _supa.auth.getSession();session=data&&data.session;}
-    if(!session||!session.user){_hdErr('انتهت جلسة الحساب');return hdShowAccountLogin();}
-    await _hdSavePin(p1,session.user.id);
-    await _hdAfterAuth(session);
-  }catch(e){console.warn(e);_hdErr('تعذّر حفظ الرمز');}
-}
+async function hdSavePinAndEnter(){return hdShowAccountLogin();}
 async function hdAccountLogin(){
-  if(!cloudInit()){_hdErr('تعذّر الاتصال بالخادم');return;}
-  const em=(document.getElementById('hd-email')?.value||'').trim();
-  const pw=(document.getElementById('hd-pass')?.value||'');
-  const pin=(document.getElementById('hd-auth-pin')?.value||'').replace(/\D/g,'');
-  if(!em||!pw){_hdErr('أدخل البريد وكلمة المرور');return;}
-  if(pin.length!==4){_hdErr('اختر رمز دخول من 4 أرقام');return;}
-  const btn=document.getElementById('hd-login-btn');
-  if(btn){btn.disabled=true;btn.textContent='جاري التهيئة...';}
-  _hdErr('');
+ if(HD_PIN_BUSY)return;
+ if(!cloudInit()){_hdErr('تعذّر الاتصال بالخادم');return;}
+ const em=(document.getElementById('hd-email')?.value||'').trim();
+ const pw=document.getElementById('hd-pass')?.value||'';
+ const pin=hdNormalizePin(document.getElementById('hd-auth-pin')?.value);
+ const confirmPin=hdNormalizePin(document.getElementById('hd-auth-pin2')?.value);
+ if(!em||!pw){_hdErr('أدخل البريد وكلمة المرور لتفعيل الرمز أو استعادته');return;}
+ if(!/^\d{4}$/.test(pin)){_hdErr('اختر رمزًا من 4 أرقام');return;}
+ if(pin!==confirmPin){_hdErr('تأكيد الرمز غير مطابق');return;}
+ const btn=document.getElementById('hd-login-btn');
+ HD_PIN_BUSY=true;_hdErr('');if(btn){btn.disabled=true;btn.textContent='جاري تفعيل الرمز...';}
+ try{
+  const {data,error}=await _supa.auth.signInWithPassword({email:em,password:pw});
+  if(error||!data?.session){_hdErr('بريد أو كلمة مرور غير صحيحة');return;}
+  const role=await hdFetchRole(data.session.user.id);
+  if(role!=='owner'&&role!=='accountant'){await _supa.auth.signOut();_hdErr('هذا الحساب لا يملك صلاحية');return;}
+  await _hdPinCall('register',pin,data.session);
   try{
-    const {data,error}=await _supa.auth.signInWithPassword({email:em,password:pw});
-    if(error){_hdErr('بريد أو كلمة مرور غير صحيحة');return;}
-    const role=await hdFetchRole(data.session.user.id);
-    if(role!=='owner'&&role!=='accountant'){
-      await _supa.auth.signOut();_hdErr('هذا الحساب لا يملك صلاحية');return;
-    }
-    try{
-      const rmb=document.getElementById('hd-remember');
-      if(rmb&&rmb.checked)localStorage.setItem('hd-rmb-email',em);
-      else localStorage.removeItem('hd-rmb-email');
-      localStorage.removeItem('hd-rmb-pass');
-    }catch(e){}
-    await _hdSavePin(pin,data.session.user.id);
-    await _hdAfterAuth(data.session);
-  }catch(e){console.warn(e);_hdErr('تعذّر الدخول، تحقّق من الإنترنت');}
-  finally{if(btn){btn.disabled=false;btn.textContent='تهيئة والدخول';}}
+   if(document.getElementById('hd-remember')?.checked)localStorage.setItem('hd-rmb-email',em);
+   else localStorage.removeItem('hd-rmb-email');
+   ['hd-rmb-pass','hd-local-pin-v1','hd-pin-fails-v1','hd-pin-lock-until-v1'].forEach(k=>localStorage.removeItem(k));
+  }catch(_){}
+  ['hd-pass','hd-auth-pin','hd-auth-pin2'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  await _hdAfterAuth(data.session);
+ }catch(e){_hdErr(e.name==='AbortError'?'انتهت مهلة الاتصال. حاول مرة أخرى.':e.message||'تعذّر تفعيل الرمز');}
+ finally{HD_PIN_BUSY=false;if(btn){btn.disabled=false;btn.textContent='حفظ الرمز والدخول';}}
 }
 function hdLoginRouter(){return hdPinLogin();}
 function hdLogin(){return hdAccountLogin();}
 async function hdLock(){
-  window.HD_AUTHED=false;
-  _hdGateShow();
-  _hdBox('hd-pin-box');
-  const el=document.getElementById('hd-pin');if(el){el.value='';setTimeout(()=>el.focus(),60);}
+ window.HD_AUTHED=false;window.HD_PENDING_SESSION=null;
+ _hdGateShow();hdBackToPin();
+ const el=document.getElementById('hd-pin');if(el)el.value='';
 }
 async function hdFullLogout(){
-  try{if(cloudInit())await _supa.auth.signOut();}catch(e){}
-  window.HD_PENDING_SESSION=null;window.HD_AUTHED=false;
-  _hdGateShow();_hdBox('hd-account-box');
+ try{if(cloudInit())await _supa.auth.signOut();}catch(_){}
+ window.HD_PENDING_SESSION=null;window.HD_AUTHED=false;window.HD_ROLE=null;
+ _hdGateShow();hdBackToPin();
 }
 async function hdInitGate(){
-  const pin=document.getElementById('hd-pin');
-  if(pin)pin.addEventListener('keydown',e=>{if(e.key==='Enter')hdPinLogin();});
-  const np2=document.getElementById('hd-newpin2');
-  if(np2)np2.addEventListener('keydown',e=>{if(e.key==='Enter')hdSavePinAndEnter();});
-  const ap=document.getElementById('hd-auth-pin');
-  if(ap)ap.addEventListener('keydown',e=>{if(e.key==='Enter')hdAccountLogin();});
-  try{
-    const re=localStorage.getItem('hd-rmb-email');
-    localStorage.removeItem('hd-rmb-pass');
-    if(re){const e=document.getElementById('hd-email');if(e)e.value=re;}
-    const c=document.getElementById('hd-remember');if(c&&re)c.checked=true;
-  }catch(e){}
-  if(!cloudInit()){_hdGateShow();_hdBox('hd-account-box');return;}
-  try{
-    const {data}=await _supa.auth.getSession();
-    const session=data&&data.session;
-    if(session&&session.user){
-      window.HD_PENDING_SESSION=session;
-      const rec=_hdGetPinRec();
-      if(rec&&rec.uid===session.user.id){
-        _hdGateShow();_hdBox('hd-pin-box');
-        setTimeout(()=>document.getElementById('hd-pin')?.focus(),120);
-      }else{
-        _hdGateShow();_hdBox('hd-setup-box');
-        setTimeout(()=>document.getElementById('hd-newpin')?.focus(),120);
-      }
-      return;
-    }
-  }catch(e){}
-  _hdGateShow();_hdBox('hd-account-box');
-  setTimeout(()=>document.getElementById('hd-email')?.focus(),120);
+ document.getElementById('hd-pin')?.addEventListener('keydown',e=>{if(e.key==='Enter')hdPinLogin();});
+ document.getElementById('hd-auth-pin2')?.addEventListener('keydown',e=>{if(e.key==='Enter')hdAccountLogin();});
+ try{localStorage.removeItem('hd-rmb-pass');}catch(_){}
+ _hdGateShow();hdBackToPin();
 }
 
 /* ========== INIT ========== */
@@ -10155,7 +10050,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1146',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1147',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10218,11 +10113,11 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1146"></script>
-<script src="ops.js?v=1146"></script>
+<script src="purchase-payments.js?v=1147"></script>
+<script src="ops.js?v=1147"></script>
 
-<script src="settings.js?v=1146"></script>
-<script src="project-closeout.js?v=1146"></script>
-<script src="invoice-vat-review.js?v=1146"></script>
+<script src="settings.js?v=1147"></script>
+<script src="project-closeout.js?v=1147"></script>
+<script src="invoice-vat-review.js?v=1147"></script>
 </body>
 </html>
