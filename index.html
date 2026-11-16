@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-16-1148">
+<meta name="app-build" content="2026-11-16-1149">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1148">
+<link rel="manifest" href="manifest.json?v=1149">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -564,7 +564,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1148">
+<link rel="stylesheet" href="ops.css?v=1149">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -585,6 +585,14 @@ window.opsData={
 </style>
 <style>.unit-table-scroll{overflow-x:auto;margin-top:12px;max-width:100%}.unit-project-table{width:100%;border-collapse:collapse;font-size:11.5px;text-align:right;min-width:330px}.unit-project-table th{background:#e0effc;color:#23527c;padding:8px 5px;font-weight:800;vertical-align:top}.unit-project-table td{padding:9px 5px;border-bottom:1px solid #cfe1f0;vertical-align:middle}.unit-project-table td:not(:first-child){white-space:nowrap;font-weight:800}.unit-project-table th:first-child{width:35%}.unit-project-link{background:none;border:0;padding:0;color:#23527c;font:inherit;font-weight:800;cursor:pointer;text-align:right;overflow-wrap:anywhere}.unit-project-link:hover{text-decoration:underline}</style>
 <style>#dashboard-money-kpis .kp-v,#dashboard-operating-kpis .mtc-v{font-size:clamp(14px,1vw,20px)}#dashboard-money-kpis .kp-l{font-size:11px;line-height:1.5}#dashboard-money-kpis .kp{min-width:0}body.hd-privacy #dashboard-money-kpis .kp-v,body.hd-privacy #dashboard-operating-kpis .mtc-v{filter:blur(7px)}</style>
+<style>
+.hd-secret-field{position:relative;display:flow-root}
+.hd-secret-field input{padding-left:48px!important}
+.hd-secret-toggle{position:absolute;left:3px;top:50%;transform:translateY(-50%);width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:0;border-radius:8px;background:transparent;color:#2771ab;cursor:pointer}
+.hd-secret-toggle:focus-visible{outline:2px solid #2771ab;outline-offset:-3px}
+.hd-secret-toggle .hd-eye-slash{display:none}
+.hd-secret-toggle[aria-pressed="true"] .hd-eye-slash{display:block}
+</style>
 </head>
 <body>
 
@@ -596,9 +604,9 @@ window.opsData={
     <div id="hd-pin-box">
       <div style="font-size:15px;font-weight:800;color:#143b62;margin-bottom:6px">رمز الدخول</div>
       <div style="font-size:11.5px;color:#64748b;margin-bottom:13px">أدخل رمز حسابك من 4 أرقام — يعمل على جميع الأجهزة</div>
-      <input id="hd-pin" aria-label="رمز الدخول من أربعة أرقام" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"
+      <div class="hd-secret-field"><input id="hd-pin" aria-label="رمز الدخول من أربعة أرقام" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"
         oninput="hdPinInput(this)"
-        style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:12px;font-size:26px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif">
+        style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:12px;font-size:26px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif"><button type="button" class="hd-secret-toggle" onclick="hdToggleSecret(this)" aria-controls="hd-pin" aria-label="إظهار الرمز" aria-pressed="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="hd-eye-slash" d="m3 3 18 18"/></svg></button></div>
       <button id="hd-pin-btn" onclick="hdPinLogin()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#2771ab,#1a4d7d);color:#fff;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">دخول</button>
       <button onclick="hdShowAccountLogin()" style="margin-top:11px;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">تفعيل الرمز أو استعادته</button>
       <button onclick="hdShowRecovery()" style="display:block;margin:11px auto 0;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit">نسيت البريد أو كلمة المرور؟</button>
@@ -609,12 +617,12 @@ window.opsData={
       <div style="font-size:11.5px;color:#64748b;margin-bottom:13px;line-height:1.7">فعّل رمزك مرة واحدة بالبريد وكلمة المرور. بعدها تدخل بالأرقام الأربعة فقط من أي جهاز. استخدم هذه الشاشة أيضًا إذا نسيت الرمز.</div>
       <input id="hd-email" type="email" inputmode="email" autocomplete="username" placeholder="البريد الإلكتروني"
         style="width:100%;box-sizing:border-box;direction:ltr;text-align:left;font-size:15px;font-weight:600;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif;margin-bottom:9px">
-      <input id="hd-pass" type="password" autocomplete="current-password" placeholder="كلمة المرور"
-        style="width:100%;box-sizing:border-box;direction:ltr;text-align:left;font-size:15px;font-weight:600;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif;margin-bottom:9px">
-      <input id="hd-auth-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="اختر رمزًا من 4 أرقام"
+      <div class="hd-secret-field"><input id="hd-pass" type="password" autocomplete="current-password" placeholder="كلمة المرور"
+        style="width:100%;box-sizing:border-box;direction:ltr;text-align:left;font-size:15px;font-weight:600;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif;margin-bottom:9px"><button type="button" class="hd-secret-toggle" onclick="hdToggleSecret(this)" aria-controls="hd-pass" aria-label="إظهار كلمة المرور" aria-pressed="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="hd-eye-slash" d="m3 3 18 18"/></svg></button></div>
+      <div class="hd-secret-field"><input id="hd-auth-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="اختر رمزًا من 4 أرقام"
         oninput="hdPinInput(this)"
-        style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:8px;font-size:20px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif">
-      <input id="hd-auth-pin2" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="تأكيد الرمز" oninput="hdPinInput(this)" aria-label="تأكيد رمز الحساب" style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:8px;font-size:20px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;margin-top:9px">
+        style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:8px;font-size:20px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif"><button type="button" class="hd-secret-toggle" onclick="hdToggleSecret(this)" aria-controls="hd-auth-pin" aria-label="إظهار الرمز" aria-pressed="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="hd-eye-slash" d="m3 3 18 18"/></svg></button></div>
+      <div class="hd-secret-field"><input id="hd-auth-pin2" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="تأكيد الرمز" oninput="hdPinInput(this)" aria-label="تأكيد رمز الحساب" style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:8px;font-size:20px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;margin-top:9px"><button type="button" class="hd-secret-toggle" onclick="hdToggleSecret(this)" aria-controls="hd-auth-pin2" aria-label="إظهار الرمز" aria-pressed="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="hd-eye-slash" d="m3 3 18 18"/></svg></button></div>
       <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:#143b62;font-weight:600;cursor:pointer;user-select:none">
         <input type="checkbox" id="hd-remember" style="width:17px;height:17px;accent-color:#2771ab;cursor:pointer">
         تذكّر البريد الإلكتروني
@@ -635,8 +643,8 @@ window.opsData={
     <div id="hd-reset-box" style="display:none">
       <div style="font-weight:800;color:#143b62">تعيين كلمة مرور جديدة</div>
       <p style="font-size:12px;color:#64748b;line-height:1.8">اختر كلمة مرور جديدة، ثم فعّل رمز الأربع أرقام للدخول لاحقًا.</p>
-      <input id="hd-reset-password" type="password" autocomplete="new-password" aria-label="كلمة المرور الجديدة" placeholder="كلمة مرور جديدة (8 أحرف على الأقل)" style="width:100%;box-sizing:border-box;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;margin-top:9px;font-family:inherit;direction:ltr">
-      <input id="hd-reset-confirm" type="password" autocomplete="new-password" aria-label="تأكيد كلمة المرور الجديدة" placeholder="تأكيد كلمة المرور الجديدة" style="width:100%;box-sizing:border-box;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;margin-top:9px;font-family:inherit;direction:ltr">
+      <div class="hd-secret-field"><input id="hd-reset-password" type="password" autocomplete="new-password" aria-label="كلمة المرور الجديدة" placeholder="كلمة مرور جديدة (8 أحرف على الأقل)" style="width:100%;box-sizing:border-box;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;margin-top:9px;font-family:inherit;direction:ltr"><button type="button" class="hd-secret-toggle" onclick="hdToggleSecret(this)" aria-controls="hd-reset-password" aria-label="إظهار كلمة المرور" aria-pressed="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="hd-eye-slash" d="m3 3 18 18"/></svg></button></div>
+      <div class="hd-secret-field"><input id="hd-reset-confirm" type="password" autocomplete="new-password" aria-label="تأكيد كلمة المرور الجديدة" placeholder="تأكيد كلمة المرور الجديدة" style="width:100%;box-sizing:border-box;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;margin-top:9px;font-family:inherit;direction:ltr"><button type="button" class="hd-secret-toggle" onclick="hdToggleSecret(this)" aria-controls="hd-reset-confirm" aria-label="إظهار كلمة المرور" aria-pressed="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="hd-eye-slash" d="m3 3 18 18"/></svg></button></div>
       <button id="hd-reset-btn" onclick="hdResetPassword()" style="width:100%;margin-top:12px;background:#2771ab;color:white;border:0;border-radius:14px;padding:14px;font-weight:800;font-family:inherit;cursor:pointer">حفظ كلمة المرور الجديدة</button>
       <button onclick="hdCancelRecovery()" style="background:none;border:0;color:#2771ab;padding:10px;font-family:inherit">إلغاء والعودة للرمز</button>
     </div>
@@ -733,7 +741,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1148</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1149</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1567,7 +1575,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1148</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1149</bdi></span></div>
   </div>
 </div>
 
@@ -9867,10 +9875,26 @@ function hdApplyRole(role){
   const sb=document.querySelector('.btn-set');if(sb)sb.style.display=acc?'none':'';
   if(acc)goTab('ls');
 }
+function hdToggleSecret(button){
+ const input=document.getElementById(button.getAttribute('aria-controls'));
+ if(!input)return;
+ const show=input.type==='password';
+ input.type=show?'text':'password';
+ button.setAttribute('aria-pressed',String(show));
+ const label=input.id==='hd-pass'||input.id.startsWith('hd-reset-')?'كلمة المرور':'الرمز';
+ button.setAttribute('aria-label',(show?'إخفاء ':'إظهار ')+label);
+}
+function hdHideSecrets(){
+ document.querySelectorAll('.hd-secret-toggle').forEach(button=>{
+  const input=document.getElementById(button.getAttribute('aria-controls'));
+  if(input?.type==='text')hdToggleSecret(button);
+ });
+}
 function _hdErr(m){const er=document.getElementById('hd-pin-err');if(er)er.textContent=m||'';}
-function _hdGateHide(){const g=document.getElementById('hdGate');if(g)g.style.display='none';try{document.documentElement.style.overflow='';}catch(e){}}
+function _hdGateHide(){hdHideSecrets();const g=document.getElementById('hdGate');if(g)g.style.display='none';try{document.documentElement.style.overflow='';}catch(e){}}
 function _hdGateShow(){const g=document.getElementById('hdGate');if(g)g.style.display='flex';try{document.documentElement.style.overflow='hidden';}catch(e){}}
 function _hdBox(which){
+  hdHideSecrets();
   ['hd-pin-box','hd-setup-box','hd-account-box','hd-recovery-box','hd-reset-box'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.style.display=(id===which)?'':'none';
   });
@@ -10148,7 +10172,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1148',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1149',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10211,11 +10235,11 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1148"></script>
-<script src="ops.js?v=1148"></script>
+<script src="purchase-payments.js?v=1149"></script>
+<script src="ops.js?v=1149"></script>
 
-<script src="settings.js?v=1148"></script>
-<script src="project-closeout.js?v=1148"></script>
-<script src="invoice-vat-review.js?v=1148"></script>
+<script src="settings.js?v=1149"></script>
+<script src="project-closeout.js?v=1149"></script>
+<script src="invoice-vat-review.js?v=1149"></script>
 </body>
 </html>
