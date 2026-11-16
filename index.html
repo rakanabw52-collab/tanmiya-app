@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-16-1147">
+<meta name="app-build" content="2026-11-16-1148">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1147">
+<link rel="manifest" href="manifest.json?v=1148">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -564,7 +564,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1147">
+<link rel="stylesheet" href="ops.css?v=1148">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -601,6 +601,7 @@ window.opsData={
         style="width:100%;box-sizing:border-box;direction:ltr;text-align:center;letter-spacing:12px;font-size:26px;font-weight:900;padding:12px;border:1.5px solid #cdd9e8;border-radius:12px;color:#143b62;background:#f8fafc;font-family:'Tajawal',sans-serif">
       <button id="hd-pin-btn" onclick="hdPinLogin()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#2771ab,#1a4d7d);color:#fff;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">دخول</button>
       <button onclick="hdShowAccountLogin()" style="margin-top:11px;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">تفعيل الرمز أو استعادته</button>
+      <button onclick="hdShowRecovery()" style="display:block;margin:11px auto 0;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit">نسيت البريد أو كلمة المرور؟</button>
     </div>
 
     <div id="hd-account-box" style="display:none">
@@ -619,8 +620,27 @@ window.opsData={
         تذكّر البريد الإلكتروني
       </label>
       <button id="hd-login-btn" onclick="hdAccountLogin()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#2771ab,#1a4d7d);color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">حفظ الرمز والدخول</button>
+      <button onclick="hdShowRecovery()" style="display:block;margin:11px auto 0;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit">نسيت البريد أو كلمة المرور؟</button>
       <button onclick="hdBackToPin()" style="margin-top:11px;background:none;border:none;color:#2771ab;font-size:12px;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer">العودة للرمز</button>
     </div>
+
+    <div id="hd-recovery-box" style="display:none">
+      <div style="font-weight:800;color:#143b62">استعادة الحساب</div>
+      <p style="font-size:12px;color:#64748b;line-height:1.8">أدخل بريد حسابك لنرسل رابط تعيين كلمة مرور جديدة. لا تحتاج كلمة المرور القديمة.</p>
+      <input id="hd-recovery-email" type="email" autocomplete="email" inputmode="email" aria-label="بريد الحساب للاستعادة" placeholder="البريد الإلكتروني" style="width:100%;box-sizing:border-box;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;margin-top:9px;font-family:inherit;direction:ltr">
+      <button id="hd-recovery-btn" onclick="hdSendRecovery()" style="width:100%;margin-top:12px;background:#2771ab;color:white;border:0;border-radius:14px;padding:14px;font-weight:800;font-family:inherit;cursor:pointer">إرسال رابط الاستعادة</button>
+      <p style="font-size:12px;color:#64748b;line-height:1.8">نسيت البريد أيضًا أو لا تستطيع فتحه؟ راجع مالك النظام للتحقق من حسابك في إدارة المستخدمين واستعادة الوصول.</p>
+      <button onclick="hdBackToPin()" style="background:none;border:0;color:#2771ab;padding:10px;font-family:inherit">العودة للرمز</button>
+    </div>
+    <div id="hd-reset-box" style="display:none">
+      <div style="font-weight:800;color:#143b62">تعيين كلمة مرور جديدة</div>
+      <p style="font-size:12px;color:#64748b;line-height:1.8">اختر كلمة مرور جديدة، ثم فعّل رمز الأربع أرقام للدخول لاحقًا.</p>
+      <input id="hd-reset-password" type="password" autocomplete="new-password" aria-label="كلمة المرور الجديدة" placeholder="كلمة مرور جديدة (8 أحرف على الأقل)" style="width:100%;box-sizing:border-box;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;margin-top:9px;font-family:inherit;direction:ltr">
+      <input id="hd-reset-confirm" type="password" autocomplete="new-password" aria-label="تأكيد كلمة المرور الجديدة" placeholder="تأكيد كلمة المرور الجديدة" style="width:100%;box-sizing:border-box;padding:13px;border:1.5px solid #cdd9e8;border-radius:12px;margin-top:9px;font-family:inherit;direction:ltr">
+      <button id="hd-reset-btn" onclick="hdResetPassword()" style="width:100%;margin-top:12px;background:#2771ab;color:white;border:0;border-radius:14px;padding:14px;font-weight:800;font-family:inherit;cursor:pointer">حفظ كلمة المرور الجديدة</button>
+      <button onclick="hdCancelRecovery()" style="background:none;border:0;color:#2771ab;padding:10px;font-family:inherit">إلغاء والعودة للرمز</button>
+    </div>
+    <div id="hd-recovery-status" role="status" aria-live="polite" style="color:#166534;font-size:12px;line-height:1.8;margin-top:8px"></div>
 
     <div id="hd-pin-err" role="alert" aria-live="polite" style="color:#b91c1c;font-size:12.5px;font-weight:700;margin-top:8px;min-height:16px"></div>
     <div class="hd-security-note">🔒 يجري التحقق من الرمز على الخادم مع الحفاظ على صلاحيات حسابك. يلزم الإنترنت للدخول، وتُقيّد المحاولات الخاطئة.</div>
@@ -713,7 +733,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1147</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1148</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1547,7 +1567,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1147</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1148</bdi></span></div>
   </div>
 </div>
 
@@ -1620,7 +1640,17 @@ let _lastSync=0;
 function cloudInit(){
   try{
     if(typeof supabase==='undefined'){console.warn('مكتبة Supabase غير محمّلة');return false;}
-    if(!_supa)_supa=supabase.createClient(SUPA_URL,SUPA_KEY);
+    if(!_supa){
+      _supa=supabase.createClient(SUPA_URL,SUPA_KEY);
+      // Keep this callback synchronous: awaiting Auth methods here can deadlock.
+      _supa.auth.onAuthStateChange((event,session)=>{
+        if(event==='PASSWORD_RECOVERY'&&session){
+          window.HD_RECOVERY_SESSION=session;
+          window.HD_AUTHED=false;
+          _hdGateShow();_hdBox('hd-reset-box');
+        }
+      });
+    }
     return true;
   }catch(e){console.warn('cloudInit:',e);return false;}
 }
@@ -9841,10 +9871,11 @@ function _hdErr(m){const er=document.getElementById('hd-pin-err');if(er)er.textC
 function _hdGateHide(){const g=document.getElementById('hdGate');if(g)g.style.display='none';try{document.documentElement.style.overflow='';}catch(e){}}
 function _hdGateShow(){const g=document.getElementById('hdGate');if(g)g.style.display='flex';try{document.documentElement.style.overflow='hidden';}catch(e){}}
 function _hdBox(which){
-  ['hd-pin-box','hd-setup-box','hd-account-box'].forEach(id=>{
+  ['hd-pin-box','hd-setup-box','hd-account-box','hd-recovery-box','hd-reset-box'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.style.display=(id===which)?'':'none';
   });
   _hdErr('');
+  const status=document.getElementById('hd-recovery-status');if(status)status.textContent='';
 }
 function hdBackToPin(){_hdBox('hd-pin-box');setTimeout(()=>document.getElementById('hd-pin')?.focus(),60);}
 async function hdShowAccountLogin(){
@@ -9858,6 +9889,64 @@ async function hdShowAccountLogin(){
     const c=document.getElementById('hd-remember');if(c&&re)c.checked=true;
   }catch(e){}
   setTimeout(()=>document.getElementById('hd-email')?.focus(),60);
+}
+function hdShowRecovery(){
+ if(HD_PIN_BUSY)return;
+ _hdBox('hd-recovery-box');
+ const field=document.getElementById('hd-recovery-email');
+ try{field.value=document.getElementById('hd-email')?.value||localStorage.getItem('hd-rmb-email')||'';}catch(_){}
+ field.focus();
+}
+function hdRecoveryError(error){
+ if(error?.status===429||/rate_limit/.test(error?.code||''))return 'طلبات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.';
+ return 'تعذّرت الاستعادة. تحقق من الإنترنت وحاول مرة أخرى. إذا استمرت المشكلة، تواصل مع مالك النظام.';
+}
+async function hdSendRecovery(){
+ if(HD_PIN_BUSY)return;
+ const field=document.getElementById('hd-recovery-email');
+ const email=field.value.trim();
+ if(!email||!field.checkValidity()){_hdErr('أدخل بريدًا إلكترونيًا صحيحًا');return;}
+ if(!cloudInit()){_hdErr('تعذّر الاتصال بالخادم');return;}
+ const btn=document.getElementById('hd-recovery-btn');
+ HD_PIN_BUSY=true;btn.disabled=true;_hdErr('');
+ document.getElementById('hd-recovery-status').textContent='';
+ try{
+  // Do not carry hashes (tokens) or query parameters into the email redirect.
+  const redirectTo=location.origin+location.pathname;
+  const {error}=await _supa.auth.resetPasswordForEmail(email,{redirectTo});
+  if(error)throw error;
+  document.getElementById('hd-recovery-status').textContent='إذا كان البريد مرتبطًا بحساب، ستصلك رسالة استعادة. افتح الرابط من بريدك وتحقق من مجلد الرسائل غير المرغوب فيها.';
+ }catch(e){_hdErr(hdRecoveryError(e));}
+ finally{HD_PIN_BUSY=false;btn.disabled=false;}
+}
+async function hdResetPassword(){
+ if(HD_PIN_BUSY)return;
+ if(!window.HD_RECOVERY_SESSION){_hdBox('hd-recovery-box');_hdErr('افتح رابط الاستعادة من بريدك أولًا. إذا انتهت صلاحيته، اطلب رابطًا جديدًا.');return;}
+ const password=document.getElementById('hd-reset-password').value;
+ if(password.length<8){_hdErr('اختر كلمة مرور من 8 أحرف على الأقل');return;}
+ if(password!==document.getElementById('hd-reset-confirm').value){_hdErr('تأكيد كلمة المرور غير مطابق');return;}
+ const btn=document.getElementById('hd-reset-btn');
+ HD_PIN_BUSY=true;btn.disabled=true;_hdErr('');
+ try{
+  const {data,error}=await _supa.auth.updateUser({password});
+  if(error)throw error;
+  const email=data?.user?.email||window.HD_RECOVERY_SESSION.user?.email||'';
+  // PIN registration requires a fresh password login; do not bypass that check.
+  await _supa.auth.signOut();window.HD_RECOVERY_SESSION=null;
+  ['hd-reset-password','hd-reset-confirm','hd-pass'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('hd-email').value=email;
+  _hdBox('hd-account-box');
+  document.getElementById('hd-recovery-status').textContent='تم تغيير كلمة المرور. أدخل كلمة المرور الجديدة واختر رمزًا من 4 أرقام وأكّده، ثم اضغط حفظ الرمز والدخول.';
+ }catch(e){
+  _hdErr(e?.code==='weak_password'?'اختر كلمة مرور أقوى تحتوي أحرفًا وأرقامًا.':e?.status===401||e?.status===403?'انتهت صلاحية الرابط. اطلب رابط استعادة جديدًا.':hdRecoveryError(e));
+ }finally{HD_PIN_BUSY=false;btn.disabled=false;}
+}
+async function hdCancelRecovery(){
+ if(HD_PIN_BUSY)return;
+ try{if(cloudInit())await _supa.auth.signOut();}catch(_){}
+ window.HD_RECOVERY_SESSION=null;
+ ['hd-reset-password','hd-reset-confirm'].forEach(id=>document.getElementById(id).value='');
+ hdBackToPin();
 }
 function hdNormalizePin(value){return String(value||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776));}
 function hdPinInput(el){el.value=hdNormalizePin(el.value).replace(/\D/g,'').slice(0,4);}
@@ -9933,7 +10022,7 @@ async function hdAccountLogin(){
  HD_PIN_BUSY=true;_hdErr('');if(btn){btn.disabled=true;btn.textContent='جاري تفعيل الرمز...';}
  try{
   const {data,error}=await _supa.auth.signInWithPassword({email:em,password:pw});
-  if(error||!data?.session){_hdErr('بريد أو كلمة مرور غير صحيحة');return;}
+  if(error||!data?.session){_hdErr('بريد أو كلمة مرور غير صحيحة. استخدم «نسيت البريد أو كلمة المرور؟» للاستعادة');return;}
   const role=await hdFetchRole(data.session.user.id);
   if(role!=='owner'&&role!=='accountant'){await _supa.auth.signOut();_hdErr('هذا الحساب لا يملك صلاحية');return;}
   await _hdPinCall('register',pin,data.session);
@@ -9964,6 +10053,15 @@ async function hdInitGate(){
  document.getElementById('hd-auth-pin2')?.addEventListener('keydown',e=>{if(e.key==='Enter')hdAccountLogin();});
  try{localStorage.removeItem('hd-rmb-pass');}catch(_){}
  _hdGateShow();hdBackToPin();
+ if(cloudInit()){
+  try{
+   const {error}=await _supa.auth.getSession();
+   if(window.HD_RECOVERY_SESSION)_hdBox('hd-reset-box');
+   else if(error||new URLSearchParams(location.hash.slice(1)).has('error_code')){
+    _hdBox('hd-recovery-box');_hdErr('رابط الاستعادة غير صالح أو منتهي الصلاحية. اطلب رابطًا جديدًا.');
+   }
+  }catch(_){_hdErr('تعذّر التحقق من رابط الدخول. تحقق من الإنترنت وأعد المحاولة.');}
+ }
 }
 
 /* ========== INIT ========== */
@@ -10050,7 +10148,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1147',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1148',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10113,11 +10211,11 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1147"></script>
-<script src="ops.js?v=1147"></script>
+<script src="purchase-payments.js?v=1148"></script>
+<script src="ops.js?v=1148"></script>
 
-<script src="settings.js?v=1147"></script>
-<script src="project-closeout.js?v=1147"></script>
-<script src="invoice-vat-review.js?v=1147"></script>
+<script src="settings.js?v=1148"></script>
+<script src="project-closeout.js?v=1148"></script>
+<script src="invoice-vat-review.js?v=1148"></script>
 </body>
 </html>
