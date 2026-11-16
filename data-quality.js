@@ -1,0 +1,102 @@
+/* Data review: report uncertain legacy facts; never invent dates, receipts or totals. */
+(function(){
+'use strict';
+const money=x=>toNum(x).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),active=x=>x&&x.status!=='cancelled';
+const norm=s=>String(s||'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/مشروع/g,'').replace(/\s+/g,'').trim();
+window.getDataQualityIssues=function(){
+ const issues=[],add=(kind,title,detail,ref)=>issues.push({kind,title,detail,...ref});
+ const invoices=invs.filter(active),orders=(window.opsData?.purchaseOrders||[]).filter(active);
+ const orphanGroups=new Map();
+ invoices.forEach(i=>{
+  if(i.projectId&&!hasKnownProject(i)){if(!orphanGroups.has(i.projectId))orphanGroups.set(i.projectId,[]);orphanGroups.get(i.projectId).push(i);}
+  if(invoiceMoneyIssue(i))add('amount','مبالغ فاتورة تحتاج مراجعة','رقم '+i.number+': الإجمالي '+money(i.total)+'، الصافي '+money(i.subtotal)+'، الضريبة '+money(i.vat),{invoiceId:i.id});
+  if(i.date>_todayStr())add('future','تاريخ فاتورة مستقبلي','رقم '+i.number+' بتاريخ '+i.date+'؛ تحقق من المستند.',{invoiceId:i.id});
+  if(i.type==='revenue'&&!hasKnownProject(i)&&projs.some(p=>norm(p.name).length>3&&norm(i.notes).includes(norm(p.name))))add('revenue','إيراد عام يشير إلى مشروع','رقم '+i.number+' بمبلغ '+money(i.total)+'؛ راجع هل هو إيراد إضافي أم دفعة من عقد قائم قبل احتسابه مرتين.',{invoiceId:i.id});
+ });
+ for(const [id,rows] of orphanGroups)add('orphan','فواتير مرتبطة بمشروع غير موجود',rows.length+' فاتورة، إجمالي '+money(rows.reduce((s,i)=>s+toNum(i.total),0))+' ر.س. مصروفاتها مدرجة في الرئيسية ضمن غير الموزع حتى تصحيح الربط.',{orphanId:id});
+ findDupInvoices().forEach(g=>add('duplicate','فواتير متشابهة تحتاج مراجعة','رقم '+g[0].number+' — '+g.length+' نسخ بمبلغ '+money(g[0].total)+' للنسخة. لا تُحذف تلقائيًا.',{}));
+ orders.forEach(o=>{
+  const label=o.number||o.supplierName||'شراء بدون رقم';
+  if(toNum(o.paid)>toNum(o.total)+.005)add('overpaid','سداد يتجاوز إجمالي الشراء',label+': المسدد '+money(o.paid)+'، الإجمالي '+money(o.total)+'، الفرق '+money(toNum(o.paid)-toNum(o.total))+'. لم يُعدّل المبلغ تلقائيًا.',{purchaseId:o.id});
+  if(o.directPurchase&&!journals.some(j=>(j.source==='purchase'&&j.sourceId===o.id)||(o.invoiceId&&j.source==='inv'&&j.sourceId===o.invoiceId)))add('posting','شراء لم يُرحّل محاسبيًا',label+' — '+money(o.total)+' ر.س. راجع قيد أصل الشراء قبل توثيق السداد.',{purchaseId:o.id,accounting:true});
+  const opening=toNum(o.paid)-(o.payments||[]).reduce((s,p)=>s+toNum(p.amount),0);
+  if(opening>0&&(!o.openingPayment||Math.abs(toNum(o.openingPayment.amount)-opening)>.01))add('payment','سداد سابق يحتاج تاريخًا وحساب دفع',label+' — '+money(opening)+' ر.س. أدخل بيانات المستند دون إضافة دفعة جديدة.',{purchaseId:o.id,payment:true});
+ });
+ projs.forEach(p=>{
+  if(toNum(p.siteExpensesTotal)>0&&!p.siteExpensesDate)add('costdate','مصروفات مجمّعة دون تاريخ',p.name+' — '+money(p.siteExpensesTotal)+' ر.س. التقارير السنوية أولية حتى توثيق التاريخ.',{projectId:p.id});
+  if(p.status==='done'&&!p.actualEndDate)add('delivery','مشروع مكتمل دون تاريخ تسليم فعلي',p.name,{projectId:p.id});
+ });
+ (window.opsData?.budgets||[]).forEach(b=>{
+  const sum=['materials','labor','equipment','subcontracts','overhead'].reduce((s,k)=>s+toNum(b[k]),0),gap=toNum(b.total)-sum;
+  if(Math.abs(gap)>.01)add('budget','ميزانية تحتاج توزيع البنود',(projName(b.projectId)||'مشروع')+': الإجمالي '+money(b.total)+'، البنود '+money(sum)+'، الفرق '+money(gap)+' ر.س.',{budgetId:b.id,projectId:b.projectId});
+ });
+ const names=new Map();projs.forEach(p=>{const key=norm(p.code||p.name);if(!key)return;if(!names.has(key))names.set(key,[]);names.get(key).push(p);});
+ for(const group of names.values())if(group.length>1)add('projectDuplicate','مشاريع متشابهة','راجع السجلات: '+group.map(p=>p.name).join('، ')+' قبل إنشاء مشروع آخر.',{});
+ return issues;
+};
+window.renderDataQualityStatus=function(){
+ const hero=document.getElementById('hero-profit');if(!hero)return;
+ let box=document.getElementById('data-quality-status');
+ if(!box){box=document.createElement('button');box.type='button';box.id='data-quality-status';box.style.cssText='width:100%;text-align:right;direction:rtl;background:#fff7ed;border:1px solid #fdba74;border-radius:12px;padding:12px;margin-bottom:12px;color:#9a3412;font:inherit;cursor:pointer;line-height:1.8';box.onclick=()=>openDataQualityReview();hero.before(box);}
+ const issues=getDataQualityIssues();box.hidden=!issues.length;
+ box.textContent='⚠️ مراجعة البيانات: '+issues.length+' ملاحظة — النتائج أولية حتى مراجعة المبالغ والربط والمستندات. اضغط للتفاصيل.';
+};
+window.openDataQualityReview=function(){
+ document.getElementById('data-quality-review')?.remove();
+ const overlay=document.createElement('div');overlay.id='data-quality-review';overlay.style.cssText='position:fixed;inset:0;z-index:100250;background:#0f172a99;display:flex;align-items:center;justify-content:center;padding:12px';
+ const panel=document.createElement('div');panel.style.cssText='background:white;color:#17324f;border-radius:16px;padding:18px;width:min(800px,100%);max-height:88vh;overflow:auto;direction:rtl;font-family:inherit';
+ const heading=document.createElement('h3');heading.textContent='مراجعة البيانات والمستندات';panel.append(heading);
+ const note=document.createElement('p');note.textContent='عولج إدراج المصروفات غير الموزعة في الحسابات. البنود التالية تحتاج مراجعة مستند أو اختيارًا منك؛ لم تُخمن مبالغها أو تواريخها.';panel.append(note);
+ const close=()=>overlay.remove();
+ const button=(label,action)=>{const b=document.createElement('button');b.type='button';b.className='h1077-btn';b.style.margin='5px';b.textContent=label;b.onclick=action;return b;};
+ panel.append(button('إغلاق',close));
+ const issues=getDataQualityIssues();if(!issues.length){const p=document.createElement('p');p.textContent='لم تظهر ملاحظات ضمن الفحوص الحالية.';panel.append(p);}
+ issues.forEach(issue=>{
+  const row=document.createElement('article');row.style.cssText='border:1px solid #dbe8f3;border-radius:10px;padding:12px;margin:10px 0;overflow-wrap:anywhere';
+  const title=document.createElement('strong');title.textContent=issue.title;
+  const detail=document.createElement('p');detail.style.cssText='font-size:13px;line-height:1.8';detail.textContent=issue.detail;row.append(title,detail);
+  if(issue.invoiceId)row.append(button('مراجعة الفاتورة',()=>{close();goTab('add');revInv(issue.invoiceId);}));
+  if(issue.kind==='duplicate')row.append(button('مقارنة النسخ',()=>{close();openDupCheck();}));
+  if(issue.orphanId)row.append(button('تصحيح ربط المجموعة',()=>openOrphanAssignment(issue.orphanId)));
+  if(issue.accounting)row.append(button('مراجعة الترحيل',()=>{close();goTab('acc');}));
+  if(issue.purchaseId)row.append(button(issue.payment?'توثيق السداد السابق':'مراجعة الشراء',()=>{close();if(issue.payment)openBuyPayment(issue.purchaseId);else opsOpen('purchase',issue.purchaseId);}));
+  if(issue.budgetId)row.append(button('توزيع الميزانية',()=>{close();opsOpen('budget',issue.budgetId,issue.projectId);}));
+  else if(issue.projectId)row.append(button('مراجعة المشروع',()=>{close();curProjId=issue.projectId;editProj();}));
+  panel.append(row);
+ });
+ overlay.append(panel);document.body.append(overlay);
+};
+let assigning=false;
+window.openOrphanAssignment=function(projectId){
+ if(window.HD_ROLE!=='owner')return toast('تصحيح ربط المجموعة متاح للمالك','er');
+ const rows=invs.filter(i=>i.projectId===projectId);if(!rows.length)return;
+ const panel=document.querySelector('#data-quality-review>div');if(!panel)return;
+ panel.replaceChildren();
+ const title=document.createElement('h3');title.textContent='تصحيح ربط '+rows.length+' فاتورة';panel.append(title);
+ const note=document.createElement('p');note.textContent='اختر المشروع الصحيح حسب المستندات، أو صنّفها كمصروفات عامة. ستُحفظ نسخة استعادة قبل تغيير الربط دون تغيير المبالغ.';panel.append(note);
+ const select=document.createElement('select');select.id='orphan-project-choice';select.style.cssText='width:100%;padding:12px;font:inherit';
+ [['','— اختر —'],['__general__','بدون مشروع / مصروفات عامة'],...projs.map(p=>[p.id,p.name])].forEach(([value,label])=>{const o=document.createElement('option');o.value=value;o.textContent=label;select.append(o);});panel.append(select);
+ const save=document.createElement('button');save.className='h1077-btn';save.style.marginTop='12px';save.textContent='حفظ الربط';
+ save.onclick=async()=>{
+  if(assigning||!select.value)return;
+  const chosen=select.value,target=chosen==='__general__'?'':chosen;
+  const current=invs.filter(i=>i.projectId===projectId);
+  if(!current.length||target&&!projs.some(p=>p.id===target))return;
+  if(current.some(i=>!_canEditInvoice(i,i.date)))return;
+  const fingerprint=JSON.stringify(current);
+  if(!await confirm2({title:'تأكيد تصحيح الربط',msg:'سيتم تغيير ربط '+current.length+' فاتورة إلى '+esc(target?projName(target):'بدون مشروع')+' دون تغيير مبالغها.',ok:'حفظ الربط'}))return;
+  assigning=true;save.disabled=true;const before=invs.slice();
+  try{
+   await _stInit();if(ST.mode==='memory')throw Error('تعذر ضمان حفظ نسخة استعادة على الجهاز');
+   if(!await saveReviewArchive('hd-review-backup:'+Date.now(),JSON.stringify({kind:'projectAssignment',at:new Date().toISOString(),invoices:current})))throw Error('تعذر حفظ نسخة الاستعادة');
+   if(JSON.stringify(invs.filter(i=>i.projectId===projectId))!==fingerprint)throw Error('تغيرت المجموعة أثناء المراجعة؛ أعد المحاولة');
+   invs=invs.map(i=>i.projectId===projectId?{...i,projectId:target}:i);
+   const result=await svDetailed();if(!result?.ok){invs=before;throw Error('تعذر حفظ الربط؛ بقيت الفواتير كما هي');}
+   logEvent('تصحيح ربط فواتير',current.length+' فاتورة');renderDB();renderList();openDataQualityReview();toast('تم تصحيح الربط دون تغيير المبالغ','ok');
+  }catch(e){toast(e.message,'er');}finally{assigning=false;save.disabled=false;}
+ };
+ panel.append(save);
+ const back=document.createElement('button');back.className='h1077-btn';back.style.margin='10px';back.textContent='رجوع';back.onclick=()=>openDataQualityReview();panel.append(back);
+};
+document.addEventListener('DOMContentLoaded',()=>renderDataQualityStatus());
+})();

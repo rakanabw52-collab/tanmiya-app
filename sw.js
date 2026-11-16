@@ -1,10 +1,10 @@
-// Service Worker - نظام هدف التنمية (إصدار 1150 - تحديث)
-const CACHE_NAME = 'hadaf-1150';
+// Service Worker - نظام هدف التنمية (إصدار 1151 - تحديث)
+const CACHE_NAME = 'hadaf-1151';
 const ASSETS = [
   './','./index.html','./manifest.json',
   './icon-192.png','./icon-512.png','./apple-touch-icon.png','./brand-logo.png',
   './apple-touch-icon-120.png','./apple-touch-icon-152.png','./apple-touch-icon-167.png',
-  './invoice-vat-review.js','./project-closeout.js','./purchase-payments.js','./ops.css','./ops.js','./integrate.js','./settings.js'
+  './data-quality.js','./invoice-vat-review.js','./project-closeout.js','./purchase-payments.js','./ops.css','./ops.js','./integrate.js','./settings.js'
 ];
 
 self.addEventListener('install',e=>e.waitUntil(
@@ -68,4 +68,4 @@ self.addEventListener('fetch',e=>{
 });
 
 self.addEventListener('message',e=>{if(e.data?.type==='SKIP_WAITING')self.skipWaiting();});
-console.log('✓ هدف التنمية إصدار 1150 — تحديث إجباري + إعدادات مرتبة');
+console.log('✓ هدف التنمية إصدار 1151 — تحديث إجباري + إعدادات مرتبة');

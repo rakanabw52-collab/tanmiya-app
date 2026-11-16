@@ -14,7 +14,7 @@ with sync_playwright() as p:
   projs=[{id:'q',name:'مشروع القيروان الرياض',status:'done',unit:'م.ط',quantity:4398,contractValue:219900,paidAmount:200000,contractPriceCorrection:{version:1133}},{id:'a',name:'مشروع الأمانة',status:'done',unit:'م.ط',quantity:6498,contractValue:324900,paidAmount:300000,contractPriceCorrection:{version:1133}},{id:'n',name:'الأنوار',status:'done',contractValue:170000,paidAmount:176400},{id:'r',name:'الراكة',status:'done',contractValue:50000,paidAmount:50000}];
   invs=[{id:'qi',projectId:'q',type:'revenue',total:19900},{id:'ai',projectId:'a',type:'revenue',total:24150}];
   const invoiceBefore=JSON.stringify(invs);await applyConfirmedProjectSettlements();await applyConfirmedProjectSettlements();renderDB();
-  return {q:projPL('q').outstanding,a:projPL('a').outstanding,qpaid:projPL('q').paid,apaid:projPL('a').paid,invoiceUnchanged:invoiceBefore===JSON.stringify(invs),n:projs[2].paidAmount,r:projs[3].paidAmount,flow:document.getElementById('db-cashflow').textContent,receivable:document.getElementById('r-projects').textContent};
+  return {q:projPL('q').outstanding,a:projPL('a').outstanding,qpaid:projPL('q').paid,apaid:projPL('a').paid,invoiceUnchanged:invoiceBefore===JSON.stringify(invs),n:projs[2].paidAmount,r:projs[3].paidAmount,flow:document.getElementById('db-client-due').textContent,receivable:document.getElementById('r-projects').textContent};
  }''')
  assert result['q']==0 and result['a']==0 and result['qpaid']==252885 and result['apaid']==373635,result
  assert result['invoiceUnchanged'] and result['n']==176400 and result['r']==50000

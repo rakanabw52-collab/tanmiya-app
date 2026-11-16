@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-16-1150">
+<meta name="app-build" content="2026-11-16-1151">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1150">
+<link rel="manifest" href="manifest.json?v=1151">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -327,9 +327,10 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 .fab{position:fixed;bottom:22px;left:22px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--pr),var(--pd));color:#fff;border:none;cursor:pointer;box-shadow:0 8px 22px rgba(39,113,171,.45);display:none;align-items:center;justify-content:center;z-index:90}
 .fab.show{display:flex}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(40px);background:#1F2937;color:#fff;padding:11px 18px;border-radius:11px;font-size:13.5px;font-weight:700;box-shadow:0 8px 22px rgba(0,0,0,.25);opacity:0;z-index:300;transition:.25s;max-width:90vw;text-align:center}
+.toast{z-index:100700!important}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .toast.ok{background:#15803D}.toast.er{background:#B91C1C}
-.cm-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.7);z-index:400;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px)}
+.cm-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.7);z-index:100500;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px)}
 .cm-bg.show{display:flex;animation:fi .15s ease}
 .cm{background:#fff;border-radius:15px;padding:18px;max-width:380px;width:100%;text-align:center;animation:su .2s ease}
 /* Projects */
@@ -564,7 +565,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1150">
+<link rel="stylesheet" href="ops.css?v=1151">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -741,7 +742,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1150</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1151</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1571,11 +1572,11 @@ window.opsData={
     <div class="card" style="background:linear-gradient(135deg,#FEF2F2,#FEE2E2);border:1px solid #FCA5A5;margin-top:10px">
       <div style="font-family:'Cairo',sans-serif;font-weight:800;color:#B91C1C;font-size:14px;margin-bottom:6px">🧹 الفواتير اليتيمة</div>
       <div style="font-size:11.5px;color:#B91C1C;line-height:1.7;margin-bottom:10px">
-        فواتير مرتبطة بمشروع <strong>محذوف</strong> — لا تظهر في أي مشروع ولا تُحتسب في الأرباح. احذفها لتنظيف بياناتك.
+        فواتير مرتبطة بمشروع <strong>غير موجود</strong>. تُحتسب مصروفاتها ضمن غير الموزع في الرئيسية؛ راجع الربط بالمستندات بدل حذفها.
       </div>
-      <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🧹 فحص وحذف اليتيمة</button>
+      <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🔎 مراجعة ربط الفواتير</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1150</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1151</bdi></span></div>
   </div>
 </div>
 
@@ -1931,7 +1932,9 @@ function _hdMergeById(local,cloud,key){
     const left=l.get(id),right=r.get(id),before=b.get(id),context={key:key||'records',id,left,right,base:before};
     _syncConflicts.delete(context.key+':'+id);
     let chosen;
-    if(!hasBase&&(left===undefined||right===undefined))chosen=_hdCopy(left===undefined?right:left);
+    const archived=[...(Array.isArray(window._hdServerArchive)?window._hdServerArchive:[]),...(typeof trash!=='undefined'&&Array.isArray(trash)?trash:[])].some(e=>e?.data?.id===id&&((key==='projects:_all'&&e.type==='proj')||(key==='invoices:_all'&&e.type==='inv')));
+    if((!hasBase||before===undefined)&&left!==undefined&&right===undefined&&archived)chosen=_hdConflict(left,right,before,context,'');
+    else if(!hasBase&&(left===undefined||right===undefined))chosen=_hdCopy(left===undefined?right:left);
     else chosen=_hdMergeValue(left,right,before,context,'',hasBase);
     const pending=_syncConflicts.get(context.key+':'+id);
     if(pending&&pending.fields.some(f=>_syncResolutions.get(pending.id+'|'+f.path)?.signature!==pending.signature)){
@@ -1980,6 +1983,9 @@ async function _cloudPullAllImpl(opts){
   let changed=false;
   _cloudReadFailed=false;_cloudReadErrors=[];_syncConflicts.clear();
   try{
+    const archiveRow=await cloudPull('trash','_all');
+    if(_cloudReadFailed)throw Error('تعذر قراءة سجل المحذوفات؛ توقفت المزامنة لحماية البيانات');
+    window._hdServerArchive=Array.isArray(archiveRow?.data)?archiveRow.data:[];
     const ci=await cloudPull('invoices','_all');
     const cp=await cloudPull('projects','_all');
     const cs=await cloudPull('settings','main');
@@ -2023,7 +2029,7 @@ async function _cloudPullAllImpl(opts){
       }
     }
     try{const ca=await cloudPull('audit','_all');if(ca&&Array.isArray(ca.data)){auditLog=_hdMergeById(auditLog,ca.data,'audit:_all').sort((a,b)=>(b.t||0)-(a.t||0));await _svRetry(SAUD,JSON.stringify(auditLog));}}catch(e){throw e;}
-    try{const ct=await cloudPull('trash','_all');if(ct&&Array.isArray(ct.data)){trash=_hdMergeById(trash,ct.data,'trash:_all').sort((a,b)=>(b.t||0)-(a.t||0));await _svRetry(STRA,JSON.stringify(trash));}}catch(e){throw e;}
+    try{const ct=archiveRow;if(ct&&Array.isArray(ct.data)){trash=_hdMergeById(trash,ct.data,'trash:_all').sort((a,b)=>(b.t||0)-(a.t||0));await _svRetry(STRA,JSON.stringify(trash));}}catch(e){throw e;}
     try{const cu=await cloudPull('audits','_all');if(cu&&Array.isArray(cu.data)){audits=_hdMergeById(audits,cu.data,'audits:_all').sort((a,b)=>(b.t||0)-(a.t||0));await _svRetry(SAU,JSON.stringify(audits));}}catch(e){throw e;}
     try{const cf=await cloudPull('cfo','_all');if(cf&&Array.isArray(cf.data)){cfoReports=_hdMergeById(cfoReports,cf.data,'cfo:_all').sort((a,b)=>(b.t||0)-(a.t||0));await _svRetry(SCFO,JSON.stringify(cfoReports));}}catch(e){throw e;}
     try{const cc=await cloudPull('coa','_all');if(cc&&Array.isArray(cc.data)&&cc.data.length){coa=_hdMergeById(coa,cc.data,'coa:_all');await _svRetry(SCOA,JSON.stringify(coa));}}catch(e){throw e;}
@@ -2075,13 +2081,17 @@ function cloudPushDebounced(){
 function cloudSubscribe(){
   if(!_cloudOn||!window.HD_AUTHED||!cloudInit())return;
   try{
-    _supa.channel('hadaf-sync')
+    if(window._hdSyncChannel)return;
+    window._hdSyncChannel=_supa.channel('hadaf-sync')
       .on('postgres_changes',{event:'*',schema:'public',table:'invoices'},()=>{
         if(!_syncing)cloudPullAll({silent:false});
       })
       .on('postgres_changes',{event:'*',schema:'public',table:'projects'},()=>{
         if(!_syncing)cloudPullAll({silent:false});
       })
+      .on('postgres_changes',{event:'*',schema:'public',table:'settings'},()=>{if(!_syncing)cloudPullAll({silent:false});})
+      .on('postgres_changes',{event:'*',schema:'public',table:'progress'},()=>{if(!_syncing)cloudPullAll({silent:false});})
+      .on('postgres_changes',{event:'*',schema:'public',table:'letters'},()=>{if(!_syncing)cloudPullAll({silent:false});})
       .subscribe();
   }catch(e){console.warn('cloudSubscribe:',e);}
 }
@@ -2787,6 +2797,7 @@ async function saveInv(){
   const no=document.getElementById('f-no').value.trim(),dt=document.getElementById('f-dt').value,vnd=document.getElementById('f-vnd').value.trim(),sub=toNum(document.getElementById('f-sub').value);
   if(!no){document.getElementById('f-no').focus();return toast('اكتب رقم الفاتورة','er');}
   if(!dt){document.getElementById('f-dt').focus();return toast('اختر التاريخ','er');}
+  if(dt>_todayStr()&&!await confirm2({title:'تاريخ مستقبلي',msg:'تاريخ الفاتورة بعد اليوم. تحقق من تاريخ المستند قبل الحفظ.',ok:'التاريخ صحيح'}))return;
   if(typeof hdIsPeriodClosed==='function'&&hdIsPeriodClosed(dt))return toast('🔒 الفترة المحاسبية لهذا التاريخ مقفلة','er');
   if(!vnd){document.getElementById('f-vnd').focus();return toast('اكتب اسم المورد/العميل','er');}
   if(sub<=0){document.getElementById('f-sub').focus();return toast('اكتب المبلغ (الأرقام يدوياً مدعومة عربي/إنجليزي)','er');}
@@ -2794,8 +2805,11 @@ async function saveInv(){
   if(getType()!=='revenue'&&!vatRecoveryChoice('f-vat-recovery'))return toast('اختر استرجاع ضريبة المصروف: نعم أو لا','er');
   cancelAS();
   const _vat=toNum(document.getElementById('f-v').value),_tot=toNum(document.getElementById('f-tot').value),_base=+(_tot-_vat).toFixed(2);
+  if(_vat<0||_tot<=0||_vat>_tot)return toast('تحقق من الإجمالي والضريبة؛ يجب ألا تتجاوز الضريبة الإجمالي','er');
   const existing=editId?invs.find(i=>i.id===editId):null;
   const inv={...(existing||{}),vatRecoverable:vatRecoveryChoice('f-vat-recovery')==='yes',id:editId||uid('inv'),type:getType(),number:no,date:dt,vendor:vnd,vendorVAT:document.getElementById('f-vtx').value.trim(),subtotal:_base>0?_base:sub,vatRate:toNum(document.getElementById('f-vr').value),vat:_vat,total:_tot>0?_tot:sub,category:document.getElementById('f-cat').value,projectId:document.getElementById('f-proj').value||'',notes:document.getElementById('f-nt').value.trim(),createdAt:editId?(invs.find(i=>i.id===editId)?.createdAt||Date.now()):Date.now()};
+  if(invoiceMoneyIssue(inv))return toast('تحقق من الصافي والضريبة والإجمالي قبل الحفظ','er');
+  if(!await confirmInvoiceIdentity(inv,editId))return;
   const backup=invs.slice();
   if(editId){const idx=invs.findIndex(i=>i.id===editId);if(idx>=0)invs[idx]=inv;}else{invs.unshift(inv);}
   logEvent(editId?'تعديل فاتورة':'إضافة فاتورة',(inv.number||'')+' — '+(inv.vendor||'')+' — '+fmtI(inv.total||0));
@@ -2818,7 +2832,7 @@ function filterInvs(){
   if(['revenue','purchase','expense'].includes(flt))res=res.filter(i=>i.type===flt);
   if(flt==='tax')res=res.filter(i=>(i.vat||0)>0);
   if(flt==='notax')res=res.filter(i=>!((i.vat||0)>0));
-  if(flt==='general')res=res.filter(i=>!i.projectId);
+  if(flt==='general')res=res.filter(i=>!hasKnownProject(i));
   if(flt==='m'){const n=new Date();res=res.filter(i=>{const d=new Date(i.date);return d.getFullYear()===n.getFullYear()&&d.getMonth()===n.getMonth();});}
   if(flt==='q'){const n=new Date(),qq=Math.floor(n.getMonth()/3);res=res.filter(i=>{const d=new Date(i.date);return d.getFullYear()===n.getFullYear()&&Math.floor(d.getMonth()/3)===qq;});}
   if(flt==='y'){const y=new Date().getFullYear();res=res.filter(i=>new Date(i.date).getFullYear()===y);}
@@ -2994,21 +3008,7 @@ function findOrphanInvs(){
   const pids=new Set(projs.map(p=>p.id));
   return invs.filter(i=>i.projectId&&!pids.has(i.projectId));
 }
-async function cleanOrphanInvs(){
-  const orph=findOrphanInvs();
-  if(!orph.length){toast('لا توجد فواتير يتيمة ✓','ok');return;}
-  const sum=orph.reduce((s,i)=>s+(i.total||0),0);
-  const msg='عدد الفواتير اليتيمة (مرتبطة بمشروع محذوف): <b>'+orph.length+'</b> بإجمالي <b>'+fmtI(sum)+'</b> ر.س.<br><br>هذه لا تظهر في أي مشروع ولا تُحتسب في أي ربح. حذفها نهائياً؟';
-  const ok=await confirm2({title:'حذف الفواتير اليتيمة',msg,ok:'حذف نهائي',danger:true});
-  if(!ok)return;
-  const ids=new Set(orph.map(i=>i.id));
-  logEvent('حذف الفواتير اليتيمة',orph.length+' فاتورة بإجمالي '+fmtI(sum));
-  invs=invs.filter(i=>!ids.has(i.id));
-  await sv();
-  if(typeof renderList==='function')renderList();
-  renderDB();
-  toast('تم حذف '+orph.length+' فاتورة يتيمة ✓','ok');
-}
+async function cleanOrphanInvs(){if(typeof closeSet==='function')closeSet();openDataQualityReview();}
 function renderList(){
   const list=filterInvs(),w=document.getElementById('inv-list');
   if(!list.length){w.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><h3 style="font-family:Cairo,sans-serif">لا توجد فواتير</h3></div>';return;}
@@ -3141,6 +3141,7 @@ async function saveQe(){
   const amt=toNum(document.getElementById('qe-amt').value);
   if(!vnd){document.getElementById('qe-vnd').focus();return toast('اكتب اسم المورد','er');}
   if(!dt){document.getElementById('qe-dt').focus();return toast('اختر التاريخ','er');}
+  if(dt>_todayStr()&&!await confirm2({title:'تاريخ مستقبلي',msg:'تحقق من تاريخ المستند قبل الحفظ.',ok:'التاريخ صحيح'}))return;
   if(amt<=0){document.getElementById('qe-amt').focus();return toast('اكتب المبلغ','er');}
   if(!qeVatMode){return toast('اختر احتساب الضريبة: شامل أو بدون','er');}
   if(!_canEditInvoice(qeId?invs.find(i=>i.id===qeId):null,dt))return;
@@ -3174,6 +3175,9 @@ async function saveQe(){
     };
     invs.unshift(newInv);
   }
+  const candidate=qeId?invs.find(i=>i.id===qeId):invs[0];
+  if(invoiceMoneyIssue(candidate)){invs=backup;return toast('تحقق من الصافي والضريبة والإجمالي قبل الحفظ','er');}
+  if(!await confirmInvoiceIdentity(candidate,qeId||candidate.id)){invs=backup;return;}
   toast('💾 جاري الحفظ...','ok');
   const r=await svDetailed();
   if(r.ok){
@@ -3599,6 +3603,32 @@ function _expAccFor(inv){
   return '5090';
 }
 // المصدر الموحد للفواتير المالية؛ المشتريات المباشرة تحتاج إثبات أهلية ضريبي صريح.
+async function saveReviewArchive(key,value){
+ try{
+  const result=await _svDetailed(key,value);
+  if(!result?.ok||result.warn==='memory')return false;
+  const stored=await _stGet(key);return stored?.value===value;
+ }catch(_){return false;}
+}
+function hasKnownProject(record){return !!record?.projectId&&projs.some(p=>p.id===record.projectId);}
+function invoiceMoneyIssue(inv){
+ const base=Number(inv?.subtotal??inv?.amount??0),vat=Number(inv?.vat??0),total=Number(inv?.total??(base+vat));
+ if(![base,vat,total].every(Number.isFinite)||base<0||vat<0||total<0)return 'مبلغ سالب أو غير صالح';
+ return Math.abs(Math.round(total*100)-Math.round(base*100)-Math.round(vat*100))>2?'الإجمالي لا يساوي الصافي والضريبة':'';
+}
+function invoiceDuplicateKey(i){
+ const norm=x=>hdNormalizePin(String(x||'')).normalize('NFKC').toLowerCase().replace(/[\s\p{P}\p{S}]+/gu,'');
+ if(!norm(i?.number)||!i?.date||!(toNum(i.total)>0))return null;
+ const vendor=norm(i.vendorVAT)||norm(i.vendor);
+ if(!vendor)return null;
+ return JSON.stringify([i.type||'',vendor,norm(i.number),i.date,Math.round(toNum(i.total)*100)]);
+}
+async function confirmInvoiceIdentity(candidate,exceptId){
+ const sig=invoiceDuplicateKey(candidate);
+ if(!sig||!invs.some(i=>i.id!==exceptId&&i.status!=='cancelled'&&invoiceDuplicateKey(i)===sig))return true;
+ return confirm2({title:'فاتورة مشابهة موجودة',msg:'يوجد سجل بنفس رقم الفاتورة وهوية المورد والتاريخ والمبلغ. راجع المستند قبل إضافة نسخة أخرى.',ok:'حفظ نسخة أخرى',danger:true});
+}
+
 function _financialInvoices(){
   const active=invs.filter(i=>i.status!=='cancelled').map(i=>({...i,subtotal:toNum(i.subtotal),vat:toNum(i.vat),total:toNum(i.total),_source:'inv',_sourceId:i.id}));
   const suppliers=window.opsData?.suppliers||[];
@@ -3629,7 +3659,9 @@ function _syncInvJournals(){
   let changed=0;_journalSyncIssues=[];
   journals=journals.filter(j=>{
     if(!['inv','purchase'].includes(j.source))return true;
-    const i=sources.get(j.source+':'+j.sourceId),lines=i?_invPostings(i):null;
+    const i=sources.get(j.source+':'+j.sourceId);
+    if(i&&invoiceMoneyIssue(i)){_journalSyncIssues.push('الفاتورة '+(i.number||i.id)+' تحتاج مراجعة الصافي والضريبة والإجمالي؛ حُفظ قيدها دون تغيير');return true;}
+    const lines=i?_invPostings(i):null;
     const same=!!lines&&j.date===i.date&&JSON.stringify(j.lines)===JSON.stringify(lines);
     if(same)return true;
     if(_isClosedDate(j.date)||_isClosedDate(i?.date)||journals.some(r=>r.reverses===j.id)){
@@ -3647,6 +3679,7 @@ function _syncInvJournals(){
 
 // بنود القيد المشتقة من فاتورة (متوازنة دائماً)
 function _invPostings(inv){
+  if(invoiceMoneyIssue(inv))return null;
   const base=+(inv.subtotal||0), vat=+(inv.vat||0), tot=+(base+vat).toFixed(2);
   if(tot<=0)return null;
   if(inv.type==='revenue'){
@@ -6621,14 +6654,14 @@ function renderProjList(){
       </div>
       <div class="pcard-grid">
         <div class="pgi"><div class="pgi-lbl">قيمة العقد</div><div class="pgi-val g">${fmtI(pl.rev)}</div></div>
-        <div class="pgi"><div class="pgi-lbl">المصروفات</div><div class="pgi-val">${fmtI(pl.cost)}</div></div>
-        <div class="pgi"><div class="pgi-lbl">الربح${pl.margin?' '+pl.margin.toFixed(1)+'%':''}</div><div class="pgi-val ${pCls}">${pl.profit>=0?'':'-'}${fmtI(Math.abs(pl.profit))}</div></div>
+        <div class="pgi"><div class="pgi-lbl">${p.status==='study'?'التكلفة التقديرية':'المصروفات'}</div><div class="pgi-val">${p.status==='study'?(p.feasibility?fmtI(p.feasibility.estTotal):'لم تحدد'):fmtI(pl.cost)}</div></div>
+        <div class="pgi"><div class="pgi-lbl">${p.status==='study'?'الربح المتوقع':'الربح'}${p.status!=='study'&&pl.margin?' '+pl.margin.toFixed(1)+'%':''}</div><div class="pgi-val ${pCls}">${p.status==='study'?(p.feasibility?fmtI(pl.contract-toNum(p.feasibility.estTotal)):'لم تحدد'):((pl.profit>=0?'':'-')+fmtI(Math.abs(pl.profit)))}</div></div>
       </div>
-      ${p.contractValue>0?`<div class="pcard-bar"><div class="pcard-fill ${barCls}" style="width:${Math.min(barW,100)}%"></div></div>
+      ${p.contractValue>0&&p.status!=='study'?`<div class="pcard-bar"><div class="pcard-fill ${barCls}" style="width:${Math.min(barW,100)}%"></div></div>
       <div class="pcard-bar-lbl"><span>المصروفات من العقد</span><span>${cvUsage.toFixed(1)}%</span></div>
       <div class="pcard-bar" style="margin-top:6px;background:#E0F2FE"><div class="pcard-fill" style="width:${Math.min(pl.paidPct,100)}%;background:linear-gradient(90deg,#0EA5E9,#0284C7)"></div></div>
       <div class="pcard-bar-lbl"><span>المسلّم: ${fmtI(pl.paid)}</span><span>المتبقي: ${fmtI(pl.outstanding)}</span></div>`:''}
-      ${_projPayDup(p.id)?`<div style="margin-top:6px;background:#FEF2F2;border:1px solid #FCA5A5;color:#B91C1C;border-radius:7px;padding:6px 9px;font-size:10.5px;font-weight:800;line-height:1.5">⚠️ تحصيل مزدوج محتمل: دفعة يدوية + فاتورة إيراد لنفس المشروع — احذف أحدهما</div>`:''}
+      ${_projPayDup(p.id)?`<div style="margin-top:6px;background:#FEF2F2;border:1px solid #FCA5A5;color:#B91C1C;border-radius:7px;padding:6px 9px;font-size:10.5px;font-weight:800;line-height:1.5">⚠️ تحصيل مزدوج محتمل: دفعة يدوية + فاتورة إيراد لنفس المشروع — راجع مصادر التحصيل قبل تعديلها</div>`:''}
     </div>`;
   }).join('')+'</div>';
 }
@@ -6999,6 +7032,11 @@ async function savePe(){
     manualOrder:existingP?.manualOrder,
     createdAt:editId?(existingP?.createdAt||Date.now()):Date.now()
   };
+  if(p.siteExpensesTotal>0&&!p.siteExpensesDate&&(!existingP||toNum(existingP.siteExpensesTotal)!==p.siteExpensesTotal))return toast('حدد تاريخ المصروفات المجمعة قبل الحفظ','er');
+  if(p.status==='done'&&!p.actualEndDate&&(!existingP||existingP.status!=='done'))return toast('حدد تاريخ التسليم الفعلي عند إكمال المشروع','er');
+  const projectNameKey=x=>String(x||'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/مشروع/g,'').replace(/\s+/g,'');
+  const similar=projs.some(x=>x.id!==p.id&&((p.code&&x.code===p.code)||projectNameKey(x.name)===projectNameKey(p.name)));
+  if(similar&&!await confirm2({title:'مشروع مشابه موجود',msg:'يوجد مشروع بنفس الاسم أو الرمز. تأكد من عدم إدخاله مرة أخرى من جهاز آخر.',ok:'حفظ مشروع مستقل'}))return;
   const backup=projs.slice();
   if(editId){const idx=projs.findIndex(x=>x.id===editId);if(idx>=0)projs[idx]=p;}
   else{projs.unshift(p);}
@@ -7056,6 +7094,9 @@ async function delProj(){curProjId&&(editId=curProjId,delPe());}
 
 function renderFeasibilityCompare(p,pl){
   const feas=p.feasibility;
+  if(p.status==='study'&&feas){
+   return '<div class="card"><strong>دراسة تقديرية — لم يبدأ التنفيذ</strong><p>التكلفة المتوقعة: '+fmt(toNum(feas.estTotal))+' ر.س — الربح المتوقع: '+fmt(pl.contract-toNum(feas.estTotal))+' ر.س.</p><p>لا تُعرض وفورات أو ربح فعلي قبل بدء التنفيذ.</p></div>';
+  }
   const planByCat=feas.byCat||{};
   const actualByCat=pl.byCat||{};
   // كل البنود التي ظهرت في الدراسة أو الواقع
@@ -7270,6 +7311,8 @@ function showProj(id){
   curProjId=id;
   _destroyDetailCharts();
   const pl=projPL(id);
+  const studyCost=p.status==='study'&&p.feasibility?toNum(p.feasibility.estTotal):null;
+  const studyProfit=studyCost===null?null:pl.contract-studyCost;
   const pinvs=invs.filter(i=>i.projectId===id&&i.status!=='cancelled').sort((a,b)=>new Date(b.date)-new Date(a.date));
   document.getElementById('pd-ttl').textContent=p.name;
 
@@ -7374,8 +7417,8 @@ function showProj(id){
 
   html+=`<div class="proj-pl-tot">
     <div class="ppl-c rev" style="cursor:pointer" onclick="editProj()"><div class="ppl-lbl">قيمة العقد <span style="font-size:9px;opacity:.6">✏️</span></div><div class="ppl-val">${fmt(pl.rev)}</div></div>
-    <div class="ppl-c cost"><div class="ppl-lbl">إجمالي المصروفات</div><div class="ppl-val">${fmt(pl.cost)}</div></div>
-    <div class="ppl-c ${pCls}"><div class="ppl-lbl">صافي الربح${pl.margin?' ('+pl.margin.toFixed(1)+'%)':''}</div><div class="ppl-val">${pl.profit>=0?'':'-'}${fmt(Math.abs(pl.profit))}</div></div>
+    <div class="ppl-c cost"><div class="ppl-lbl">${p.status==='study'?'التكلفة التقديرية':'إجمالي المصروفات'}</div><div class="ppl-val">${p.status==='study'?(studyCost===null?'لم تحدد':fmt(studyCost)):fmt(pl.cost)}</div></div>
+    <div class="ppl-c ${pCls}"><div class="ppl-lbl">${p.status==='study'?'الربح المتوقع':'صافي الربح'}${p.status!=='study'&&pl.margin?' ('+pl.margin.toFixed(1)+'%)':''}</div><div class="ppl-val">${p.status==='study'?(studyProfit===null?'لم تحدد':fmt(studyProfit)):((pl.profit>=0?'':'-')+fmt(Math.abs(pl.profit)))}</div></div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
     <button class="btn btn-p btn-sm" onclick="qNewInv('${p.id}','expense')" style="background:linear-gradient(135deg,#D97706,#B45309)">➕ مصروف للمشروع</button>
@@ -8215,7 +8258,7 @@ function equalizeColumns(){
 }
 
 function _generalPurchaseOrders(){
- return (window.opsData?.purchaseOrders||[]).filter(o=>!o.projectId&&o.status!=='cancelled'&&!(o.invoiceId&&invs.some(i=>i.id===o.invoiceId&&i.status!=='cancelled')));
+ return (window.opsData?.purchaseOrders||[]).filter(o=>!hasKnownProject(o)&&o.status!=='cancelled'&&!(o.invoiceId&&invs.some(i=>i.id===o.invoiceId&&i.status!=='cancelled')));
 }
 function dashboardOperatingMetrics(grossCost){
  const excluded=new Set(projs.filter(p=>p.status==='study').map(p=>p.id));
@@ -8226,8 +8269,8 @@ function dashboardOperatingMetrics(grossCost){
  const unlinked=o=>!(o.invoiceId&&activeInvoices.some(i=>i.id===o.invoiceId));
  const deductible=i=>_vatEligPurchase(i)?Math.min(Math.max(0,toNum(i.vat)),Math.max(0,toNum(i.total))):0;
  let recoverable=projs.filter(p=>p.status!=='study').reduce((sum,p)=>sum+projectRecoverableVAT(p.id),0);
- _financialInvoices().filter(i=>!i.projectId&&(i.type==='purchase'||i.type==='expense')).forEach(i=>recoverable+=deductible(i));
- orders.filter(o=>!o.projectId&&!o.directPurchase&&unlinked(o)&&o.vatRecoverable===true).forEach(o=>recoverable+=deductible(o));
+ _financialInvoices().filter(i=>!hasKnownProject(i)&&(i.type==='purchase'||i.type==='expense')).forEach(i=>recoverable+=deductible(i));
+ orders.filter(o=>!hasKnownProject(o)&&!o.directPurchase&&unlinked(o)&&o.vatRecoverable===true).forEach(o=>recoverable+=deductible(o));
  const due=x=>x.status==='paid'?0:Math.max(0,toNum(x.total)-toNum(x.paid));
  let payable=activeInvoices.filter(i=>i.type==='purchase'&&operating(i)).reduce((sum,i)=>{const linked=orders.find(o=>o.invoiceId===i.id);return sum+due(linked||i);},0);
  payable+=orders.filter(unlinked).reduce((sum,o)=>sum+due(o),0);
@@ -8238,18 +8281,19 @@ function dashboardOperatingMetrics(grossCost){
 }
 
 function renderDB(){
+  if(typeof renderDataQualityStatus==='function')renderDataQualityStatus();
   if(typeof renderDocsAlert==='function')renderDocsAlert();
   if(typeof renderOpsDashboardStrip==='function')renderOpsDashboardStrip();
   // المشاريع «تحت الدراسة» لا تدخل أرقامها في الداش بورد حتى تُحوّل إلى نشط
   const dashProjs=projs.filter(p=>p.status!=='study');
   const contractRev=dashProjs.reduce((s,p)=>s+_effectiveContract(p),0);
-  const standaloneRev=invs.filter(i=>i.type==='revenue'&&!i.projectId&&i.status!=='cancelled').reduce((s,i)=>s+toNum(i.total)-toNum(i.vat),0);
+  const standaloneRev=invs.filter(i=>i.type==='revenue'&&!hasKnownProject(i)&&i.status!=='cancelled').reduce((s,i)=>s+toNum(i.total)-toNum(i.vat),0);
   const trv=contractRev+standaloneRev;
   const rv=_financialInvoices().filter(i=>i.type==='revenue'&&_vatEligRevenue(i));
   // التكاليف تستخدم projPL لكل مشروع (يحترم المبلغ اليدوي) + الفواتير بدون مشروع
   let projCost=0;
   dashProjs.forEach(p=>{projCost+=projPL(p.id).cost;});
-  const standaloneCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!i.projectId&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
+  const standaloneCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!hasKnownProject(i)&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
   const generalOrders=_generalPurchaseOrders(),generalOrderCost=generalOrders.reduce((sum,o)=>sum+toNum(o.total),0);
   const tcs=projCost+standaloneCost+generalOrderCost;
   const cs=_financialInvoices().filter(i=>(i.type==='purchase'||i.type==='expense')&&_vatEligPurchase(i));
@@ -8290,7 +8334,7 @@ function renderDB(){
   const allByCat={};
   const addCategory=(cat,value)=>{const c=migrateCat(cat||'other');allByCat[c]=(allByCat[c]||0)+toNum(value);};
   dashProjs.forEach(p=>Object.entries(projPL(p.id).byCat).forEach(([cat,value])=>addCategory(cat,value)));
-  invs.filter(i=>!i.projectId&&i.status!=='cancelled'&&(i.type==='purchase'||i.type==='expense')).forEach(i=>addCategory(i.category,i.total));
+  invs.filter(i=>!hasKnownProject(i)&&i.status!=='cancelled'&&(i.type==='purchase'||i.type==='expense')).forEach(i=>addCategory(i.category,i.total));
   generalOrders.forEach(o=>addCategory(o.category||'materials',o.total));
   document.getElementById('s-rev').textContent=fmtI(trv);
   document.getElementById('s-cst').textContent=fmtI(operating.costNet);
@@ -9832,21 +9876,9 @@ async function clrAll(){
 
 /* ========== كشف الفواتير المكررة ========== */
 function findDupInvoices(){
-  const groups={};
-  invs.forEach(i=>{
-    // التوقيع: مورد + تاريخ + مبلغ + تصنيف + بيان
-    const sig=[
-      (i.vendor||'').trim(),
-      i.date||'',
-      Math.round((i.total||0)*100),
-      i.category||'',
-      (i.notes||'').trim(),
-      i.type||''
-    ].join('|');
-    if(!groups[sig])groups[sig]=[];
-    groups[sig].push(i);
-  });
-  return Object.values(groups).filter(g=>g.length>1);
+ const groups=new Map();
+ invs.filter(i=>i.status!=='cancelled').forEach(i=>{const key=invoiceDuplicateKey(i);if(!key)return;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(i);});
+ return [...groups.values()].filter(g=>g.length>1);
 }
 
 function openDupCheck(){
@@ -9862,21 +9894,22 @@ function openDupCheck(){
   inner+='<button onclick="document.getElementById(\'dup-overlay\').remove()" style="background:#F3F4F6;border:none;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer">✕</button></div>';
   
   if(!dups.length){
-    inner+='<div style="text-align:center;padding:30px 10px;color:#15803D"><div style="font-size:40px;margin-bottom:10px">✅</div><div style="font-weight:700;font-size:14px">ممتاز — لا توجد فواتير مكررة</div><div style="font-size:12px;color:var(--t2);margin-top:6px">كل فواتيرك فريدة</div></div>';
+    inner+='<div style="text-align:center;padding:30px 10px;color:#15803D"><div style="font-size:40px;margin-bottom:10px">✅</div><div style="font-weight:700;font-size:14px">ممتاز — لا توجد فواتير مكررة</div><div style="font-size:12px;color:var(--t2);margin-top:6px">لم تظهر حالات وفق تطابق رقم الفاتورة وهوية المورد والتاريخ والمبلغ</div></div>';
   }else{
     let totalDupCount=0,totalDupAmount=0;
     dups.forEach(g=>{totalDupCount+=g.length-1;totalDupAmount+=(g.length-1)*(g[0].total||0);});
     inner+='<div style="background:#FEF3C7;border:1.5px solid #FDE68A;border-radius:9px;padding:10px;margin-bottom:12px;font-size:12.5px;color:#92400E">';
-    inner+='⚠️ وُجد <strong>'+dups.length+'</strong> مجموعة مكررة — <strong>'+totalDupCount+'</strong> فاتورة زائدة بقيمة <strong>'+fmt(totalDupAmount)+' ر.س</strong></div>';
-    inner+='<button onclick="removeAllDups()" style="width:100%;background:#B91C1C;color:#fff;border:none;border-radius:9px;padding:11px;font-family:Cairo,sans-serif;font-weight:800;font-size:13px;cursor:pointer;margin-bottom:14px">🗑️ حذف كل المكرر تلقائياً (يبقي نسخة واحدة)</button>';
+    inner+='⚠️ وُجد <strong>'+dups.length+'</strong> مجموعة متشابهة تحتاج مراجعة — <strong>'+totalDupCount+'</strong> نسخة محتملة التكرار بقيمة <strong>'+fmt(totalDupAmount)+' ر.س</strong></div>';
+    inner+='<p style="font-size:12px;color:#92400E">اختر النسخة الصحيحة لكل مجموعة. تُؤرشف النسخ الأخرى قبل إزالتها، ولا تُحذف أي مجموعة تلقائيًا.</p>';
     
     dups.forEach((g,gi)=>{
       const keep=g[0],extras=g.length-1;
       inner+='<div style="border:1px solid var(--bd);border-radius:10px;padding:11px;margin-bottom:9px">';
       inner+='<div style="font-weight:700;font-size:12.5px;margin-bottom:3px">'+esc(keep.vendor||'بدون مورد')+'</div>';
       inner+='<div style="font-size:11px;color:var(--t2);margin-bottom:7px">'+fmtD(keep.date)+' • '+fmt(keep.total)+' ر.س • '+esc(catLabel(keep)||'')+'</div>';
-      inner+='<div style="background:#FEE2E2;border-radius:7px;padding:7px 9px;font-size:11.5px;color:#991B1B;margin-bottom:7px">مكررة <strong>'+g.length+'</strong> مرات — '+extras+' نسخة زائدة</div>';
-      inner+='<button onclick="removeDupGroup('+gi+')" style="width:100%;background:#FEE2E2;color:#B91C1C;border:1px solid #FCA5A5;border-radius:8px;padding:8px;font-weight:700;font-size:12px;cursor:pointer">حذف '+extras+' نسخة زائدة من هذه المجموعة</button>';
+      inner+='<div style="background:#FEE2E2;border-radius:7px;padding:7px 9px;font-size:11.5px;color:#991B1B;margin-bottom:7px">نسخ متشابهة <strong>'+g.length+'</strong> مرات — '+extras+' نسخة زائدة</div>';
+      g.forEach((item,ii)=>{inner+='<label style="display:block;padding:8px;border-top:1px solid #ddd;font-size:12px"><input type="radio" name="dup-keep-'+gi+'" value="'+ii+'"> إبقاء رقم '+esc(item.number)+' — '+esc(item.vendor)+' — '+esc(catLabel(item)||'')+' — '+esc(projName(item.projectId)||'بدون مشروع')+' — ضريبة '+fmt(item.vat||0)+'</label>';});
+      inner+='<button onclick="removeDupGroup('+gi+')" style="width:100%;background:#FEE2E2;color:#B91C1C;border:1px solid #FCA5A5;border-radius:8px;padding:8px;font-weight:700;font-size:12px;cursor:pointer">أرشفة '+extras+' نسخة بعد المراجعة</button>';
       inner+='</div>';
     });
   }
@@ -9886,38 +9919,36 @@ function openDupCheck(){
   window._dupGroups=dups;
 }
 
+let _dupRemoveBusy=false;
 async function removeDupGroup(gi){
-  const dups=window._dupGroups||findDupInvoices();
-  const g=dups[gi];
-  if(!g||g.length<2)return;
-  // نبقي الأقدم (أصغر createdAt) ونحذف الباقي
-  const sorted=[...g].sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
-  const removeIds=sorted.slice(1).map(x=>x.id);
-  const ok=await confirm2({title:'حذف المكرر',msg:'سيتم حذف <strong>'+removeIds.length+'</strong> نسخة زائدة والإبقاء على نسخة واحدة.',ok:'حذف',danger:true});
-  if(!ok)return;
-  invs=invs.filter(i=>!removeIds.includes(i.id));
-  await sv();renderDB();renderList&&renderList();
-  document.getElementById('dup-overlay')?.remove();
-  toast('✅ حُذف '+removeIds.length+' فاتورة مكررة','ok');
-  openDupCheck();
+ if(_dupRemoveBusy)return;
+ const group=window._dupGroups?.[gi];if(!group||group.length<2)return;
+ const choice=document.querySelector('input[name="dup-keep-'+gi+'"]:checked');
+ if(!choice)return toast('اختر النسخة الصحيحة التي تريد إبقاءها أولًا','er');
+ const keep=group[Number(choice.value)];if(!keep)return;
+ const current=findDupInvoices().find(g=>g.some(i=>i.id===keep.id));
+ if(!current||JSON.stringify(current)!==JSON.stringify(group))return toast('تغيرت البيانات. أغلق المراجعة وافتحها مجددًا','er');
+ const remove=current.filter(i=>i.id!==keep.id);
+ if(remove.some(i=>!_canEditInvoice(i,i.date)))return;
+ if(remove.some(i=>journals.some(j=>j.source==='inv'&&j.sourceId===i.id&&journals.some(r=>r.reverses===j.id))))return toast('توجد قيود عكسية مرتبطة؛ راجع المحاسب قبل أرشفة الفاتورة','er');
+ const fingerprint=JSON.stringify(current);
+ _dupRemoveBusy=true;
+ if(!await confirm2({title:'أرشفة نسخ الفاتورة',msg:'ستبقى النسخة المحددة، وتُنقل '+remove.length+' نسخة إلى المحذوفات مع حفظ بياناتها للاستعادة.',ok:'أرشفة النسخ الأخرى',danger:true})){_dupRemoveBusy=false;return;}
+ if(JSON.stringify(findDupInvoices().find(g=>g.some(i=>i.id===keep.id)))!==fingerprint){_dupRemoveBusy=false;return toast('تغيرت الفواتير أثناء المراجعة؛ أعد فتح المقارنة','er');}
+ try{
+  const beforeTrash=trash.slice();
+  const archived=remove.map(i=>({id:uid('trash'),t:Date.now(),u:_hdWho(),type:'inv',data:_hdCopy(i),reason:'نسخة مشابهة راجعها المستخدم',replacementInvoiceId:keep.id}));
+  if(!await saveReviewArchive(STRA,JSON.stringify([...archived,...beforeTrash])))throw Error('تعذر حفظ نسخة الاستعادة؛ بقيت كل الفواتير');
+  trash=[...archived,...beforeTrash];
+  if(JSON.stringify(findDupInvoices().find(g=>g.some(i=>i.id===keep.id)))!==fingerprint)throw Error('تغيرت الفواتير؛ لم تُؤرشف أي نسخة');
+  const before=invs.slice();
+  invs=before.filter(i=>!remove.some(r=>r.id===i.id));
+  const result=await svDetailed();
+  if(!result?.ok){invs=before;throw Error('تعذر حفظ الأرشفة؛ بقيت الفواتير ونسخة الاستعادة');}
+  _syncInvJournals();renderDB();renderList();openDupCheck();toast('أُرشفت النسخ المحددة مع حفظ إمكانية الاستعادة','ok');
+ }catch(e){toast(e.message,'er');}finally{_dupRemoveBusy=false;}
 }
-
-async function removeAllDups(){
-  const dups=findDupInvoices();
-  if(!dups.length)return;
-  let removeIds=[];
-  dups.forEach(g=>{
-    const sorted=[...g].sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
-    removeIds.push(...sorted.slice(1).map(x=>x.id));
-  });
-  const ok=await confirm2({title:'حذف كل المكرر',msg:'سيتم حذف <strong>'+removeIds.length+'</strong> فاتورة مكررة والإبقاء على نسخة واحدة من كل مجموعة.<br><br>هذا الإجراء لا يمكن التراجع عنه.',ok:'حذف الكل',danger:true});
-  if(!ok)return;
-  invs=invs.filter(i=>!removeIds.includes(i.id));
-  await sv();renderDB();renderList&&renderList();
-  document.getElementById('dup-overlay')?.remove();
-  toast('✅ حُذف '+removeIds.length+' فاتورة مكررة','ok');
-}
-
+async function removeAllDups(){openDupCheck();toast('راجع المجموعات واختر النسخة الصحيحة؛ الأرشفة الجماعية التلقائية معطلة','er');}
 
 
 /* ===== الحماية: Supabase Auth + رمز حساب من 4 أرقام يعمل على جميع الأجهزة ===== */
@@ -10231,7 +10262,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1150',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1151',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10294,11 +10325,12 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1150"></script>
-<script src="ops.js?v=1150"></script>
+<script src="purchase-payments.js?v=1151"></script>
+<script src="ops.js?v=1151"></script>
 
-<script src="settings.js?v=1150"></script>
-<script src="project-closeout.js?v=1150"></script>
-<script src="invoice-vat-review.js?v=1150"></script>
+<script src="settings.js?v=1151"></script>
+<script src="project-closeout.js?v=1151"></script>
+<script src="invoice-vat-review.js?v=1151"></script>
+<script src="data-quality.js?v=1151"></script>
 </body>
 </html>

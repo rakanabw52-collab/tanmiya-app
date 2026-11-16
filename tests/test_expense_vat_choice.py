@@ -19,7 +19,7 @@ with sync_playwright() as p:
  page.evaluate("closeDet();qEditInv('e')");assert page.locator('#qe-vat-recovery').input_value()=='no'
  page.locator('#qe-vat-recovery').select_option('yes');page.evaluate('saveQe()');page.wait_for_function('invs[0].vatRecoverable===true')
  page.evaluate("showProj('v');editProj()")
- page.locator('#pe-se').fill('2300');page.locator('#pe-vat-recovery').select_option('yes');page.locator('#pe-expense-vat').fill('300');page.evaluate('savePe()');page.wait_for_function('projs[0].siteVATRecoverable===true')
+ page.locator('#pe-se').fill('2300');page.locator('#pe-se-date').fill('2026-11-01');page.locator('#pe-vat-recovery').select_option('yes');page.locator('#pe-expense-vat').fill('300');page.evaluate('savePe()');page.wait_for_function('projs[0].siteVATRecoverable===true')
  assert page.evaluate("[projPL('v').costNet,projectCloseoutSnapshot('v').recoverableVAT,projectCloseoutSnapshot('v').profit]")==[2000,300,98000]
  page.evaluate("showProj('v');editProj()");assert page.locator('#pe-vat-recovery').input_value()=='yes' and page.locator('#pe-expense-vat').input_value()=='300'
  # Pure source examples include manual override and linked PO de-duplication.
