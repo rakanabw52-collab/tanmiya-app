@@ -34,24 +34,42 @@ window.getDataQualityIssues=function(){
  for(const group of names.values())if(group.length>1)add('projectDuplicate','مشاريع متشابهة','راجع السجلات: '+group.map(p=>p.name).join('، ')+' قبل إنشاء مشروع آخر.',{});
  return issues;
 };
+window.getDataQualitySummary=function(issues=getDataQualityIssues()){
+ const groups=[
+  {id:'financial',title:'المبالغ والربط والفترات المالية',issues:[]},
+  {id:'accounting',title:'الترحيل وتوثيق السداد',issues:[]},
+  {id:'project',title:'استكمال بيانات المشاريع',issues:[]}
+ ];
+ for(const issue of issues){
+  const group=['posting','payment'].includes(issue.kind)?groups[1]:['delivery','budget'].includes(issue.kind)?groups[2]:groups[0];
+  group.issues.push(issue);
+ }
+ return {total:issues.length,groups:groups.filter(g=>g.issues.length)};
+};
 window.renderDataQualityStatus=function(){
  const hero=document.getElementById('hero-profit');if(!hero)return;
  let box=document.getElementById('data-quality-status');
  if(!box){box=document.createElement('button');box.type='button';box.id='data-quality-status';box.style.cssText='width:100%;text-align:right;direction:rtl;background:#fff7ed;border:1px solid #fdba74;border-radius:12px;padding:12px;margin-bottom:12px;color:#9a3412;font:inherit;cursor:pointer;line-height:1.8';box.onclick=()=>openDataQualityReview();hero.before(box);}
- const issues=getDataQualityIssues();box.hidden=!issues.length;
- box.textContent='⚠️ مراجعة البيانات: '+issues.length+' ملاحظة — النتائج أولية حتى مراجعة المبالغ والربط والمستندات. اضغط للتفاصيل.';
+ const summary=getDataQualitySummary();box.hidden=!summary.total;
+ box.textContent='⚠️ '+summary.total+' ملاحظة للمراجعة: '+summary.groups.map(g=>g.issues.length+' — '+g.title).join('؛ ')+'. اضغط للتفاصيل.';
 };
 window.openDataQualityReview=function(){
  document.getElementById('data-quality-review')?.remove();
  const overlay=document.createElement('div');overlay.id='data-quality-review';overlay.style.cssText='position:fixed;inset:0;z-index:100250;background:#0f172a99;display:flex;align-items:center;justify-content:center;padding:12px';
  const panel=document.createElement('div');panel.style.cssText='background:white;color:#17324f;border-radius:16px;padding:18px;width:min(800px,100%);max-height:88vh;overflow:auto;direction:rtl;font-family:inherit';
  const heading=document.createElement('h3');heading.textContent='مراجعة البيانات والمستندات';panel.append(heading);
- const note=document.createElement('p');note.textContent='عولج إدراج المصروفات غير الموزعة في الحسابات. البنود التالية تحتاج مراجعة مستند أو اختيارًا منك؛ لم تُخمن مبالغها أو تواريخها.';panel.append(note);
+ const note=document.createElement('p');note.textContent='العدد يحسب كل ملاحظة على حدة؛ قد يظهر الشراء الواحد في مراجعة الترحيل وتوثيق السداد معًا. راجع المستند قبل تغيير المبالغ أو التواريخ.';panel.append(note);
  const close=()=>overlay.remove();
  const button=(label,action)=>{const b=document.createElement('button');b.type='button';b.className='h1077-btn';b.style.margin='5px';b.textContent=label;b.onclick=action;return b;};
  panel.append(button('إغلاق',close));
- const issues=getDataQualityIssues();if(!issues.length){const p=document.createElement('p');p.textContent='لم تظهر ملاحظات ضمن الفحوص الحالية.';panel.append(p);}
- issues.forEach(issue=>{
+ const summary=getDataQualitySummary();if(!summary.total){const p=document.createElement('p');p.textContent='لم تظهر ملاحظات ضمن الفحوص الحالية.';panel.append(p);}
+ summary.groups.forEach(group=>{
+ const heading=document.createElement('h4');heading.textContent=group.title+' ('+group.issues.length+')';panel.append(heading);
+ if(group.id==='accounting'){
+  const purchases=new Set(group.issues.filter(i=>i.purchaseId).map(i=>i.purchaseId));
+  const note=document.createElement('p');note.textContent=group.issues.length+' ملاحظة تخص '+purchases.size+' عملية شراء. افتح السجل الحالي لكل شراء لتوثيق السداد أو مراجعة الترحيل.';panel.append(note);
+ }
+ group.issues.forEach(issue=>{
   const row=document.createElement('article');row.style.cssText='border:1px solid #dbe8f3;border-radius:10px;padding:12px;margin:10px 0;overflow-wrap:anywhere';
   const title=document.createElement('strong');title.textContent=issue.title;
   const detail=document.createElement('p');detail.style.cssText='font-size:13px;line-height:1.8';detail.textContent=issue.detail;row.append(title,detail);
@@ -63,6 +81,7 @@ window.openDataQualityReview=function(){
   if(issue.budgetId)row.append(button('توزيع الميزانية',()=>{close();opsOpen('budget',issue.budgetId,issue.projectId);}));
   else if(issue.projectId)row.append(button('مراجعة المشروع',()=>{close();curProjId=issue.projectId;editProj();}));
   panel.append(row);
+ });
  });
  overlay.append(panel);document.body.append(overlay);
 };
