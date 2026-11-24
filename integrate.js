@@ -198,11 +198,16 @@ function project(){const b=document.getElementById('ops-body');if(!b)return;if(!
 window.renderOps=function(){if(window._opsView==='overview')return project();if(window._opsView==='subs'){window._opsView='overview';return project()}if(window._opsView==='procurement'||window._opsView==='suppliers'){window.goTab('proc');setTimeout(()=>renderBuy1077(window._opsView==='suppliers'?'sup':'list'),20);return}if(typeof baseRender==='function')baseRender();const b=document.getElementById('ops-body');if(!b)return;if(window._opsView==='claims'){b.querySelectorAll('tr').forEach(r=>{if((r.textContent||'').includes('مقاول باطن'))r.remove()});b.innerHTML=b.innerHTML.replaceAll('المدفوع/المحصّل','المحصّل')}if(window._opsView==='aging')b.innerHTML=b.innerHTML.replaceAll('أمر شراء','شراء مباشر').replaceAll('مقاول باطن','مورد/مصروف')};
 window.opsOpen=function(type,id,preset){const actions=document.querySelector('#ops-modal .ops-modal-actions');if(actions)actions.style.display='';if(type==='purchase')return openBuy(id,preset);if(typeof baseOpen==='function')baseOpen(type,id,preset);if(type==='budget')setTimeout(()=>document.getElementById('of-subcontracts')?.closest('.ops-f')?.style.setProperty('display','none'),0)};
 function openBuy(id,preset){const x=id?Object.assign({},A('purchaseOrders').find(z=>z.id===id)||{}):{};window._opsEdit={type:'purchase',id:id||'',preset:preset||''};const pid=preset||x.projectId||'';
+ const missingProject=pid&&!P().some(p=>p.id===pid);
+ const projectOptions='<option value="__select__" disabled '+(!id&&!pid?'selected':'')+'>— اختر مشروعًا أو مشتريات عامة —</option>'
+  +'<option value="" '+(id&&!pid?'selected':'')+'>مشتريات عامة / بدون مشروع</option>'
+  +(missingProject?'<option value="'+E(pid)+'" selected>مشروع غير موجود — اختر ربطًا صحيحًا</option>':'')
+  +P().map(p=>'<option value="'+E(p.id)+'" '+(p.id===pid?'selected':'')+'>'+E(p.name)+'</option>').join('');
  const seedItems=(x.items&&x.items.length)?x.items:((x.amount||x.notes)?[{desc:x.notes||'',amount:x.amount||0}]:[{desc:'',amount:''}]);
  const itemsHtml=seedItems.map(it=>poItemRowHtml(it.desc,it.amount)).join('');
  const bankShow=x.paymentMethod==='تحويل';
  const f=(id?'<div class="ops-f full"><button type="button" class="h1077-btn" style="width:100%;background:#1a4d7d;color:#fff;padding:11px;font-weight:800" onclick="opsPrintPO(\''+id+'\',\'أمر شراء\')">🖨️ طباعة أمر الشراء (موقّع ومختوم)</button></div>':'')
-  +'<div class="ops-f"><label>التاريخ</label><input id="of-date" type="date" value="'+E(x.date||T())+'"></div><div class="ops-f"><label>المشروع</label><select id="of-proj">'+projOpts(pid)+'</select></div><div class="ops-f"><label>المورد (من القائمة)</label><select id="of-supplier">'+supOpts(x.supplierId)+'</select></div><div class="ops-f"><label>أو اكتب اسم المورد يدوياً</label><input id="of-supplier-manual" value="'+E(x.supplierName||'')+'" placeholder="إن لم يكن في القائمة"></div><div class="ops-f"><label>تصنيف المصروف</label><input id="of-cat" list="expense-categories" value="'+E(x.category||'')+'" placeholder="اختر التصنيف أو اكتب غيره"><datalist id="expense-categories"><option value="مواد"><option value="نقل"><option value="إيجار معدات"><option value="رواتب"><option value="مصاريف موقع"><option value="محروقات"><option value="إعاشة"><option value="خدمات"><option value="أخرى"></datalist></div>'
+  +'<div class="ops-f"><label>التاريخ</label><input id="of-date" type="date" value="'+E(x.date||T())+'"></div><div class="ops-f"><label>المشروع أو المشتريات العامة</label><select id="of-proj">'+projectOptions+'</select><small>المشتريات العامة لا تؤثر في ربح أي مشروع، وتبقى ضمن مصروفات الرئيسية وضريبتها حسب اختيارك.</small></div><div class="ops-f"><label>المورد (من القائمة)</label><select id="of-supplier">'+supOpts(x.supplierId)+'</select></div><div class="ops-f"><label>أو اكتب اسم المورد يدوياً</label><input id="of-supplier-manual" value="'+E(x.supplierName||'')+'" placeholder="إن لم يكن في القائمة"></div><div class="ops-f"><label>تصنيف المصروف</label><input id="of-cat" list="expense-categories" value="'+E(x.category||'')+'" placeholder="اختر التصنيف أو اكتب غيره"><datalist id="expense-categories"><option value="مواد"><option value="نقل"><option value="إيجار معدات"><option value="رواتب"><option value="مصاريف موقع"><option value="محروقات"><option value="إعاشة"><option value="خدمات"><option value="أخرى"></datalist></div>'
   +'<div class="ops-f full"><label>البنود (المواد / الأعمال) — بند في كل سطر، يظهر مباشرة في أمر الشراء عند الطباعة</label><div id="po-items">'+itemsHtml+'</div><button type="button" onclick="addPoItemRow()" style="background:#eff6fb;color:#1e5d8d;border:1px dashed #9ec3dd;border-radius:7px;padding:7px 11px;font-family:Tajawal,sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-top:3px">➕ إضافة بند</button></div>'
   +'<div class="ops-f"><label>الإجمالي قبل الضريبة (محسوب تلقائياً)</label><input id="of-amount" type="number" step="0.01" value="'+E(x.amount||'')+'" readonly style="background:#f1f5f9;font-weight:800"></div>'
   +'<div class="ops-f"><label>الضريبة</label><select id="of-vrate" onchange="buyTotalsRecalc()"><option value="15" '+(N(x.vatRate??15)===15?'selected':'')+'>مع ضريبة 15%</option><option value="0" '+(N(x.vatRate??15)===0?'selected':'')+'>بدون ضريبة</option>'+((x.vatRate!=null&&![0,15].includes(Number(x.vatRate)))?'<option value="'+E(x.vatRate)+'" selected>النسبة المحفوظة سابقًا '+E(x.vatRate)+'%</option>':'')+'</select></div>'
@@ -222,7 +227,9 @@ window.opsSaveForm=async function(){
  const v=id=>document.getElementById(id)?.value||'',date=v('of-date');
  const old=window._opsEdit.id?A('purchaseOrders').find(x=>x.id===window._opsEdit.id):null;
  if(typeof hdIsPeriodClosed==='function'&&(hdIsPeriodClosed(date)||(old&&hdIsPeriodClosed(old.date))))return toast('🔒 لا يمكن تغيير شراء في فترة مقفلة','er');
- if(!date||!v('of-proj'))return toast('اختر التاريخ والمشروع','er');
+ if(!date)return toast('اختر تاريخ الشراء','er');
+ const projectSelect=document.getElementById('of-proj'),projectId=projectSelect?.value;
+ if(!projectSelect||projectSelect.selectedIndex<0||projectId==='__select__'||(projectId&&!P().some(p=>p.id===projectId)))return toast('اختر مشروعًا موجودًا أو مشتريات عامة / بدون مشروع','er');
  const items=poItemsFromForm();
  if(!items.length||items.some(it=>!it.desc||!Number.isFinite(it.amount)||it.amount<=0))return toast('أدخل وصفًا ومبلغًا موجبًا لكل بند','er');
  const a=Math.round(items.reduce((sum,it)=>sum+it.amount,0)*100)/100,vr=N(v('of-vrate'));
@@ -235,9 +242,12 @@ window.opsSaveForm=async function(){
  const vendorVAT=v('of-vendorvat').replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[\s-]/g,'');
  if(taxDecl&&(!v('of-no').trim()||!/^\d{15}$/.test(vendorVAT)))return toast('لتضمين الضريبة: أدخل رقم الفاتورة ورقمًا ضريبيًا من 15 خانة','er');
  const before=A('purchaseOrders').slice(),x={...(old||{id:typeof uid==='function'?uid('buy'):'buy_'+Date.now(),createdAt:Date.now()}),
-  date,projectId:v('of-proj'),supplierId:v('of-supplier'),supplierName:v('of-supplier-manual').trim(),category:v('of-cat').trim(),
+  date,projectId,supplierId:v('of-supplier'),supplierName:v('of-supplier-manual').trim(),category:v('of-cat').trim(),
   items,amount:a,vatRate:vr,vat,total,paid,taxDecl,vatRecoverable,vendorVAT,paymentMethod:pay,bankName:pay==='تحويل'?v('of-bank').trim():'',
   number:v('of-no').trim(),dueDate:v('of-due')||date,status:paid>=total?'paid':paid>0?'partial':'open',notes:v('of-notes').trim(),directPurchase:true,updatedAt:Date.now()};
+ const fuelPolicy=preparePurchaseForSave(x,old,{manualCategory:true,source:'purchase'});
+ if(fuelPolicy.pending)return toast(fuelPolicy.reason,'er');
+ Object.assign(x,fuelPolicy.record);
  if(old)D().purchaseOrders=before.map(y=>y.id===old.id?x:y);else A('purchaseOrders').unshift(x);
  const saved=await svOps(false);if(!saved?.ok){D().purchaseOrders=before;return toast('فشل حفظ الشراء؛ لم تتغير البيانات','er');}
  window.opsCloseModal();renderBuy1077('list');if(typeof renderOpsDashboardStrip==='function')renderOpsDashboardStrip();toast('✅ تم حفظ الشراء','ok');

@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-24-1152">
+<meta name="app-build" content="2026-11-24-1153">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1152">
+<link rel="manifest" href="manifest.json?v=1153">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -565,7 +565,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1152">
+<link rel="stylesheet" href="ops.css?v=1153">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -742,7 +742,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1152</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1153</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1576,7 +1576,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🔎 مراجعة ربط الفواتير</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1152</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1153</bdi></span></div>
   </div>
 </div>
 
@@ -2689,8 +2689,8 @@ async function doAS(d){
 async function _saveExtractedInvoice(d,version){
   const type=d.type==='sale'?'revenue':(['purchase','expense','revenue'].includes(d.type)?d.type:'purchase');
   const catName=d.category||'';
-  const catId=type==='revenue'?(RCATS.includes(catName)?catName:'إيراد عام'):classify(catName+' '+(d.notes||'')+' '+(d.vendorName||''));
-  const inv={id:uid('inv'),type,number:d.invoiceNumber||('A-'+Date.now()),date:d.date||_todayStr(),vendor:d.vendorName||'—',vendorVAT:d.vendorVAT||'',subtotal:toNum(d.subtotal),vatRate:d.vatRate==null?15:toNum(d.vatRate),vat:toNum(d.vatAmount),total:toNum(d.totalAmount),category:catId,projectId:document.getElementById('f-proj').value||'',notes:d.notes||'',createdAt:Date.now(),auto:true};
+  const catId=type==='revenue'?(RCATS.includes(catName)?catName:'إيراد عام'):scanPurchaseCategory(d);
+  const inv={id:uid('inv'),type,number:d.invoiceNumber||('A-'+Date.now()),date:d.date||_todayStr(),vendor:d.vendorName||'—',vendorVAT:d.vendorVAT||'',subtotal:toNum(d.subtotal),vatRate:d.vatRate==null?15:toNum(d.vatRate),vat:toNum(d.vatAmount),total:toNum(d.totalAmount),category:catId,projectId:document.getElementById('f-proj').value||'',notes:d.notes||'',classificationText:d.category||'',createdAt:Date.now(),auto:true};
   if(!String(d.invoiceNumber||'').trim()||!d.date||!String(d.vendorName||'').trim()||invoiceMoneyIssue(inv)||!(inv.total>0)){
     document.getElementById('ai-s').className='ai-s show err';
     document.getElementById('ai-msg').textContent='القراءة تحتاج مراجعة: تحقق من رقم الفاتورة وتاريخها والمورد وتطابق الصافي والضريبة والإجمالي، ثم احفظ يدويًا.';
@@ -2701,6 +2701,9 @@ async function _saveExtractedInvoice(d,version){
     document.getElementById('ai-msg').textContent='تاريخ القراءة مستقبلي؛ راجعه واحفظ يدويًا بعد التأكد من المستند.';
     return false;
   }
+  const fuelPolicy=preparePurchaseForSave(inv,null,{manualCategory:false});
+  if(fuelPolicy.pending){toast(fuelPolicy.reason,'er');return false;}
+  Object.assign(inv,fuelPolicy.record);
   const signature=invoiceDuplicateKey(inv);
   const existing=signature&&invs.find(i=>invoiceDuplicateKey(i)===signature);
   if(existing){
@@ -2779,7 +2782,7 @@ function fillAI(d){
   if(d.totalAmount!=null)document.getElementById('f-tot').value=Number(d.totalAmount).toFixed(2);
   if(d.notes)document.getElementById('f-nt').value=d.notes;
   if(d.type){const t=d.type==='sale'?'revenue':d.type;setType(t);
-    if(d.category){const cid=t==='revenue'?(RCATS.includes(d.category)?d.category:'إيراد عام'):classify(d.category+' '+(d.notes||''));
+    if(d.category){const cid=t==='revenue'?(RCATS.includes(d.category)?d.category:'إيراد عام'):scanPurchaseCategory(d);
       setTimeout(()=>{document.getElementById('f-cat').value=cid;},60);
     }
   }
@@ -2859,6 +2862,9 @@ async function saveInv(){
   const existing=editId?invs.find(i=>i.id===editId):null;
   const inv={...(existing||{}),...(existing?.auto?{auto:false,reviewedAt:Date.now()}:{}),vatRecoverable:vatRecoveryChoice('f-vat-recovery')==='yes',id:editId||uid('inv'),type:getType(),number:no,date:dt,vendor:vnd,vendorVAT:document.getElementById('f-vtx').value.trim(),subtotal:_base>0?_base:sub,vatRate:toNum(document.getElementById('f-vr').value),vat:_vat,total:_tot>0?_tot:sub,category:document.getElementById('f-cat').value,projectId:document.getElementById('f-proj').value||'',notes:document.getElementById('f-nt').value.trim(),createdAt:editId?(invs.find(i=>i.id===editId)?.createdAt||Date.now()):Date.now()};
   if(invoiceMoneyIssue(inv))return toast('تحقق من الصافي والضريبة والإجمالي قبل الحفظ','er');
+  const fuelPolicy=preparePurchaseForSave(inv,existing,{manualCategory:true});
+  if(fuelPolicy.pending)return toast(fuelPolicy.reason,'er');
+  Object.assign(inv,fuelPolicy.record);
   if(!await confirmInvoiceIdentity(inv,editId))return;
   const backup=invs.slice();
   if(editId){const idx=invs.findIndex(i=>i.id===editId);if(idx>=0)invs[idx]=inv;}else{invs.unshift(inv);}
@@ -3227,6 +3233,9 @@ async function saveQe(){
   }
   const candidate=qeId?invs.find(i=>i.id===qeId):invs[0];
   if(invoiceMoneyIssue(candidate)){invs=backup;return toast('تحقق من الصافي والضريبة والإجمالي قبل الحفظ','er');}
+  const fuelPolicy=preparePurchaseForSave(candidate,qeId?backup.find(i=>i.id===qeId):null,{manualCategory:true});
+  if(fuelPolicy.pending){invs=backup;return toast(fuelPolicy.reason,'er');}
+  Object.assign(candidate,fuelPolicy.record);
   if(!await confirmInvoiceIdentity(candidate,qeId||candidate.id)){invs=backup;return;}
   toast('💾 جاري الحفظ...','ok');
   const r=await svDetailed();
@@ -3643,6 +3652,8 @@ function accById(id){return coa.find(a=>a.id===id);}
 function _accM(n){return fmt(toNum(n));}
 function _today(){return new Date().toISOString().slice(0,10);}
 function _expAccFor(inv){
+  // Administrative classification retains the existing posted expense account.
+  if(inv.classificationAccount&&coa.some(a=>a.id===inv.classificationAccount&&a.type==='expense'))return inv.classificationAccount;
   const t=((typeof catLabel==='function'?catLabel(inv):'')+' '+(inv.category||'')+' '+(inv.notes||''));
   const has=k=>t.indexOf(k)>=0;
   if(has('مواد')||has('حديد')||has('أسمنت')||has('اسمنت')||has('خرسان')||has('بلوك')||has('رمل'))return '5010';
@@ -6282,6 +6293,7 @@ async function saveBatchExp(){
       batchId:batchId,
       createdAt:Date.now()
     };
+    Object.assign(newInv,preparePurchaseForSave(newInv,null,{manualCategory:true}).record);
     invs.unshift(newInv);
   });
   toast('💾 جاري الحفظ...','ok');
@@ -8263,7 +8275,7 @@ async function confirmImp(){
     if(!r.include)return;
     let _sub=r.amount,_vr=0,_va=0,_tot=r.amount;
     if(r.vatAmount&&r.vatAmount>0){_sub=r.amount;_va=+(+r.vatAmount).toFixed(2);_vr=15;_tot=+(_sub+_va).toFixed(2);}
-    invs.unshift({
+    const imported={
       id:uid('inv'),
       type:r.type||'expense',
       number:r.number||'IMP-'+Date.now().toString().slice(-6)+'-'+(cnt+1),
@@ -8279,7 +8291,8 @@ async function confirmImp(){
       notes:r.notes||(r.center?'مركز: '+r.center:'')+(r.desc?' • '+r.desc:''),
       createdAt:Date.now()+cnt,
       imp:true
-    });
+    };
+    invs.unshift(preparePurchaseForSave(imported,null,{manualCategory:false}).record);
     cnt++;
   });
   await svP();await sv();
@@ -10357,7 +10370,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1152',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1153',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10420,12 +10433,14 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1152"></script>
-<script src="ops.js?v=1152"></script>
+<script src="purchase-payments.js?v=1153"></script>
+<script src="ops.js?v=1153"></script>
 
-<script src="settings.js?v=1152"></script>
-<script src="project-closeout.js?v=1152"></script>
-<script src="invoice-vat-review.js?v=1152"></script>
-<script src="data-quality.js?v=1152"></script>
+<script src="settings.js?v=1153"></script>
+<script src="project-closeout.js?v=1153"></script>
+<script src="invoice-vat-review.js?v=1153"></script>
+<script src="data-quality.js?v=1153"></script>
+<script src="purchase-classification.js?v=1153"></script>
+<script src="purchase-classification-save.js?v=1153"></script>
 </body>
 </html>

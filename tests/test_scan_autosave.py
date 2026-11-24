@@ -192,10 +192,25 @@ try:
         assert result['record']['id'] == result['scanId'], result
         assert result['record']['auto'] is False, result
         assert result['record'].get('reviewedAt', 0) > 0, result
+
+        # OCR routes fuel to general; supplier names and mixed invoices cannot do so.
+        for category, notes, expected_category, expected_project in [
+            ('محروقات','تعبئة بنزين 95 — 20 لتر','fuel',''),
+            ('زيت طبخ','شراء زيت طبخ','food','scan-project'),
+            ('خدمات','غسيل سيارة','services','scan-project'),
+            ('محروقات','بنزين ومياه','other','scan-project'),
+        ]:
+            reset()
+            result = page.evaluate('''async ([category,notes]) => {
+                const payload={...scanPayload,category,notes,vendorName:'محطة وقود للاختبار'};
+                prepareScan(payload);await doAS(payload);
+                return {count:invs.length,category:invs[0]?.category,projectId:invs[0]?.projectId};
+            }''',[category,notes])
+            assert result == {'count':1,'category':expected_category,'projectId':expected_project}, result
         assert not errors, errors
         browser.close()
 finally:
     server.shutdown()
 
 print('PASS scan/manual same ID, failed-write rollback, invalid totals blocked, zero VAT, '
-      'cross-type scan identity, edit gate, and delayed-write manual-save race')
+      'cross-type scan identity, edit gate, delayed-write manual-save race, and fuel/OCR scope safeguards')

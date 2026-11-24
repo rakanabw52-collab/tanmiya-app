@@ -206,6 +206,7 @@ window.opsSaveForm=async function(){const e=window._opsEdit;if(!e)return;const t
  else if(type==='user'){if(!v('of-name').trim())return toast('اكتب الاسم','er');Object.assign(x,{name:v('of-name').trim(),email:v('of-email').trim(),role:v('of-role'),active:v('of-active')==='1',notes:v('of-notes').trim()});}
  else if(type==='budget'){const pid=v('of-proj');if(!pid)return toast('المشروع غير محدد','er');Object.assign(x,{projectId:pid,total:n('of-total'),materials:n('of-materials'),labor:n('of-labor'),equipment:n('of-equipment'),subcontracts:n('of-subcontracts'),overhead:n('of-overhead'),notes:v('of-notes').trim()});}
  if(type==='po'||type==='claim')x.vatRecoverable=v('of-vat-recovery')==='yes';
+ if(type==='po'){const policy=preparePurchaseForSave(x,old,{manualCategory:true,source:'purchase'});if(policy.pending)return toast(policy.reason,'er');Object.assign(x,policy.record);}
  const map={supplier:'suppliers',rfq:'rfqs',po:'purchaseOrders',subcontractor:'subcontractors',subcontract:'subcontracts',claim:'claims',change:'changeOrders',cash:'cashflow',bank:'bankRecons',due:'dues',user:'users',budget:'budgets'};const a=arr(map[type]),before=a.slice();if(old){const i=a.findIndex(z=>z.id===old.id);if(i>=0)a[i]=Object.assign(x,{updatedAt:Date.now()});}else a.unshift(Object.assign(x,{updatedAt:Date.now()}));const saved=await svOps(false);if(!saved?.ok){D()[map[type]]=before;return toast('فشل الحفظ؛ لم تتغير البيانات','er');}auditOps((old?'تعديل ':'إضافة ')+type,x.number||x.name||x.projectId||'');opsCloseModal();renderOps();renderOpsDashboardStrip();toast('✅ تم الحفظ','ok');};
 window.opsDel=async function(type,id){const x=record(type,id);if(!x)return;if(hdIsPeriodClosed(x.date||x.startDate))return toast('🔒 لا يمكن حذف سجل في فترة مقفلة','er');const ok=await confirm2({title:'تأكيد الحذف',msg:'سيتم حذف السجل من وحدة إدارة المقاولات.',ok:'حذف',danger:true});if(!ok)return;const map={supplier:'suppliers',rfq:'rfqs',po:'purchaseOrders',subcontractor:'subcontractors',subcontract:'subcontracts',claim:'claims',change:'changeOrders',cash:'cashflow',bank:'bankRecons',due:'dues',user:'users',budget:'budgets'};D()[map[type]]=arr(map[type]).filter(z=>z.id!==id);await svOps(false);auditOps('حذف '+type,x.number||x.name||'');renderOps();renderOpsDashboardStrip();toast('تم الحذف','ok');};
 
@@ -218,7 +219,7 @@ window.addEventListener('load',()=>setTimeout(()=>{try{renderOpsDashboardStrip()
   if(document.getElementById('tanmiya-integrate')) return;
   const s=document.createElement('script');
   s.id='tanmiya-integrate';
-  s.src='integrate.js?v=1121';
+  s.src='integrate.js?v=1153';
   s.defer=true;
   document.head.appendChild(s);
 })();
