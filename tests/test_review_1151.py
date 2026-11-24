@@ -39,7 +39,7 @@ try:
    return {emptyBaseBlocked,groups:groups.map(g=>g.map(i=>i.id)),postBad:_invPostings(bad),unchanged:before===JSON.stringify(journals),blocked};
   }''')
   assert result=={'emptyBaseBlocked':True,'groups':[['a','b']],'postBad':None,'unchanged':True,'blocked':True},result
-  page.evaluate('''()=>{invs=invs.filter(i=>i.id!=='bad');journals=[];confirm2=async()=>true;window.failArchive=true;window.failSave=false;window.realReviewArchive=saveReviewArchive;saveReviewArchive=async(k,v)=>failArchive?false:realReviewArchive(k,v);svDetailed=async()=>({ok:!failSave});openDupCheck();}''')
+  page.evaluate('''()=>{invs=invs.filter(i=>i.id!=='bad');journals=[];confirm2=async()=>true;window.failArchive=true;window.failSave=false;window.realReviewArchive=saveReviewArchive;saveReviewArchive=async(k,v)=>(k===SK?failSave:failArchive)?false:realReviewArchive(k,v);svDetailed=async()=>({ok:!failSave});openDupCheck();}''')
   # Explicit selection required: no silently chosen oldest record.
   page.evaluate('removeDupGroup(0)');assert page.evaluate('invs.length')==3
   page.locator('input[name="dup-keep-0"][value="1"]').check()

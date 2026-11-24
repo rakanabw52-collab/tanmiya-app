@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-16-1151">
+<meta name="app-build" content="2026-11-24-1152">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1151">
+<link rel="manifest" href="manifest.json?v=1152">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -565,7 +565,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1151">
+<link rel="stylesheet" href="ops.css?v=1152">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -742,7 +742,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1151</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1152</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1576,7 +1576,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🔎 مراجعة ربط الفواتير</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1151</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1152</bdi></span></div>
   </div>
 </div>
 
@@ -1689,12 +1689,14 @@ let _cloudReadFailed=false,_cloudPushJob=null;
 const _cloudRoutes=new Map();let _cloudReadErrors=[];
 let _lastSyncFailure=null;
 function _cloudErrorLabel(table,error){
+ if(table==='invoices'&&error?.code==='23514'&&String(error.message||'').includes('hd_invoice_numbers_unique_check'))return 'رقم الفاتورة مسجل مسبقًا؛ حدّث البيانات وافتح الفاتورة الحالية';
  const code=error?.code||'';
  const labels={'42501':'رفض صلاحيات الحفظ (RLS)','PGRST301':'انتهت جلسة الدخول','PGRST302':'جلسة الدخول غير متاحة','PGRST205':'الجدول غير موجود','42P01':'الجدول غير موجود','23505':'السجل موجود مسبقًا أو غير متاح للحساب','23514':'قيد في قاعدة البيانات رفض السجل','PGRST204':'عمود مطلوب غير موجود','SYNC_STALE':'لم يُحدّث أي سجل: تغيرت النسخة أو منعت صلاحيات UPDATE التعديل','SYNC_READ_FIRST':'يلزم جلب النسخة قبل الحفظ','SYNC_RESPONSE':'استجابة الحفظ غير متوقعة'};
  const description=labels[code]||(/fetch|network|timeout|failed to/i.test(error?.message||'')?'تعذر الاتصال بالخادم':'رفض الخادم العملية');
  return table+': '+description+(code?' ['+code+']':'');
 }
 function _recordSyncFailure(operation,table,id,error){
+ if(table==='invoices'&&error?.code==='23514'&&String(error.message||'').includes('hd_invoice_numbers_unique_check'))toast('الفاتورة مسجلة مسبقًا؛ حدّث البيانات وافتح الفاتورة الحالية','er');
  _lastSyncFailure={operation,table,id,code:error?.code||'بدون رمز',message:String(error?.message||'لا توجد رسالة من الخادم').slice(0,800),at:new Date().toLocaleString('ar-SA')};
  setSyncBadge('err',_cloudErrorLabel(table,error)+' — اضغط للتفاصيل');
 }
@@ -2127,6 +2129,7 @@ const SL='hd-let-v1';let lets=[];let letEditId=null,letPrevId=null;const LET_STA
 let invs=[],projs=[],docs=[],progress=[],sett={name:'مؤسسة هدف التنمية للمقاولات',vn:'',cr:''};
 let flt='all',pflt='all',detId=null,editId=null,curProjId=null,lastImg=null;
 let autoSv=true,svTimer=null,svCancelled=false,impData=null;
+let _scanSaveJob=null,_scanFormVersion=0;
 const ASD=4000;
 let chCat=null,chM=null;
 
@@ -2678,17 +2681,56 @@ function cancelAS(){
   document.getElementById('ai-msg').innerHTML='<span style="color:#B45309">⚠️ تم الإلغاء — راجع البيانات وحفظ يدوياً</span>';
 }
 async function doAS(d){
-  const type=d.type==='sale'?'revenue':(d.type||'purchase');
+  if(_scanSaveJob)await _scanSaveJob;
+  const version=_scanFormVersion;
+  const job=_saveExtractedInvoice(d,version);_scanSaveJob=job;
+  try{return await job;}finally{if(_scanSaveJob===job)_scanSaveJob=null;}
+}
+async function _saveExtractedInvoice(d,version){
+  const type=d.type==='sale'?'revenue':(['purchase','expense','revenue'].includes(d.type)?d.type:'purchase');
   const catName=d.category||'';
   const catId=type==='revenue'?(RCATS.includes(catName)?catName:'إيراد عام'):classify(catName+' '+(d.notes||'')+' '+(d.vendorName||''));
-  const inv={id:uid('inv'),type,number:d.invoiceNumber||('A-'+Date.now()),date:d.date||new Date().toISOString().slice(0,10),vendor:d.vendorName||'—',vendorVAT:d.vendorVAT||'',subtotal:Number(d.subtotal)||0,vatRate:Number(d.vatRate)||15,vat:Number(d.vatAmount)||0,total:Number(d.totalAmount)||0,category:catId,projectId:document.getElementById('f-proj').value||'',notes:d.notes||'',createdAt:Date.now(),auto:true};
-  invs.unshift(inv);await sv();
-  const st=document.getElementById('ai-s');st.className='ai-s show ok';
-  document.getElementById('ai-sp').style.display='none';
-  document.getElementById('ai-msg').innerHTML='<div style="font-weight:700;color:#15803D;margin-bottom:3px">✓ تم الحفظ تلقائياً!</div><div style="font-size:12.5px;color:var(--t2)"><strong>'+esc(inv.vendor)+'</strong> • '+esc(inv.number)+'<br>الإجمالي: <strong>'+fmt(inv.total)+' ر.س</strong></div><div style="display:flex;gap:7px;margin-top:8px"><button class="btn btn-sm btn-o" onclick="revInv(\''+inv.id+'\')">تعديل</button><button class="btn btn-sm btn-g" onclick="nextInv()">فاتورة أخرى 📸</button></div>';
-  renderDB();toast('✓ تم الحفظ تلقائياً','ok');
+  const inv={id:uid('inv'),type,number:d.invoiceNumber||('A-'+Date.now()),date:d.date||_todayStr(),vendor:d.vendorName||'—',vendorVAT:d.vendorVAT||'',subtotal:toNum(d.subtotal),vatRate:d.vatRate==null?15:toNum(d.vatRate),vat:toNum(d.vatAmount),total:toNum(d.totalAmount),category:catId,projectId:document.getElementById('f-proj').value||'',notes:d.notes||'',createdAt:Date.now(),auto:true};
+  if(!String(d.invoiceNumber||'').trim()||!d.date||!String(d.vendorName||'').trim()||invoiceMoneyIssue(inv)||!(inv.total>0)){
+    document.getElementById('ai-s').className='ai-s show err';
+    document.getElementById('ai-msg').textContent='القراءة تحتاج مراجعة: تحقق من رقم الفاتورة وتاريخها والمورد وتطابق الصافي والضريبة والإجمالي، ثم احفظ يدويًا.';
+    toast('راجع مبالغ الفاتورة؛ لم تُحفظ القراءة غير المتطابقة','er');return false;
+  }
+  if(!_canEditInvoice(inv,inv.date))return false;
+  if(inv.date>_todayStr()){
+    document.getElementById('ai-msg').textContent='تاريخ القراءة مستقبلي؛ راجعه واحفظ يدويًا بعد التأكد من المستند.';
+    return false;
+  }
+  const signature=invoiceDuplicateKey(inv);
+  const existing=signature&&invs.find(i=>invoiceDuplicateKey(i)===signature);
+  if(existing){
+    if(version===_scanFormVersion)revInv(existing.id);
+    toast('الفاتورة موجودة؛ فُتحت النسخة الحالية للمراجعة دون إنشاء نسخة أخرى','ok');return false;
+  }
+  invs.unshift(inv);
+  try{
+    const result=await svDetailed();
+    if(!result?.ok||result.warn==='memory')throw Error(result?.err||'تعذر الحفظ الدائم');
+  }catch(error){
+    invs=invs.filter(i=>i.id!==inv.id);
+    document.getElementById('ai-s').className='ai-s show err';
+    document.getElementById('ai-msg').textContent='تعذر حفظ القراءة. بقيت البيانات في النموذج للمراجعة وإعادة المحاولة.';
+    toast('لم تُحفظ الفاتورة: '+(error.message||'حاول مرة أخرى'),'er');return false;
+  }
+  if(version===_scanFormVersion){
+    // The visible form now edits this exact record, including while a manual save waits.
+    editId=inv.id;
+    const st=document.getElementById('ai-s');st.className='ai-s show ok';
+    document.getElementById('ai-sp').style.display='none';
+    const message=document.getElementById('ai-msg');message.replaceChildren();
+    const label=document.createElement('strong');label.textContent='تم حفظ القراءة. تعديل النموذج يحدث نفس الفاتورة.';message.append(label);
+    const details=document.createElement('p');details.textContent=inv.vendor+' — '+inv.number+' — '+fmt(inv.total)+' ر.س';message.append(details);
+    const edit=document.createElement('button');edit.className='btn btn-sm btn-o';edit.textContent='مراجعة الفاتورة';edit.onclick=()=>revInv(inv.id);message.append(edit);
+    const next=document.createElement('button');next.className='btn btn-sm btn-g';next.textContent='فاتورة أخرى';next.onclick=()=>nextInv();message.append(next);
+  }
+  renderDB();toast('تم حفظ القراءة؛ الحفظ اليدوي سيحدّث نفس الفاتورة','ok');return true;
 }
-function revInv(id){const inv=invs.find(i=>i.id===id);if(!inv)return;setVatRecovery('f-vat-recovery',inv.vatRecoverable);editId=id;setType(inv.type);document.getElementById('f-no').value=inv.number;document.getElementById('f-dt').value=inv.date;document.getElementById('f-vnd').value=inv.vendor;document.getElementById('f-vtx').value=inv.vendorVAT||'';document.getElementById('f-sub').value=inv.subtotal;document.getElementById('f-vr').value=inv.vatRate;document.getElementById('f-v').value=inv.vat;document.getElementById('f-tot').value=inv.total;document.getElementById('f-nt').value=inv.notes||'';fillProjSel();document.getElementById('f-proj').value=inv.projectId||'';setTimeout(()=>{if(inv.category)document.getElementById('f-cat').value=inv.category;},80);document.getElementById('ai-s').classList.remove('show');document.getElementById('man-form').scrollIntoView({behavior:'smooth',block:'start'});}
+function revInv(id){_scanFormVersion++;resetInvoiceTaxInputMode();const inv=invs.find(i=>i.id===id);if(!inv)return;setVatRecovery('f-vat-recovery',inv.vatRecoverable);editId=id;setType(inv.type);document.getElementById('f-no').value=inv.number;if(typeof refreshInvoiceNumberStatus==='function')refreshInvoiceNumberStatus();document.getElementById('f-dt').value=inv.date;document.getElementById('f-vnd').value=inv.vendor;document.getElementById('f-vtx').value=inv.vendorVAT||'';document.getElementById('f-sub').value=inv.subtotal;document.getElementById('f-vr').value=inv.vatRate;document.getElementById('f-v').value=inv.vat;document.getElementById('f-tot').value=inv.total;document.getElementById('f-nt').value=inv.notes||'';fillProjSel();document.getElementById('f-proj').value=inv.projectId||'';setTimeout(()=>{if(inv.category)document.getElementById('f-cat').value=inv.category;},80);document.getElementById('ai-s').classList.remove('show');document.getElementById('man-form').scrollIntoView({behavior:'smooth',block:'start'});}
 function nextInv(){clrForm();document.getElementById('ai-s').classList.remove('show');rmPrev();window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>document.getElementById('f-cam').click(),350);}
 
 async function aiExtract(b64,mt,kb,isPdf){
@@ -2720,6 +2762,7 @@ async function aiExtract(b64,mt,kb,isPdf){
 }
 
 function fillAI(d){
+  _scanFormVersion++;editId=null;resetInvoiceTaxInputMode();
   // المشروع: من محدد التصوير في الأعلى
   const sp=document.getElementById('as-proj');
   if(sp&&sp.value){
@@ -2786,14 +2829,21 @@ function syncScanProj(){
   if(fp)fp.value=sp.value;
 }
 let fVatMode='excl';
+function resetInvoiceTaxInputMode(){
+ fVatMode='excl';
+ document.querySelectorAll('#f-vatmode .qe-vbtn').forEach(b=>b.classList.toggle('on',b.dataset.mode==='excl'));
+ const label=document.getElementById('f-sub-lbl');if(label)label.textContent='المبلغ قبل الضريبة *';
+}
+
 function setFVat(m){fVatMode=m;const vr=document.getElementById('f-vr');if(vr&&(+vr.value===0))vr.value=15;document.querySelectorAll('#f-vatmode .qe-vbtn').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));const lbl=document.getElementById('f-sub-lbl');if(lbl)lbl.textContent=(m==='incl'?'المبلغ شامل الضريبة *':'المبلغ قبل الضريبة *');calcV();}
 function fExempt(){fVatMode='excl';const vr=document.getElementById('f-vr');if(vr)vr.value='0';document.querySelectorAll('#f-vatmode .qe-vbtn').forEach(b=>b.classList.toggle('on',b.dataset.mode==='exempt'));const lbl=document.getElementById('f-sub-lbl');if(lbl)lbl.textContent='المبلغ (معفى — بلا ضريبة) *';calcV();}
 function calcV(){const amt=toNum(document.getElementById('f-sub').value),r=toNum(document.getElementById('f-vr').value);let base,vat,tot;if(fVatMode==='incl'){tot=amt;base=+(amt/(1+r/100)).toFixed(2);vat=+(tot-base).toFixed(2);}else{base=amt;vat=+(amt*r/100).toFixed(2);tot=+(amt+vat).toFixed(2);}document.getElementById('f-v').value=vat.toFixed(2);document.getElementById('f-tot').value=tot.toFixed(2);}
 function calcTot(){const s=toNum(document.getElementById('f-sub').value),v=toNum(document.getElementById('f-v').value);document.getElementById('f-tot').value=(s+v).toFixed(2);}
 function getType(){const a=document.querySelector('.tp-pill.active');return a?a.dataset.t:'purchase';}
-function clrForm(){setVatRecovery('f-vat-recovery',undefined);['f-no','f-dt','f-vnd','f-vtx','f-sub','f-v','f-tot','f-nt'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-vr').value=15;document.getElementById('f-cat').value='';document.getElementById('f-proj').value='';setType('purchase');rmPrev();cancelAS();document.getElementById('ai-s').classList.remove('show');editId=null;if(typeof setFVat==='function')setFVat('excl');}
+function clrForm(){_scanFormVersion++;setVatRecovery('f-vat-recovery',undefined);['f-no','f-dt','f-vnd','f-vtx','f-sub','f-v','f-tot','f-nt'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-vr').value=15;document.getElementById('f-cat').value='';document.getElementById('f-proj').value='';setType('purchase');rmPrev();cancelAS();document.getElementById('ai-s').classList.remove('show');editId=null;if(typeof setFVat==='function')setFVat('excl');if(typeof refreshInvoiceNumberStatus==='function')refreshInvoiceNumberStatus();}
 
 async function saveInv(){
+  if(_scanSaveJob)await _scanSaveJob;
   const no=document.getElementById('f-no').value.trim(),dt=document.getElementById('f-dt').value,vnd=document.getElementById('f-vnd').value.trim(),sub=toNum(document.getElementById('f-sub').value);
   if(!no){document.getElementById('f-no').focus();return toast('اكتب رقم الفاتورة','er');}
   if(!dt){document.getElementById('f-dt').focus();return toast('اختر التاريخ','er');}
@@ -2804,10 +2854,10 @@ async function saveInv(){
   if(!_canEditInvoice(editId?invs.find(i=>i.id===editId):null,dt))return;
   if(getType()!=='revenue'&&!vatRecoveryChoice('f-vat-recovery'))return toast('اختر استرجاع ضريبة المصروف: نعم أو لا','er');
   cancelAS();
-  const _vat=toNum(document.getElementById('f-v').value),_tot=toNum(document.getElementById('f-tot').value),_base=+(_tot-_vat).toFixed(2);
+  const _vat=toNum(document.getElementById('f-v').value),_tot=toNum(document.getElementById('f-tot').value),_base=fVatMode==='incl'?+(_tot-_vat).toFixed(2):sub;
   if(_vat<0||_tot<=0||_vat>_tot)return toast('تحقق من الإجمالي والضريبة؛ يجب ألا تتجاوز الضريبة الإجمالي','er');
   const existing=editId?invs.find(i=>i.id===editId):null;
-  const inv={...(existing||{}),vatRecoverable:vatRecoveryChoice('f-vat-recovery')==='yes',id:editId||uid('inv'),type:getType(),number:no,date:dt,vendor:vnd,vendorVAT:document.getElementById('f-vtx').value.trim(),subtotal:_base>0?_base:sub,vatRate:toNum(document.getElementById('f-vr').value),vat:_vat,total:_tot>0?_tot:sub,category:document.getElementById('f-cat').value,projectId:document.getElementById('f-proj').value||'',notes:document.getElementById('f-nt').value.trim(),createdAt:editId?(invs.find(i=>i.id===editId)?.createdAt||Date.now()):Date.now()};
+  const inv={...(existing||{}),...(existing?.auto?{auto:false,reviewedAt:Date.now()}:{}),vatRecoverable:vatRecoveryChoice('f-vat-recovery')==='yes',id:editId||uid('inv'),type:getType(),number:no,date:dt,vendor:vnd,vendorVAT:document.getElementById('f-vtx').value.trim(),subtotal:_base>0?_base:sub,vatRate:toNum(document.getElementById('f-vr').value),vat:_vat,total:_tot>0?_tot:sub,category:document.getElementById('f-cat').value,projectId:document.getElementById('f-proj').value||'',notes:document.getElementById('f-nt').value.trim(),createdAt:editId?(invs.find(i=>i.id===editId)?.createdAt||Date.now()):Date.now()};
   if(invoiceMoneyIssue(inv))return toast('تحقق من الصافي والضريبة والإجمالي قبل الحفظ','er');
   if(!await confirmInvoiceIdentity(inv,editId))return;
   const backup=invs.slice();
@@ -3616,17 +3666,16 @@ function invoiceMoneyIssue(inv){
  if(![base,vat,total].every(Number.isFinite)||base<0||vat<0||total<0)return 'مبلغ سالب أو غير صالح';
  return Math.abs(Math.round(total*100)-Math.round(base*100)-Math.round(vat*100))>2?'الإجمالي لا يساوي الصافي والضريبة':'';
 }
-function invoiceDuplicateKey(i){
- const norm=x=>hdNormalizePin(String(x||'')).normalize('NFKC').toLowerCase().replace(/[\s\p{P}\p{S}]+/gu,'');
- if(!norm(i?.number)||!i?.date||!(toNum(i.total)>0))return null;
- const vendor=norm(i.vendorVAT)||norm(i.vendor);
- if(!vendor)return null;
- return JSON.stringify([i.type||'',vendor,norm(i.number),i.date,Math.round(toNum(i.total)*100)]);
+function normalizeInvoiceNumber(value){
+ return hdNormalizePin(String(value??'').normalize('NFKC')).toLowerCase().replace(/\s+/g,'');
 }
+function invoiceDuplicateKey(i){return normalizeInvoiceNumber(i?.number)||null;}
 async function confirmInvoiceIdentity(candidate,exceptId){
- const sig=invoiceDuplicateKey(candidate);
- if(!sig||!invs.some(i=>i.id!==exceptId&&i.status!=='cancelled'&&invoiceDuplicateKey(i)===sig))return true;
- return confirm2({title:'فاتورة مشابهة موجودة',msg:'يوجد سجل بنفس رقم الفاتورة وهوية المورد والتاريخ والمبلغ. راجع المستند قبل إضافة نسخة أخرى.',ok:'حفظ نسخة أخرى',danger:true});
+ const key=invoiceDuplicateKey(candidate);
+ const existing=key&&invs.find(i=>i.id!==exceptId&&invoiceDuplicateKey(i)===key);
+ if(!existing)return true;
+ toast('الفاتورة مسجلة مسبقًا برقم '+existing.number+'؛ افتح السجل الحالي لتعديله','er');
+ return false;
 }
 
 function _financialInvoices(){
@@ -3659,6 +3708,7 @@ function _syncInvJournals(){
   let changed=0;_journalSyncIssues=[];
   journals=journals.filter(j=>{
     if(!['inv','purchase'].includes(j.source))return true;
+    if(j.sourceLinkPendingReview){_journalSyncIssues.push('القيد '+(j.desc||j.id)+' يحتاج مراجعة ربطه وتصنيفه بعد أرشفة نسخة الفاتورة؛ بقيت حساباته ومبالغه كما هي');return true;}
     const i=sources.get(j.source+':'+j.sourceId);
     if(i&&invoiceMoneyIssue(i)){_journalSyncIssues.push('الفاتورة '+(i.number||i.id)+' تحتاج مراجعة الصافي والضريبة والإجمالي؛ حُفظ قيدها دون تغيير');return true;}
     const lines=i?_invPostings(i):null;
@@ -3695,12 +3745,14 @@ function _invPostings(inv){
     return l;
   }
 }
+function _pendingInvoiceJournalReview(id){return journals.some(j=>j.source==='inv'&&j.sourceLinkPendingReview&&(j.sourceId===id||j.replacementInvoiceId===id));}
 function _postedInvIds(){const ids=new Set();journals.forEach(j=>{if(['inv','purchase'].includes(j.source)&&j.sourceId)ids.add(j.source+':'+j.sourceId);});return ids;}
-function _unpostedInvs(){_syncInvJournals();const ids=_postedInvIds();return _financialInvoices().filter(i=>!ids.has(i._source+':'+i._sourceId)&&_invPostings(i));}
+function _unpostedInvs(){_syncInvJournals();const ids=_postedInvIds();return _financialInvoices().filter(i=>!ids.has(i._source+':'+i._sourceId)&&!(i._source==='inv'&&_pendingInvoiceJournalReview(i._sourceId))&&_invPostings(i));}
 function genInvJournals(){
   _syncInvJournals();const ids=_postedInvIds();let n=0;
   for(const inv of _financialInvoices()){
     const key=inv._source+':'+inv._sourceId;if(ids.has(key))continue;
+    if(inv._source==='inv'&&_pendingInvoiceJournalReview(inv._sourceId)){_journalSyncIssues.push('الفاتورة '+(inv.number||key)+' لها قيد مرتبط معلق للمراجعة؛ لم يُنشأ قيد آخر');continue;}
     if(_isClosedDate(inv.date)){_journalSyncIssues.push('فاتورة '+(inv.number||key)+' في فترة مقفلة وتحتاج قيد تسوية');continue;}
     const lines=_invPostings(inv);if(!lines)continue;
     journals.push({id:_uid2(),date:inv.date||_today(),desc:'ترحيل فاتورة '+(inv.number||'')+' — '+(inv.vendor||''),source:inv._source,sourceId:inv._sourceId,lines,t:Date.now(),u:_hdWho()});ids.add(key);n++;
@@ -9877,7 +9929,7 @@ async function clrAll(){
 /* ========== كشف الفواتير المكررة ========== */
 function findDupInvoices(){
  const groups=new Map();
- invs.filter(i=>i.status!=='cancelled').forEach(i=>{const key=invoiceDuplicateKey(i);if(!key)return;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(i);});
+ invs.forEach(i=>{const key=invoiceDuplicateKey(i);if(!key)return;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(i);});
  return [...groups.values()].filter(g=>g.length>1);
 }
 
@@ -9894,7 +9946,7 @@ function openDupCheck(){
   inner+='<button onclick="document.getElementById(\'dup-overlay\').remove()" style="background:#F3F4F6;border:none;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer">✕</button></div>';
   
   if(!dups.length){
-    inner+='<div style="text-align:center;padding:30px 10px;color:#15803D"><div style="font-size:40px;margin-bottom:10px">✅</div><div style="font-weight:700;font-size:14px">ممتاز — لا توجد فواتير مكررة</div><div style="font-size:12px;color:var(--t2);margin-top:6px">لم تظهر حالات وفق تطابق رقم الفاتورة وهوية المورد والتاريخ والمبلغ</div></div>';
+    inner+='<div style="text-align:center;padding:30px 10px;color:#15803D"><div style="font-size:40px;margin-bottom:10px">✅</div><div style="font-weight:700;font-size:14px">ممتاز — لا توجد فواتير مكررة</div><div style="font-size:12px;color:var(--t2);margin-top:6px">لم تظهر حالات وفق تطابق رقم الفاتورة</div></div>';
   }else{
     let totalDupCount=0,totalDupAmount=0;
     dups.forEach(g=>{totalDupCount+=g.length-1;totalDupAmount+=(g.length-1)*(g[0].total||0);});
@@ -9921,32 +9973,75 @@ function openDupCheck(){
 
 let _dupRemoveBusy=false;
 async function removeDupGroup(gi){
- if(_dupRemoveBusy)return;
- const group=window._dupGroups?.[gi];if(!group||group.length<2)return;
+ if(_dupRemoveBusy||_cloudReplacing)return false;
+ const group=window._dupGroups?.[gi];if(!group||group.length<2)return false;
  const choice=document.querySelector('input[name="dup-keep-'+gi+'"]:checked');
- if(!choice)return toast('اختر النسخة الصحيحة التي تريد إبقاءها أولًا','er');
- const keep=group[Number(choice.value)];if(!keep)return;
+ if(!choice){toast('اختر النسخة الصحيحة التي تريد إبقاءها أولًا','er');return false;}
+ const keep=group[Number(choice.value)];if(!keep)return false;
  const current=findDupInvoices().find(g=>g.some(i=>i.id===keep.id));
- if(!current||JSON.stringify(current)!==JSON.stringify(group))return toast('تغيرت البيانات. أغلق المراجعة وافتحها مجددًا','er');
- const remove=current.filter(i=>i.id!==keep.id);
- if(remove.some(i=>!_canEditInvoice(i,i.date)))return;
- if(remove.some(i=>journals.some(j=>j.source==='inv'&&j.sourceId===i.id&&journals.some(r=>r.reverses===j.id))))return toast('توجد قيود عكسية مرتبطة؛ راجع المحاسب قبل أرشفة الفاتورة','er');
- const fingerprint=JSON.stringify(current);
+ if(!current||JSON.stringify(current)!==JSON.stringify(group)){toast('تغيرت البيانات. أغلق المراجعة وافتحها مجددًا','er');return false;}
+ const remove=current.filter(i=>i.id!==keep.id),removeIds=new Set(remove.map(i=>i.id));
+ if(current.some(i=>!_canEditInvoice(i,i.date)))return false;
+ const groupIds=new Set(current.map(i=>i.id));
+ const linked=journals.filter(j=>j.source==='inv'&&groupIds.has(j.sourceId));
+ const keepJournals=linked.filter(j=>j.sourceId===keep.id),sourceJournals=linked.filter(j=>removeIds.has(j.sourceId));
+ const blocked=linked.some(j=>_isClosedDate(j.date)||j.reverses||journals.some(r=>r.reverses===j.id));
+ const multiplePerInvoice=current.some(i=>linked.filter(j=>j.sourceId===i.id).length>1);
+ if(blocked||multiplePerInvoice||(!keepJournals.length&&sourceJournals.length>1)){
+  toast('توجد قيود مقفلة أو معكوسة أو متعددة تحتاج مراجعة المحاسب؛ لم تتغير الفواتير أو القيود','er');return false;
+ }
+ const needsRelink=!keepJournals.length&&sourceJournals.length===1;
+ const sameMoneyAndDate=invoice=>invoice?.date===keep.date&&!invoiceMoneyIssue(invoice)&&!invoiceMoneyIssue(keep)&&['subtotal','vat','total'].every(k=>Math.round(toNum(invoice[k])*100)===Math.round(toNum(keep[k])*100));
+ const fingerprint=JSON.stringify(current),journalFingerprint=JSON.stringify(journals);
+ const unchanged=()=>JSON.stringify(findDupInvoices().find(g=>g.some(i=>i.id===keep.id)))===fingerprint&&JSON.stringify(journals)===journalFingerprint;
+ let locked=false,committed=false,primaryAttempted=false,beforeInvoices,beforeJournals;
+ let pendingPush=false;
  _dupRemoveBusy=true;
- if(!await confirm2({title:'أرشفة نسخ الفاتورة',msg:'ستبقى النسخة المحددة، وتُنقل '+remove.length+' نسخة إلى المحذوفات مع حفظ بياناتها للاستعادة.',ok:'أرشفة النسخ الأخرى',danger:true})){_dupRemoveBusy=false;return;}
- if(JSON.stringify(findDupInvoices().find(g=>g.some(i=>i.id===keep.id)))!==fingerprint){_dupRemoveBusy=false;return toast('تغيرت الفواتير أثناء المراجعة؛ أعد فتح المقارنة','er');}
  try{
-  const beforeTrash=trash.slice();
-  const archived=remove.map(i=>({id:uid('trash'),t:Date.now(),u:_hdWho(),type:'inv',data:_hdCopy(i),reason:'نسخة مشابهة راجعها المستخدم',replacementInvoiceId:keep.id}));
-  if(!await saveReviewArchive(STRA,JSON.stringify([...archived,...beforeTrash])))throw Error('تعذر حفظ نسخة الاستعادة؛ بقيت كل الفواتير');
+  if(!await confirm2({title:'أرشفة نسخ الفاتورة',msg:'ستبقى النسخة المحددة، وتُنقل '+remove.length+' نسخة إلى المحذوفات مع قيودها للاستعادة. يُحفظ القيد الوحيد ويرتبط بالنسخة الباقية إن لم يكن لها قيد.',ok:'أرشفة النسخ الأخرى',danger:true}))return false;
+  if(!unchanged())throw Error('تغيرت الفواتير أو القيود أثناء المراجعة؛ أعد فتح المقارنة');
+  // Suspend cloud jobs while committing the two local collections; publish only the completed pair.
+  _cloudReplacing=true;locked=true;pendingPush=!!_pushTimer;clearTimeout(_pushTimer);_pushTimer=null;
+  if(_cloudPushJob)await _cloudPushJob;
+  await Promise.allSettled([..._cloudPullJobs]);
+  if(!unchanged())throw Error('تغيرت البيانات قبل الحفظ؛ أعد فتح المقارنة');
+  beforeInvoices=_hdCopy(invs);beforeJournals=_hdCopy(journals);
+  const at=Date.now(),beforeTrash=trash.slice();
+  const archived=remove.map(i=>({id:uid('trash'),t:at,u:_hdWho(),type:'inv',data:_hdCopy(i),reason:'نسخة مشابهة راجعها المستخدم',replacementInvoiceId:keep.id,replacementSnapshot:_hdCopy(keep),sourceJournals:_hdCopy(sourceJournals.filter(j=>j.sourceId===i.id)),replacementJournals:_hdCopy(keepJournals)}));
+  if(!await saveReviewArchive(STRA,JSON.stringify([...archived,...beforeTrash])))throw Error('تعذر حفظ نسخة الاستعادة؛ بقيت كل الفواتير والقيود');
   trash=[...archived,...beforeTrash];
-  if(JSON.stringify(findDupInvoices().find(g=>g.some(i=>i.id===keep.id)))!==fingerprint)throw Error('تغيرت الفواتير؛ لم تُؤرشف أي نسخة');
-  const before=invs.slice();
-  invs=before.filter(i=>!remove.some(r=>r.id===i.id));
-  const result=await svDetailed();
-  if(!result?.ok){invs=before;throw Error('تعذر حفظ الأرشفة؛ بقيت الفواتير ونسخة الاستعادة');}
-  _syncInvJournals();renderDB();renderList();openDupCheck();toast('أُرشفت النسخ المحددة مع حفظ إمكانية الاستعادة','ok');
- }catch(e){toast(e.message,'er');}finally{_dupRemoveBusy=false;}
+  if(!unchanged())throw Error('تغيرت الفواتير أو القيود؛ لم تُؤرشف أي نسخة');
+  const nextInvoices=beforeInvoices.filter(i=>!removeIds.has(i.id));
+  const nextJournals=beforeJournals.flatMap(j=>{
+   if(j.source==='inv'&&j.sourceId===keep.id&&sourceJournals.length)return [{...j,updatedAt:at,sourceLinkPendingReview:true,replacementInvoiceId:keep.id}];
+   if(j.source!=='inv'||!removeIds.has(j.sourceId))return [j];
+   const sourceInvoice=remove.find(i=>i.id===j.sourceId);
+   const equivalentKeeper=keepJournals.length===1&&sameMoneyAndDate(sourceInvoice)&&keepJournals[0].date===j.date&&_hdSame(keepJournals[0].lines,j.lines);
+   if(!needsRelink&&equivalentKeeper)return [];
+   const relink=needsRelink&&sameMoneyAndDate(sourceInvoice)&&j.date===keep.date;
+   // Preserve original accounts, amounts and posting date. Classification needs a human review.
+   return [{...j,sourceId:relink?keep.id:j.sourceId,updatedAt:at,sourceLinkPendingReview:true,replacementInvoiceId:keep.id,sourceLinkHistory:[...(Array.isArray(j.sourceLinkHistory)?j.sourceLinkHistory:[]),{source:j.source,sourceId:j.sourceId,replacementInvoiceId:keep.id,relinked:relink,at,reason:relink?'نقل رابط القيد الوحيد دون تغيير أرقامه أو حساباته':'أرشفة نسخة مع إبقاء قيدها الأصلي معلقًا للمراجعة'}]}];
+  });
+  primaryAttempted=true;
+  if(!await saveReviewArchive(SJRN,JSON.stringify(nextJournals)))throw Error('تعذر حفظ روابط القيود؛ بقيت نسخة الاستعادة');
+  if(!await saveReviewArchive(SK,JSON.stringify(nextInvoices)))throw Error('تعذر حفظ أرشفة الفواتير؛ بقيت نسخة الاستعادة');
+  invs=nextInvoices;journals=nextJournals;committed=true;
+ }catch(e){
+  let restored=true;
+  if(primaryAttempted){
+   invs=beforeInvoices;journals=beforeJournals;
+   const invoiceRestored=await saveReviewArchive(SK,JSON.stringify(beforeInvoices));
+   const journalRestored=await saveReviewArchive(SJRN,JSON.stringify(beforeJournals));
+   restored=invoiceRestored&&journalRestored;
+  }
+  toast((e.message||'تعذرت الأرشفة')+(restored?'؛ لم تُعتمد الأرشفة':'؛ تعذر تأكيد استعادة التخزين. لا تغلق الصفحة؛ نسخة الاستعادة محفوظة'),'er');
+  return false;
+ }finally{
+  if(locked){_cloudReplacing=false;if(committed||pendingPush)cloudPushDebounced();}
+  _dupRemoveBusy=false;
+ }
+ if(committed){renderDB();renderList();openDupCheck();toast('أُرشفت النسخ المحددة مع حفظ قيودها؛ راجع الروابط المعلقة محاسبيًا','ok');}
+ return committed;
 }
 async function removeAllDups(){openDupCheck();toast('راجع المجموعات واختر النسخة الصحيحة؛ الأرشفة الجماعية التلقائية معطلة','er');}
 
@@ -10262,7 +10357,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1151',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1152',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10325,12 +10420,12 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1151"></script>
-<script src="ops.js?v=1151"></script>
+<script src="purchase-payments.js?v=1152"></script>
+<script src="ops.js?v=1152"></script>
 
-<script src="settings.js?v=1151"></script>
-<script src="project-closeout.js?v=1151"></script>
-<script src="invoice-vat-review.js?v=1151"></script>
-<script src="data-quality.js?v=1151"></script>
+<script src="settings.js?v=1152"></script>
+<script src="project-closeout.js?v=1152"></script>
+<script src="invoice-vat-review.js?v=1152"></script>
+<script src="data-quality.js?v=1152"></script>
 </body>
 </html>

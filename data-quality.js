@@ -98,5 +98,16 @@ window.openOrphanAssignment=function(projectId){
  panel.append(save);
  const back=document.createElement('button');back.className='h1077-btn';back.style.margin='10px';back.textContent='رجوع';back.onclick=()=>openDataQualityReview();panel.append(back);
 };
+window.refreshInvoiceNumberStatus=function(){
+ const field=document.getElementById('f-no');if(!field)return;
+ let status=document.getElementById('invoice-number-status');
+ if(!status){status=document.createElement('div');status.id='invoice-number-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');status.style.cssText='color:#b91c1c;font-size:12px;line-height:1.7;margin:5px 0';field.after(status);}
+ status.replaceChildren();
+ const key=normalizeInvoiceNumber(field.value);
+ const existing=key&&invs.find(i=>i.id!==editId&&invoiceDuplicateKey(i)===key);if(!existing)return;
+ const text=document.createElement('span');text.textContent='الفاتورة مسجلة مسبقًا برقم '+existing.number+'. ';status.append(text);
+ const open=document.createElement('button');open.type='button';open.className='h1077-btn';open.textContent='فتح الفاتورة الحالية';open.onclick=()=>{goTab('add');revInv(existing.id);};status.append(open);
+};
+document.getElementById('f-no')?.addEventListener('input',()=>refreshInvoiceNumberStatus());
 document.addEventListener('DOMContentLoaded',()=>renderDataQualityStatus());
 })();
