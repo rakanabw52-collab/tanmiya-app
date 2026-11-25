@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-24-1154">
+<meta name="app-build" content="2026-11-25-1155">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1154">
+<link rel="manifest" href="manifest.json?v=1155">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -565,7 +565,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1154">
+<link rel="stylesheet" href="ops.css?v=1155">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -742,7 +742,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1154</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1155</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1576,7 +1576,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🔎 مراجعة ربط الفواتير</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1154</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1155</bdi></span></div>
   </div>
 </div>
 
@@ -1633,6 +1633,8 @@ window.opsData={
   <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="24" height="24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
 </button>
 <div class="toast" id="toast"></div>
+<script src="invoice-allocations.js?v=1155"></script>
+<script src="invoice-vat-adjustments.js?v=1155"></script>
 <script>
 /* ========== CONSTANTS ========== */
 
@@ -2733,7 +2735,7 @@ async function _saveExtractedInvoice(d,version){
   }
   renderDB();toast('تم حفظ القراءة؛ الحفظ اليدوي سيحدّث نفس الفاتورة','ok');return true;
 }
-function revInv(id){_scanFormVersion++;resetInvoiceTaxInputMode();const inv=invs.find(i=>i.id===id);if(!inv)return;setVatRecovery('f-vat-recovery',inv.vatRecoverable);editId=id;setType(inv.type);document.getElementById('f-no').value=inv.number;if(typeof refreshInvoiceNumberStatus==='function')refreshInvoiceNumberStatus();document.getElementById('f-dt').value=inv.date;document.getElementById('f-vnd').value=inv.vendor;document.getElementById('f-vtx').value=inv.vendorVAT||'';document.getElementById('f-sub').value=inv.subtotal;document.getElementById('f-vr').value=inv.vatRate;document.getElementById('f-v').value=inv.vat;document.getElementById('f-tot').value=inv.total;document.getElementById('f-nt').value=inv.notes||'';fillProjSel();document.getElementById('f-proj').value=inv.projectId||'';setTimeout(()=>{if(inv.category)document.getElementById('f-cat').value=inv.category;},80);document.getElementById('ai-s').classList.remove('show');document.getElementById('man-form').scrollIntoView({behavior:'smooth',block:'start'});}
+function revInv(id){_scanFormVersion++;resetInvoiceTaxInputMode();const inv=invs.find(i=>i.id===id);if(!inv)return;setVatRecovery('f-vat-recovery',inv.vatRecoverable);editId=id;setType(inv.type);document.getElementById('f-no').value=inv.number;if(typeof refreshInvoiceNumberStatus==='function')refreshInvoiceNumberStatus();document.getElementById('f-dt').value=inv.date;document.getElementById('f-vnd').value=inv.vendor;document.getElementById('f-vtx').value=inv.vendorVAT||'';document.getElementById('f-sub').value=inv.subtotal;document.getElementById('f-vr').value=inv.vatRate;document.getElementById('f-v').value=inv.vat;document.getElementById('f-tot').value=inv.total;document.getElementById('f-nt').value=inv.notes||'';fillProjSel();document.getElementById('f-proj').value=inv.projectId||'';renderInvoiceAllocationHint(inv,'f-proj');setTimeout(()=>{if(inv.category)document.getElementById('f-cat').value=inv.category;},80);document.getElementById('ai-s').classList.remove('show');document.getElementById('man-form').scrollIntoView({behavior:'smooth',block:'start'});}
 function nextInv(){clrForm();document.getElementById('ai-s').classList.remove('show');rmPrev();window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>document.getElementById('f-cam').click(),350);}
 
 async function aiExtract(b64,mt,kb,isPdf){
@@ -2895,7 +2897,7 @@ function filterInvs(){
   if(q){
     res=res.filter(i=>{
       const cat=catLabel(i)||'';
-      const pn=projName(i.projectId)||'';
+      const pn=invoiceAllocationLabel(i)||projName(i.projectId)||'';
       const amt=String(i.total||'')+' '+String(i.subtotal||'');
       const hay=(i.number+' '+i.vendor+' '+(i.notes||'')+' '+cat+' '+pn+' '+amt+' '+(i.date||'')+' '+(i.vendorVAT||'')).toLowerCase();
       return hay.includes(q);
@@ -3108,6 +3110,7 @@ function qEditInv(id){
   ps.innerHTML='<option value="">— بدون مشروع —</option>';
   sortedProjs().forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name;ps.appendChild(o);});
   ps.value=inv.projectId||'';
+  renderInvoiceAllocationHint(inv,'qe-proj');
   // قائمة البنود حسب النوع
   const cs=document.getElementById('qe-cat');
   cs.innerHTML='<option value="">— اختر —</option>';
@@ -3298,10 +3301,10 @@ function advancedEdit(){
   goTab('add');
   revInv(id);
 }
-async function qDel(id){const inv=invs.find(i=>i.id===id);if(!inv)return;if(!_canEditInvoice(inv,inv.date))return;const ok=await confirm2({title:'حذف',msg:'<strong>'+esc(inv.number)+'</strong><br>'+esc(inv.vendor),ok:'حذف'});if(!ok)return;toTrash('inv',inv);logEvent('حذف فاتورة',(inv.number||'')+' — '+(inv.vendor||'')+' — '+fmtI(inv.total||0));invs=invs.filter(x=>x.id!==id);await sv();renderList();renderDB();toast('تم الحذف','ok');}
+async function qDel(id){const inv=invs.find(i=>i.id===id);if(!inv)return;if(!_canRemoveInvoice(inv))return;const ok=await confirm2({title:'حذف',msg:'<strong>'+esc(inv.number)+'</strong><br>'+esc(inv.vendor),ok:'حذف'});if(!ok)return;toTrash('inv',inv);logEvent('حذف فاتورة',(inv.number||'')+' — '+(inv.vendor||'')+' — '+fmtI(inv.total||0));invs=invs.filter(x=>x.id!==id);await sv();renderList();renderDB();toast('تم الحذف','ok');}
 
 function showDet(id){const inv=invs.find(i=>i.id===id);if(!inv)return;detId=id;
-  const pn=projName(inv.projectId);
+  const pn=invoiceAllocationLabel(inv)||projName(inv.projectId);
   document.getElementById('det-ttl').textContent=inv.number;
   const _cancelled=inv.status==='cancelled';
   let _qr='';
@@ -3328,7 +3331,7 @@ function showDet(id){const inv=invs.find(i=>i.id===id);if(!inv)return;detId=id;
 }
 function closeDet(){document.getElementById('det-mb').classList.remove('show');detId=null;}
 function editDet(){const inv=invs.find(i=>i.id===detId);if(!inv)return;closeDet();goTab('add');revInv(inv.id);}
-async function delDet(){if(!detId)return;const inv=invs.find(i=>i.id===detId);if(typeof projectCloseAllows==='function'&&!projectCloseAllows(inv?.projectId))return;const ok=await confirm2({title:'حذف',msg:inv?'<strong>'+esc(inv.number)+'</strong>':'؟',ok:'حذف'});if(!ok)return;if(inv){toTrash('inv',inv);logEvent('حذف فاتورة',(inv.number||'')+' — '+(inv.vendor||''));}invs=invs.filter(i=>i.id!==detId);await sv();closeDet();renderList();renderDB();toast('تم الحذف','ok');}
+async function delDet(){if(!detId)return;const inv=invs.find(i=>i.id===detId);if(!inv||!_canRemoveInvoice(inv))return;const ok=await confirm2({title:'حذف',msg:inv?'<strong>'+esc(inv.number)+'</strong>':'؟',ok:'حذف'});if(!ok)return;if(inv){toTrash('inv',inv);logEvent('حذف فاتورة',(inv.number||'')+' — '+(inv.vendor||''));}invs=invs.filter(i=>i.id!==detId);await sv();closeDet();renderList();renderDB();toast('تم الحذف','ok');}
 
 /* ========== إصدار الفاتورة الضريبية: ترقيم تلقائي + إلغاء ========== */
 function nextInvNumber(){
@@ -3357,7 +3360,7 @@ async function toggleTaxDecl(){
   showDet(inv.id);renderVT();renderList();renderDB();toast(inv.taxDecl?'أُدرجت في الإقرار الضريبي':'استُبعدت من الإقرار الضريبي','ok');
 }
 async function cancelInv(){
-  const inv=invs.find(i=>i.id===detId);if(!inv||inv.status==='cancelled')return;
+  const inv=invs.find(i=>i.id===detId);if(!inv||inv.status==='cancelled'||!_canRemoveInvoice(inv))return;
   const ok=await confirm2({title:'إلغاء الفاتورة',msg:'ستُعلَّم الفاتورة <b>«ملغاة»</b> وتُستبعد من الحسابات والضريبة، لكن تبقى في السجل للمراجعة. متابعة؟',ok:'إلغاء الفاتورة',danger:true});
   if(!ok)return;
   inv.status='cancelled';inv.cancelledAt=Date.now();
@@ -3415,7 +3418,7 @@ function _buildAuditData(kind,id){
   }
   const p=projs.find(x=>x.id===id);if(!p)return '';
   const pl=projPL(id);
-  const pinvs=invs.filter(x=>x.projectId===id);
+  const pinvs=invoiceProjectRows(id);
   let s='نوع البيانات: مشروع مع فواتيره\n';
   s+='اسم المشروع: '+p.name+'\nالكود/رقم العقد: '+(p.code||'—')+'\nالعميل: '+(p.client||'—')+'\nالحالة: '+(STL[p.status]||p.status)+'\n';
   s+='قيمة العقد (بدون ضريبة): '+fmtI(pl.contract)+' ر.س\nقيمة العقد شاملة الضريبة (×1.15): '+fmtI(pl.contractGross)+' ر.س\n';
@@ -3568,7 +3571,7 @@ function closeAudit(){document.getElementById('audit-mb').classList.remove('show
 function _projYearGuess(p){
   const sd=String(p.startDate||'').slice(0,4);if(/^\d{4}$/.test(sd))return sd;
   const ed=String(p.endDate||'').slice(0,4);if(/^\d{4}$/.test(ed))return ed;
-  const yrs={};invs.filter(i=>i.projectId===p.id&&i.date).forEach(i=>{const y=String(i.date).slice(0,4);if(/^\d{4}$/.test(y))yrs[y]=(yrs[y]||0)+1;});
+  const yrs={};invoiceProjectRows(p.id).filter(i=>i.date).forEach(i=>{const y=String(i.date).slice(0,4);if(/^\d{4}$/.test(y))yrs[y]=(yrs[y]||0)+1;});
   let best='',bc=0;Object.keys(yrs).forEach(y=>{if(yrs[y]>bc){bc=yrs[y];best=y;}});
   return best||String(new Date().getFullYear());
 }
@@ -3578,9 +3581,9 @@ function openFixDates(){
   if(!ps.length){body.innerHTML='<div style="text-align:center;color:var(--t3);padding:20px">لا توجد مشاريع.</div>';document.getElementById('fixdt-mb').classList.add('show');return;}
   let h='';
   ps.forEach(p=>{
-    const cnt=invs.filter(i=>i.projectId===p.id).length;
+    const cnt=invoiceProjectRows(p.id).length;
     const yg=_projYearGuess(p);
-    const years=[...new Set(invs.filter(i=>i.projectId===p.id&&i.date).map(i=>String(i.date).slice(0,4)))].sort().join('، ')||'—';
+    const years=[...new Set(invoiceProjectRows(p.id).filter(i=>i.date).map(i=>String(i.date).slice(0,4)))].sort().join('، ')||'—';
     h+='<div class="acc-card" style="padding:11px;margin-bottom:9px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">';
     h+='<div style="flex:1;min-width:140px"><div style="font-weight:800;font-size:13px">'+esc(p.name)+'</div><div style="font-size:10.5px;color:var(--t3)">'+cnt+' فاتورة • سنوات حالية: '+esc(years)+'</div></div>';
     h+='<div style="display:flex;align-items:center;gap:7px"><label style="font-size:11px;color:var(--t2)">السنة الصحيحة</label><input type="number" id="fixdt-y-'+p.id+'" value="'+yg+'" oninput="_fixDtCount(\''+p.id+'\')" style="width:82px;padding:7px;border:1px solid var(--bd);border-radius:8px;text-align:center;font-family:Tajawal,sans-serif;font-size:13px"></div>';
@@ -3594,7 +3597,7 @@ function _fixDtCount(pid){
   const el=document.getElementById('fixdt-cnt-'+pid);if(!el)return;
   const inp=document.getElementById('fixdt-y-'+pid);const y=(inp?inp.value:'').trim();
   if(!/^\d{4}$/.test(y)){el.textContent='أدخل سنة صحيحة (4 أرقام)';el.style.color='#B91C1C';return;}
-  const n=invs.filter(i=>i.projectId===pid&&(!/^\d{4}-\d{2}-\d{2}$/.test(i.date||'')||String(i.date).slice(0,4)!==y)).length;
+  const n=invoiceProjectRows(pid).filter(i=>(!/^\d{4}-\d{2}-\d{2}$/.test(i.date||'')||String(i.date).slice(0,4)!==y)).length;
   el.style.color=n?'#9A3412':'#15803D';
   el.textContent=n?('سيُصحَّح تاريخ '+n+' فاتورة إلى سنة '+y):('كل الفواتير سنتها '+y+' ✓');
 }
@@ -3671,7 +3674,7 @@ async function saveReviewArchive(key,value){
   const stored=await _stGet(key);return stored?.value===value;
  }catch(_){return false;}
 }
-function hasKnownProject(record){return !!record?.projectId&&projs.some(p=>p.id===record.projectId);}
+function hasKnownProject(record){return (!!record?.projectId&&projs.some(p=>p.id===record.projectId))||hasInvoiceProjectAllocations(record);}
 function invoiceMoneyIssue(inv){
  const base=Number(inv?.subtotal??inv?.amount??0),vat=Number(inv?.vat??0),total=Number(inv?.total??(base+vat));
  if(![base,vat,total].every(Number.isFinite)||base<0||vat<0||total<0)return 'مبلغ سالب أو غير صالح';
@@ -3709,9 +3712,13 @@ function _projectReceipts(pid){
 }
 function _isClosedDate(date){return typeof hdIsPeriodClosed==='function'&&hdIsPeriodClosed(date);}
 function _canEditInvoice(inv,date){
-  if(typeof projectCloseAllows==='function'&&!projectCloseAllows(inv?.projectId))return false;
+  if(typeof projectCloseAllows==='function'&&([inv?.projectId,...validInvoiceAllocations(inv).map(a=>a.projectId)]).some(id=>id&&!projectCloseAllows(id)))return false;
   if(_isClosedDate(inv?.date)||_isClosedDate(date)){toast('الفترة مقفلة؛ يلزم إعادة فتحها أو تسجيل قيد تسوية','er');return false;}
   return true;
+}
+function _canRemoveInvoice(inv){
+ if(inv?.vatRecoveryAdjustment){toast('راجع عكس التسوية الضريبية قبل حذف الفاتورة أو إلغائها','er');return false;}
+ return _canEditInvoice(inv,inv?.date);
 }
 let _journalSyncIssues=[];
 function _syncInvJournals(){
@@ -3719,8 +3726,11 @@ function _syncInvJournals(){
   let changed=0;_journalSyncIssues=[];
   journals=journals.filter(j=>{
     if(!['inv','purchase'].includes(j.source))return true;
+    if(j.vatRecoverySourceProtected){const raw=invs.find(i=>i.id===j.sourceId);if(!raw||!hasValidVATRecoveryAdjustment(raw,j))_journalSyncIssues.push('تسوية ضريبة الفاتورة '+(raw?.number||j.sourceId)+' تحتاج مراجعة؛ حُفظ القيد الأصلي والتسوية');return true;}
     if(j.sourceLinkPendingReview){_journalSyncIssues.push('القيد '+(j.desc||j.id)+' يحتاج مراجعة ربطه وتصنيفه بعد أرشفة نسخة الفاتورة؛ بقيت حساباته ومبالغه كما هي');return true;}
     const i=sources.get(j.source+':'+j.sourceId);
+    const adjusted=j.source==='inv'&&(invs.find(raw=>raw.id===j.sourceId)?.vatRecoveryAdjustment||journals.some(a=>a.source==='vatRecoveryAdjustment'&&a.sourceId===j.sourceId));
+    if(adjusted){if(!i||!hasValidVATRecoveryAdjustment(i,j))_journalSyncIssues.push('تسوية ضريبة الفاتورة '+(i?.number||j.sourceId)+' تحتاج مراجعة؛ حُفظ القيد الأصلي والتسوية دون إعادة كتابة');return true;}
     if(i&&invoiceMoneyIssue(i)){_journalSyncIssues.push('الفاتورة '+(i.number||i.id)+' تحتاج مراجعة الصافي والضريبة والإجمالي؛ حُفظ قيدها دون تغيير');return true;}
     const lines=i?_invPostings(i):null;
     const same=!!lines&&j.date===i.date&&JSON.stringify(j.lines)===JSON.stringify(lines);
@@ -3763,6 +3773,7 @@ function genInvJournals(){
   _syncInvJournals();const ids=_postedInvIds();let n=0;
   for(const inv of _financialInvoices()){
     const key=inv._source+':'+inv._sourceId;if(ids.has(key))continue;
+    if(inv.vatRecoveryAdjustment){_journalSyncIssues.push('تسوية الضريبة تحتاج مطابقة القيد الأصلي قبل إنشاء قيد آخر');continue;}
     if(inv._source==='inv'&&_pendingInvoiceJournalReview(inv._sourceId)){_journalSyncIssues.push('الفاتورة '+(inv.number||key)+' لها قيد مرتبط معلق للمراجعة؛ لم يُنشأ قيد آخر');continue;}
     if(_isClosedDate(inv.date)){_journalSyncIssues.push('فاتورة '+(inv.number||key)+' في فترة مقفلة وتحتاج قيد تسوية');continue;}
     const lines=_invPostings(inv);if(!lines)continue;
@@ -3804,11 +3815,10 @@ function _finReal(year){
   const standaloneRev=invs.filter(i=>i.type==='revenue'&&!i.projectId&&i.status!=='cancelled'&&inYr(i.date)).reduce((s,i)=>s+toNum(i.total),0);
   const costRows=[],byCat={};let manualAdj=0,unallocatedManual=0,unallocatedOperational=0;
   const add=(row,amount)=>{if(!inYr(row.date))return;const v=toNum(amount),code=_expAccFor(row);costRows.push(v);byCat[code]=(byCat[code]||0)+v;};
-  for(const i of invs){
-    if(i.status==='cancelled'||!['purchase','expense'].includes(i.type))continue;
-    const p=projs.find(p=>p.id===i.projectId);
-    if(p?.status==='study'||toNum(p?.siteExpensesTotal)>0)continue;
-    add(i,i.total);
+  for(const source of invs){
+    if(source.status==='cancelled'||!['purchase','expense'].includes(source.type))continue;
+    const parts=hasInvoiceProjectAllocations(source)?validInvoiceAllocations(source).flatMap(a=>invoiceProjectRows(a.projectId,[source])):[source];
+    for(const i of parts){const p=projs.find(p=>p.id===i.projectId);if(p?.status==='study'||toNum(p?.siteExpensesTotal)>0)continue;add(i,i.total);}
   }
   for(const p of projs){
     if(p.status==='study'||!(toNum(p.siteExpensesTotal)>0))continue;
@@ -4091,7 +4101,7 @@ function _resolvedSet(){const s=new Set();(audits||[]).forEach(a=>(a.findings||[
 /* ===== حلول فورية داخل تقرير التدقيق (حذف مكرر / تصحيح حسابي) ===== */
 function _qfScope(kind,id){
   if(kind==='inv'){const i=invs.find(x=>x.id===id);return i?[i]:[];}
-  if(kind==='proj')return invs.filter(i=>i.projectId===id);
+  if(kind==='proj')return invoiceProjectRows(id);
   return invs.slice();
 }
 function _qfDetect(kind,id){
@@ -4614,6 +4624,7 @@ async function monthlyReportPDF(){
 async function setInvoiceVATRecovery(id,value){
  const i=invs.findIndex(i=>i.id===id);if(i<0||!['yes','no'].includes(value))return false;
  const old=invs[i];if(!_canEditInvoice(old,old.date))return false;
+ if(old.vatRecoveryAdjustment&&value!=='yes'){toast('راجع تسوية الضريبة قبل إلغاء الاسترجاع','er');return false;}
  invs[i]={...old,vatRecoverable:value==='yes'};
  const result=await svDetailed();if(!result?.ok){invs[i]=old;toast('تعذر حفظ خيار الضريبة','er');return false;}
  _syncInvJournals();logEvent('اختيار استرجاع ضريبة مصروف',(old.number||'')+' — '+(value==='yes'?'نعم':'لا'));renderDB();renderList();return true;
@@ -4622,7 +4633,7 @@ function setVatRecovery(id,value){const el=document.getElementById(id);if(el)el.
 function vatRecoveryChoice(id){return document.getElementById(id)?.value||'';}
 function projectRecoverableVAT(pid){
  const p=projs.find(p=>p.id===pid);let tax=p?.siteVATRecoverable===true?Math.min(Math.max(0,toNum(p.siteExpensesVAT)),Math.max(0,toNum(p.siteExpensesTotal))):0;
- _financialInvoices().filter(i=>i.projectId===pid&&(i.type==='purchase'||i.type==='expense')).forEach(i=>{if(i._source==='inv'&&toNum(p?.siteExpensesTotal)>0)return;if(_vatEligPurchase(i))tax+=Math.min(Math.max(0,toNum(i.vat)),Math.max(0,toNum(i.total)));});
+ invoiceProjectRows(pid,_financialInvoices()).filter(i=>i.type==='purchase'||i.type==='expense').forEach(i=>{if(i._source==='inv'&&toNum(p?.siteExpensesTotal)>0)return;if(_vatEligPurchase(i))tax+=Math.min(Math.max(0,toNum(i.vat)),Math.max(0,toNum(i.total)));});
  const active=invs.filter(i=>i.status!=='cancelled');
  (window.opsData?.purchaseOrders||[]).filter(o=>o.projectId===pid&&o.status!=='cancelled'&&!o.directPurchase&&!(o.invoiceId&&active.some(i=>i.id===o.invoiceId))&&o.vatRecoverable===true).forEach(o=>tax+=Math.min(Math.max(0,toNum(o.vat)),Math.max(0,toNum(o.total))));
  (window.opsData?.claims||[]).filter(c=>c.projectId===pid&&c.partyType==='subcontractor'&&c.status!=='cancelled'&&c.vatRecoverable===true).forEach(c=>tax+=Math.min(Math.max(0,toNum(c.vat)),Math.max(0,toNum(c.total))));
@@ -4630,7 +4641,7 @@ function projectRecoverableVAT(pid){
 }
 function projPL(pid){
   const proj=projs.find(x=>x.id===pid);
-  const pinvs=invs.filter(i=>i.projectId===pid&&i.status!=='cancelled').map(i=>({...i,total:toNum(i.total),vat:toNum(i.vat),subtotal:toNum(i.subtotal)}));
+  const pinvs=invoiceProjectRows(pid).filter(i=>i.status!=='cancelled').map(i=>({...i,total:toNum(i.total),vat:toNum(i.vat),subtotal:toNum(i.subtotal)}));
   const _OD=window.opsData||{};const _OA=k=>Array.isArray(_OD[k])?_OD[k]:[];
   // أوامر التغيير المعتمدة ترفع قيمة العقد في كل النظام
   const chOrders=_OA('changeOrders').filter(o=>o&&o.projectId===pid&&o.status==='approved').reduce((s,o)=>s+(+o.amount||0),0);
@@ -4722,7 +4733,7 @@ function getProjDays(p){
     const d=(new Date(p.endDate)-new Date(p.startDate))/(1000*60*60*24);
     if(d>0)return d;
   }
-  const pinvs=invs.filter(i=>i.projectId===p.id&&i.date);
+  const pinvs=invoiceProjectRows(p.id).filter(i=>i.date);
   if(pinvs.length>1){
     const dates=pinvs.map(i=>new Date(i.date).getTime()).filter(t=>!isNaN(t));
     if(dates.length>1){
@@ -4745,6 +4756,9 @@ function renderHeroProfit(pft,trv,margin,breakdown){
   html+='<div class="hp-sub"><span class="hp-tag">هامش '+margin.toFixed(1)+'%</span><span class="hp-tag">من '+fmtI(trv)+' ر.س إيرادات دون الضريبة</span></div>';
   if(breakdown){
     html+='<div class="profit-calculation" style="margin-top:9px;padding-top:8px;border-top:1px solid rgba(255,255,255,.3);font-size:11px;line-height:1.8"><div>الإيرادات دون الضريبة: <b class="num">'+fmtI(trv)+'</b> ر.س</div><div>المصروفات بعد استبعاد الضريبة المستردة: <b class="num">'+fmtI(breakdown.cost)+'</b> ر.س</div><details><summary style="cursor:pointer">تفصيل الحساب</summary><div>العقود: <b class="num">'+fmtI(breakdown.contracts)+'</b> ر.س</div><div>إيرادات خارج المشاريع دون الضريبة: <b class="num">'+fmtI(breakdown.otherRevenue)+'</b> ر.س</div><div>الضريبة المستردة المستبعدة من المصروفات: <b class="num">'+fmtI(breakdown.recoverable)+'</b> ر.س</div><div>نسبة الربح = صافي الربح ÷ إجمالي الإيرادات × 100</div>'+(breakdown.manualUnknown?'<div>المصروفات اليدوية المجمعة محسوبة كما سُجّلت لعدم توفر تفصيل ضريبتها.</div>':'')+'</details></div>';
+  }
+  if(breakdown&&Number.isFinite(breakdown.projectProfit)&&Number.isFinite(breakdown.generalNetCost)){
+    html+='<div style="margin-top:8px;font-size:11px;line-height:1.8"><div>ربح المشاريع قبل المصروفات العامة: <b id="profit-project-before-general" class="num">'+fmtI(breakdown.projectProfit)+'</b> ر.س</div><div>المصروفات العامة بعد استبعاد الضريبة: <b id="profit-general-net" class="num">'+fmtI(breakdown.generalNetCost)+'</b> ر.س</div></div>';
   }
   w.innerHTML=html;
 }
@@ -6443,10 +6457,11 @@ function renderProjDash(){
     return {p,pl,pr,isStudy};
   });
   // مطابقة الداش بورد: تضمين المصاريف والإيرادات غير المرتبطة بمشروع في الإجماليات
-  const _saCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!i.projectId&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
-  const _saRev=invs.filter(i=>i.type==='revenue'&&!i.projectId&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
+  const _saCost=invs.filter(i=>(i.type==='purchase'||i.type==='expense')&&!hasKnownProject(i)&&i.status!=='cancelled').reduce((s,i)=>s+(i.total||0),0);
+  const _saRev=invs.filter(i=>i.type==='revenue'&&!hasKnownProject(i)&&i.status!=='cancelled').reduce((s,i)=>s+toNum(i.total)-toNum(i.vat),0);
   const totRevenue=totContract+_saRev;
-  totCost+=_saCost;
+  totCost+=_saCost+_generalPurchaseOrders().reduce((sum,o)=>sum+toNum(o.total),0);
+  totCost=dashboardOperatingMetrics(totCost).costNet;
   totProfit=totRevenue-totCost;
   const avgProg=progN>0?(sumProg/progN):0;
   const overallMargin=totRevenue>0?(totProfit/totRevenue*100):0;
@@ -7122,6 +7137,7 @@ async function savePe(){
 }
 let _projectTrashBusy=false;
 async function _archiveProjectDelete(id){
+  if(invs.some(i=>validInvoiceAllocations(i).some(a=>a.projectId===id)))return toast('راجع توزيع الفواتير المشتركة قبل حذف هذا المشروع','er');
   if(typeof projectCloseAllows==='function'&&!projectCloseAllows(id))return false;
   const p=projs.find(x=>x.id===id);if(!p)return false;
   const beforeProjects=projs,beforeInvoices=invs;
@@ -7377,7 +7393,7 @@ function showProj(id){
   const pl=projPL(id);
   const studyCost=p.status==='study'&&p.feasibility?toNum(p.feasibility.estTotal):null;
   const studyProfit=studyCost===null?null:pl.contract-studyCost;
-  const pinvs=invs.filter(i=>i.projectId===id&&i.status!=='cancelled').sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const pinvs=invoiceProjectRows(id).filter(i=>i.status!=='cancelled').sort((a,b)=>new Date(b.date)-new Date(a.date));
   document.getElementById('pd-ttl').textContent=p.name;
 
   // P&L summary
@@ -8395,7 +8411,8 @@ function renderDB(){
   const rpct=document.getElementById('r-pct');if(rpct)rpct.textContent=collPct.toFixed(1)+'%';
   const rfill=document.getElementById('r-fill');if(rfill)rfill.style.width=Math.min(collPct,100)+'%';
   // بطاقة الربح البارزة
-  renderHeroProfit(pft,trv,margin,{contracts:contractRev,otherRevenue:standaloneRev,cost:operating.costNet,recoverable:operating.recoverable,manualUnknown:operating.manualUnknown});
+  const projectNetCost=dashProjs.reduce((sum,p)=>sum+projPL(p.id).costNet,0);
+  renderHeroProfit(pft,trv,margin,{contracts:contractRev,otherRevenue:standaloneRev,cost:operating.costNet,recoverable:operating.recoverable,manualUnknown:operating.manualUnknown,projectProfit:contractRev-projectNetCost,generalNetCost:operating.costNet-projectNetCost});
   const allByCat={};
   const addCategory=(cat,value)=>{const c=migrateCat(cat||'other');allByCat[c]=(allByCat[c]||0)+toNum(value);};
   dashProjs.forEach(p=>Object.entries(projPL(p.id).byCat).forEach(([cat,value])=>addCategory(cat,value)));
@@ -8606,7 +8623,7 @@ async function shareVatImg(){
 function expXls(){
   if(!invs.length)return toast('لا توجد فواتير','er');
   const list=filterInvs();
-  const rows=list.map(i=>({'رقم الفاتورة':i.number,'التاريخ':i.date,'النوع':TL[i.type],'المورد/العميل':i.vendor,'الرقم الضريبي':i.vendorVAT||'','المشروع':projName(i.projectId)||'','البند':catLabel(i),'قبل الضريبة':i.subtotal,'الضريبة%':i.vatRate,'الضريبة':i.vat,'الإجمالي':i.total,'ملاحظات':i.notes||''}));
+  const rows=list.map(i=>({'رقم الفاتورة':i.number,'التاريخ':i.date,'النوع':TL[i.type],'المورد/العميل':i.vendor,'الرقم الضريبي':i.vendorVAT||'','المشروع':invoiceAllocationLabel(i)||projName(i.projectId)||'','البند':catLabel(i),'قبل الضريبة':i.subtotal,'الضريبة%':i.vatRate,'الضريبة':i.vat,'الإجمالي':i.total,'ملاحظات':i.notes||''}));
   const wb=XLSX.utils.book_new(),ws=XLSX.utils.json_to_sheet(rows);
   ws['!cols']=[{wch:14},{wch:12},{wch:10},{wch:24},{wch:14},{wch:18},{wch:18},{wch:13},{wch:8},{wch:12},{wch:13},{wch:22}];
   if(!ws['!views'])ws['!views']=[{}];ws['!views'][0].rightToLeft=true;
@@ -8716,7 +8733,7 @@ function expProjReport(){
   XLSX.utils.book_append_sheet(wb,ws1,'ملخص المشاريع');
   // ورقة تفصيلية لكل مشروع
   ordered.forEach(p=>{
-    const pinvs=invs.filter(i=>i.projectId===p.id&&i.status!=='cancelled').sort((a,b)=>new Date(a.date)-new Date(b.date));
+    const pinvs=invoiceProjectRows(p.id).filter(i=>i.status!=='cancelled').sort((a,b)=>new Date(a.date)-new Date(b.date));
     const pl=projPL(p.id);
     const rows=[['تقرير مشروع: '+p.name],[],['الإيرادات',pl.rev],['التكاليف',pl.cost],['الربح',pl.profit],['هامش الربح %',pl.margin.toFixed(2)],[],['التاريخ','رقم الفاتورة','النوع','البيان','البند','المبلغ']];
     pinvs.forEach(i=>rows.push([i.date,i.number,TL[i.type],i.vendor+(i.notes?' • '+i.notes:''),catLabel(i),i.total]));
@@ -8734,7 +8751,7 @@ function expProjPDF(){
   if(!curProjId)return;
   const p=projs.find(x=>x.id===curProjId);
   if(!p)return;
-  const pinvs=invs.filter(i=>i.projectId===p.id&&i.status!=='cancelled').sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const pinvs=invoiceProjectRows(p.id).filter(i=>i.status!=='cancelled').sort((a,b)=>new Date(a.date)-new Date(b.date));
   const pl=projPL(p.id);
   // تصدير تقرير المشروع الواحد كملف Excel
   const wb=XLSX.utils.book_new();
@@ -9995,6 +10012,7 @@ async function removeDupGroup(gi){
  if(!current||JSON.stringify(current)!==JSON.stringify(group)){toast('تغيرت البيانات. أغلق المراجعة وافتحها مجددًا','er');return false;}
  const remove=current.filter(i=>i.id!==keep.id),removeIds=new Set(remove.map(i=>i.id));
  if(current.some(i=>!_canEditInvoice(i,i.date)))return false;
+ if(current.some(i=>i.vatRecoveryAdjustment)){toast('راجع تسويات الضريبة المرتبطة قبل أرشفة النسخ','er');return false;}
  const groupIds=new Set(current.map(i=>i.id));
  const linked=journals.filter(j=>j.source==='inv'&&groupIds.has(j.sourceId));
  const keepJournals=linked.filter(j=>j.sourceId===keep.id),sourceJournals=linked.filter(j=>removeIds.has(j.sourceId));
@@ -10370,7 +10388,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1154',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1155',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10433,14 +10451,15 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1154"></script>
-<script src="ops.js?v=1154"></script>
+<script src="purchase-payments.js?v=1155"></script>
+<script src="ops.js?v=1155"></script>
 
-<script src="settings.js?v=1154"></script>
-<script src="project-closeout.js?v=1154"></script>
-<script src="invoice-vat-review.js?v=1154"></script>
-<script src="data-quality.js?v=1154"></script>
-<script src="purchase-classification.js?v=1154"></script>
-<script src="purchase-classification-save.js?v=1154"></script>
+<script src="settings.js?v=1155"></script>
+<script src="project-closeout.js?v=1155"></script>
+<script src="invoice-vat-review.js?v=1155"></script>
+<script src="data-quality.js?v=1155"></script>
+<script src="purchase-classification.js?v=1155"></script>
+<script src="purchase-classification-save.js?v=1155"></script>
+<script src="invoice-allocation-save.js?v=1155"></script>
 </body>
 </html>

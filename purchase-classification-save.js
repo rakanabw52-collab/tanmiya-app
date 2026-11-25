@@ -31,9 +31,16 @@ function pinPosting(candidate,old,source){
 }
 window.preparePurchaseForSave=function(record,existing,options){
  if(record.type==='revenue')return {record,pending:false,changed:false};
+ if(existing?.vatRecoveryAdjustment&&!hasValidVATRecoveryAdjustment(record))return {record,pending:true,changed:false,reason:'لهذه الفاتورة تسوية ضريبية؛ راجع التسوية قبل تغيير المبالغ أو الضريبة أو التاريخ.'};
+ if(record.projectAllocations?.length&&(!hasInvoiceProjectAllocations(record)||record.projectId))return {record,pending:true,changed:false,reason:'هذه الفاتورة موزعة على مشاريع؛ راجع توزيعها أو ألغِه قبل تغيير المبلغ أو الربط.'};
  const result=enforceFuelGeneral(record,{existing,manualCategory:options?.manualCategory===true});
  if(result.pending)return result;
  try{
+  if(!existing){
+   const financial={...result.record,type:result.record.type||'purchase',subtotal:result.record.subtotal??result.record.amount};
+   if(!financial.vendorVAT&&options?.source==='purchase')financial.vendorVAT=(window.opsData?.suppliers||[]).find(s=>s.id===record.supplierId)?.vat||'';
+   if(reviewFuelVATCandidate(financial,{ownerConfirmedFuel:options?.manualCategory===true}).ok){result.record.vatRecoverable=true;result.record.taxDecl=true;result.record.vatRecoveryPolicy='owner-general-fuel';}
+  }
   result.record=pinPosting(result.record,existing,options?.source||'inv');
   return result;
  }catch(error){return {record,pending:true,changed:false,reason:error.message};}
@@ -61,7 +68,8 @@ window.savePurchaseClassificationChange=async function(request){
   for(const row of rows){
    if(!_canEditInvoice(row.old,row.old.date))throw Error('الفترة أو المشروع مقفل؛ لم يتغير التصنيف.');
    const old=row.old,p=projs.find(p=>p.id===old.projectId);
-   if(old.projectId&&(changes.projectId===''||changes.category==='fuel')&&p&&
+   const approvedFuelProject=old.fuelProjectException?.projectId===old.projectId&&changes.projectId!=='';
+   if(old.projectId&&(changes.projectId===''||(changes.category==='fuel'&&!approvedFuelProject))&&p&&
       ((row.source==='inv'&&Number(p.siteExpensesTotal)>0)||p.status==='study'))throw Error('هذه الفاتورة مرتبطة بمبلغ مشروع مجمّع أو مشروع قيد الدراسة؛ يلزم مراجعة تغطيتها قبل نقلها للعامة حتى لا تتكرر التكلفة.');
    let next={...old,...changes,classificationConfirmed:true};
    const prepared=preparePurchaseForSave(next,old,{manualCategory:true,source:row.source});

@@ -26,7 +26,7 @@ const rules=[
  ['safety',/خوذه|قفاز|ستره|سلامه|\b(?:safety|helmet)\b/u],
  ['design',/تصميم|مخططات|رسم\s*هندسي|\bdesign\b/u],
  ['comms',/باقه|انترنت|اتصالات|هاتف|\b(?:telecom|internet)\b/u],
- ['services',/اتعاب|استشاره|محامي|غسيل|غسل\s*سياره|car\s*wash|\b(?:consulting|professional)\b/u],
+ ['services',/اتعاب|استشاره|محامي|غسيل|غسل\s*سياره|تغيير\s*(?:ال)?زيت|oil\s*change|car\s*wash|\b(?:consulting|professional)\b/u],
  ['banking',/رسوم\s*بنكيه|عموله\s*تحويل|\bbank\s+(?:fee|charge)/u],
  ['loans',/سلفه|عهده|مسحوبات|\badvance\b/u],
  ['subcontractor',/مقاول\s*باطن|مقاوله\s*الباطن|\bsubcontract/u]
@@ -71,14 +71,17 @@ root.analyzePurchaseClassification=function(record){
 root.enforceFuelGeneral=function(record,{existing=null,manualCategory=false}={}){
  const candidate={...(record||{})},analysis=root.analyzePurchaseClassification(candidate);
  if(['revenue','sale'].includes(candidate.type))return {record:candidate,pending:false,changed:false,reason:'السجل إيراد؛ لا يطبق عليه توزيع المشتريات.'};
+ if(candidate.fuelProjectException?.projectId&&candidate.fuelProjectException.projectId===candidate.projectId)return {record:candidate,pending:false,changed:false,reason:'محروقات خاصة بالمشروع حسب اعتماد المالك؛ يبقى ربطها بالمشروع.'};
  const selectedFuel=categoryId(candidate.category)==='fuel'&&(manualCategory===true||(confirmed(candidate)&&analysis.isFuel&&!analysis.ambiguous));
  const clearFuel=analysis.isFuel&&analysis.confidence==='high'&&!analysis.ambiguous;
  if(!selectedFuel&&!clearFuel)return {record:candidate,pending:false,changed:false,reason:analysis.reason};
  const projects=typeof projs!=='undefined'&&Array.isArray(projs)?projs:(Array.isArray(root.projs)?root.projs:[]);
  const previous=existing?.projectId||candidate.projectId||'';
- const oldProject=existing?.projectId?projects.find(p=>p.id===existing.projectId):null;
+ const oldScope=[existing?.projectId,...(existing?.projectAllocations||[]).map(a=>a.projectId)].filter(Boolean);
+ const oldProject=projects.find(p=>oldScope.includes(p.id)&&(p.status==='study'||number(p.siteExpensesTotal)>0))||projects.find(p=>p.id===existing?.projectId);
  if(oldProject?.status==='study')return {record:candidate,pending:true,changed:false,reason:'المشروع السابق تحت الدراسة ومُستبعد من إجماليات الرئيسية؛ راجع انتقال تكلفته للعامة قبل تغيير الربط.'};
  if(oldProject&&number(oldProject.siteExpensesTotal)>0)return {record:candidate,pending:true,changed:false,reason:'المشروع السابق يستخدم مصروفات مجمعة يدويًا؛ راجع المبلغ المجمع قبل نقل هذا السجل للعامة حتى لا تتكرر التكلفة.'};
+ if(candidate.projectAllocations?.length){candidate.previousProjectAllocations=candidate.projectAllocations;candidate.projectAllocations=[];candidate.projectId='';candidate.projectClassificationReason='محروقات عامة حسب سياسة المالك؛ أُلغي توزيعها على المشاريع.';return {record:candidate,pending:false,changed:true,reason:candidate.projectClassificationReason};}
  if(!candidate.projectId)return {record:candidate,pending:false,changed:false,reason:'السجل محروقات عامة بالفعل.'};
  candidate.projectId='';candidate.previousProjectId=previous;candidate.projectClassificationReason=selectedFuel?'محروقات اختيرت يدويًا؛ تُسجل مشتريات عامة.':'وصف وقود واضح؛ يُسجل مشتريات عامة.';
  return {record:candidate,pending:false,changed:true,reason:candidate.projectClassificationReason};
@@ -93,7 +96,8 @@ function recordsForReview(){
  const orders=Array.isArray(root.opsData?.purchaseOrders)?root.opsData.purchaseOrders:[];
  return [...invoices.filter(r=>r&&r.status!=='cancelled'&&['purchase','expense'].includes(r.type)).map(record=>({source:'inv',record})),...orders.filter(r=>r&&r.status!=='cancelled'&&!(r.invoiceId&&invoices.some(i=>i.id===r.invoiceId&&i.status!=='cancelled'))).map(record=>({source:'purchase',record}))].filter(({record})=>{
   const analysis=root.analyzePurchaseClassification(record),descriptions=[record.notes,record.classificationText,record.categoryLabel,...(record.items||[]).map(i=>i?.desc||i?.description||'')];
-  return !record.projectId||analysis.isFuel||analysis.category==='fuel'||categoryId(record.category)==='fuel'||descriptions.some(text=>fuel.test(normalize(text)));
+  const allocated=typeof root.hasInvoiceProjectAllocations==='function'&&root.hasInvoiceProjectAllocations(record);
+  return (!record.projectId&&!allocated)||analysis.isFuel||analysis.category==='fuel'||categoryId(record.category)==='fuel'||descriptions.some(text=>fuel.test(normalize(text)));
  });
 }
 root.openGeneralPurchaseReview=function(){

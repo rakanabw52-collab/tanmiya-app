@@ -9,20 +9,33 @@ server=http.server.ThreadingHTTPServer(('127.0.0.1',0),Quiet);threading.Thread(t
 with sync_playwright() as p:
  b=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox']);page=b.new_page();page.route('https://**',lambda r:r.abort());page.goto(f'http://127.0.0.1:{server.server_port}');page.wait_for_function('typeof renderBuy1077==="function"');page.wait_for_timeout(400)
  result=page.evaluate('''()=>{
+  _cloudOn=false;HD_AUTHED=false;HD_ROLE='owner';
   projs=[{id:'p',name:'نشط',status:'active',contractValue:1000,paidAmount:500,endDate:_addDays(_todayStr(),-1)},{id:'done',name:'منجز',status:'done',contractValue:2000,paidAmount:2300,siteExpensesTotal:500,endDate:'2020-01-01'},{id:'study',name:'دراسة',status:'study',contractValue:90000}];
   invs=[{id:'i',projectId:'p',type:'purchase',total:115,vat:15,taxDecl:true,vatRecoverable:true},{id:'manual',projectId:'done',type:'purchase',total:115,vat:15,taxDecl:true,vatRecoverable:true},{id:'general',type:'purchase',total:115,vat:15,taxDecl:true,vatRecoverable:true,paid:115},{id:'rev',type:'revenue',total:999,vat:100},{id:'cancelled',type:'purchase',total:9999,status:'cancelled'}];
-  window.opsData={suppliers:[],changeOrders:[],purchaseOrders:[{id:'linked',invoiceId:'i',projectId:'p',total:115,paid:25,status:'partial',directPurchase:true,taxDecl:true,vatRecoverable:true,vat:15},{id:'formal',projectId:'p',total:230,vat:30,taxDecl:true,vatRecoverable:true,paid:30},{id:'study-po',projectId:'study',total:9999}],claims:[{id:'sub',partyType:'subcontractor',projectId:'p',total:115,vat:15,taxDecl:true,vatRecoverable:true,paid:15,status:'approved'},{id:'draft',partyType:'subcontractor',projectId:'study',total:99999,status:'draft'}]};renderDB();
-  return {metrics:dashboardOperatingMetrics(1075),money:[...document.querySelectorAll('#dashboard-money-kpis .kp-v')].map(e=>e.textContent),counts:[...document.querySelectorAll('#dashboard-operating-kpis .mtc-v')].map(e=>e.textContent),summaryMoved:!!document.querySelector('#sec-db .db-col:first-child > #hero-profit')&&!!document.querySelector('#sec-acc #s-vat')&&!document.querySelector('#sec-db #s-vat')&&!document.querySelector('#sec-db #m-margin'),note:document.getElementById('dashboard-cost-note').textContent};
+  window.opsData={suppliers:[],changeOrders:[],purchaseOrders:[{id:'linked',invoiceId:'i',projectId:'p',total:115,paid:25,status:'partial',directPurchase:true,taxDecl:true,vatRecoverable:true,vat:15},{id:'formal',projectId:'p',total:230,vat:30,taxDecl:true,vatRecoverable:true,paid:30},{id:'general-po',projectId:'',amount:200,total:230,vat:30,vatRecoverable:true,paid:80,status:'partial',directPurchase:true},{id:'study-po',projectId:'study',total:9999}],claims:[{id:'sub',partyType:'subcontractor',projectId:'p',total:115,vat:15,taxDecl:true,vatRecoverable:true,paid:15,status:'approved'},{id:'draft',partyType:'subcontractor',projectId:'study',total:99999,status:'draft'}]};renderDB();renderProjDash();
+  const num=id=>Number(document.getElementById(id).textContent.replace(/,/g,''));
+  return {metrics:dashboardOperatingMetrics(1305),money:[...document.querySelectorAll('#dashboard-money-kpis .kp-v')].map(e=>e.textContent),counts:[...document.querySelectorAll('#dashboard-operating-kpis .mtc-v')].map(e=>e.textContent),summaryMoved:!!document.querySelector('#sec-db .db-col:first-child > #hero-profit')&&!!document.querySelector('#sec-acc #s-vat')&&!document.querySelector('#sec-db #s-vat')&&!document.querySelector('#sec-db #m-margin'),note:document.getElementById('dashboard-cost-note').textContent,
+   projectDashboard:[...document.querySelectorAll('#proj-dash > div:first-child > div > div:nth-child(2)')].map(e=>e.textContent),
+   mainCost:num('s-cst'),mainProfit:num('s-pft'),
+   bridge:{projectProfit:num('profit-project-before-general'),generalNet:num('profit-general-net'),standaloneRevenue:999-100}};
  }''')
- assert result['metrics']=={'costNet':1000,'recoverable':75,'payable':505,'active':1,'late':1,'manualUnknown':True},result
- assert result['money']==['3,000','1,000','2,800','650'],result
- assert result['counts']==['1','1','81.2%','505'],result
+ assert result['metrics']=={'costNet':1200,'recoverable':105,'payable':655,'active':1,'late':1,'manualUnknown':True},result
+ assert result['money']==['3,000','1,200','2,800','650'],result
+ assert result['counts']==['1','1','81.2%','655'],result
+ # Both dashboards exclude VAT from standalone revenue and recoverable costs,
+ # including the general purchase order that has no invoice in invs.
+ assert result['projectDashboard']==['3,899','1,200','2,699'],result
+ assert result['mainCost']==1200 and result['mainProfit']==2699,result
+ assert [int(value.replace(',','')) for value in result['projectDashboard'][1:]]==[result['mainCost'],result['mainProfit']],result
+ assert result['bridge']=={'projectProfit':2100,'generalNet':300,'standaloneRevenue':899},result
+ bridge=result['bridge']
+ assert bridge['projectProfit']+bridge['standaloneRevenue']-bridge['generalNet']==result['mainProfit'],result
  assert result['summaryMoved'] and 'اليدوية' in result['note']
  page.evaluate("document.getElementById('hdGate').style.setProperty('display','none','important')")
  for width in [1920,1280,390,320]:
   page.set_viewport_size({'width':width,'height':1000});page.wait_for_timeout(200)
   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth'),width
  page.set_viewport_size({'width':1920,'height':1300});page.screenshot(path='/tmp/dashboard1136.png',full_page=True)
- print('PASS 8 KPIs, net expense basis, study and cancelled exclusion, linked payable counted once, active/late counts, moved summary, desktop/mobile fit')
+ print('PASS 8 KPIs, net expense basis, study and cancelled exclusion, linked payable counted once, dashboards reconcile with general PO and VAT, project-to-company profit bridge, desktop/mobile fit')
  b.close()
 server.shutdown()

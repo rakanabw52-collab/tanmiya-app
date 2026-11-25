@@ -33,7 +33,7 @@ for(const [notes,category] of [
  ['فلتر ديزل','equipment'],['فلتر وقود','equipment'],['diesel filter','equipment'],
  ['منشار بنزين','equipment'],['مولد وقود','equipment'],['مضخة وقود','equipment'],
  ['صيانة مضخة وقود','services'],['fuel pump maintenance','services'],
- ['غسيل السيارة','services'],['car wash','services'],
+ ['غسيل السيارة','services'],['car wash','services'],['تغيير زيت','services'],['oil change','services'],
 ])notFuel({notes,category:'fuel',vendor:'محطة وقود'},category);
 for(const record of [
  {notes:'ليست فاتورة وقود',category:'fuel'},
@@ -68,6 +68,9 @@ for(const projectId of ['manual','study']){
  const fresh=enforce({...rec,id:'new'},{existing:null,manualCategory:true});
  assert.equal(fresh.pending,false);assert.equal(fresh.record.projectId,'');
 }
+const ownerException={id:'owner-fuel-exception',category:'fuel',notes:'ديزل مشروع الفرسان',projectId:'manual',fuelProjectException:{projectId:'manual',reason:'owner decision'}};
+const exception=enforce(ownerException,{existing:ownerException,manualCategory:true});
+assert.equal(exception.pending,false);assert.equal(exception.changed,false);assert.equal(exception.record.projectId,'manual');
 assert.equal(enforce({id:'general',projectId:'',notes:'ديزل'}).changed,false);
 assert.equal(enforce({type:'revenue',projectId:'active',notes:'بيع ديزل',category:'fuel'},{manualCategory:true}).changed,false);
 assert.equal(enforce({type:'sale',projectId:'active',notes:'بيع بنزين',category:'fuel'},{manualCategory:true}).changed,false);

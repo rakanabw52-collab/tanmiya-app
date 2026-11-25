@@ -3,7 +3,7 @@
 'use strict';
 const copy=x=>JSON.parse(JSON.stringify(x)),N=x=>toNum(x),E=x=>esc(String(x??'')),M=x=>fmtI(x)+' ر.س';
 const PROJECT=['id','name','code','client','status','contractValue','paidAmount','siteExpensesTotal','siteExpensesDate','siteVATRecoverable','siteExpensesVAT','quantity','unit','startDate','endDate','actualEndDate','durationDays','applyApprovedExtensions','retentionPct'];
-const RECORD=['id','projectId','type','number','date','status','total','subtotal','amount','value','gross','vat','vatRate','paid','payments','openingPayment','taxDecl','vatRecoverable','vendorVAT','vendor','notes','supplierId','supplierName','invoiceId','directPurchase','category','partyType','subcontractId','subcontractorId','retention','retentionPct','days','dueDate','cashAccount','qty','workType','items'];
+const RECORD=['id','projectId','type','number','date','status','total','subtotal','amount','value','gross','vat','vatRate','paid','payments','openingPayment','taxDecl','vatRecoverable','vendorVAT','vendor','notes','supplierId','supplierName','invoiceId','directPurchase','category','partyType','subcontractId','subcontractorId','retention','retentionPct','days','dueDate','cashAccount','qty','workType','items','projectAllocations'];
 const OPS=['purchaseOrders','claims','changeOrders','subcontracts','budgets'];
 const registry=new Map(),permit=new Set();let screen=null,busy=false;
 const pick=(x,keys)=>Object.fromEntries(keys.filter(k=>x?.[k]!==undefined).map(k=>[k,x[k]]));
@@ -11,11 +11,20 @@ function canonical(x){if(Array.isArray(x))return x.map(canonical);if(x&&typeof x
 const same=(a,b)=>JSON.stringify(canonical(a))===JSON.stringify(canonical(b));
 const ordered=a=>a.slice().sort((a,b)=>String(a.id).localeCompare(String(b.id)));
 function related(rows,id,old=[]){const ids=new Set(old.map(x=>x.id));return ordered(rows.filter(x=>x.projectId===id||ids.has(x.id)).map(x=>pick(x,RECORD)));}
+// Select by project shares, but snapshot/restore the full source invoice only.
+function projectInvoices(id,rows=invs){return typeof window.invoiceProjectRows==='function'?window.invoiceProjectRows(id,rows):rows.filter(i=>i.projectId===id);}
+function invoiceProjectIds(record){const allocations=typeof window.validInvoiceAllocations==='function'?window.validInvoiceAllocations(record):[];return allocations.length?allocations.map(a=>a.projectId):[record.projectId].filter(Boolean);}
+function relatedInvoices(rows,id,old=[]){const ids=new Set([...projectInvoices(id,rows).map(x=>x.id),...old.map(x=>x.id)]);return ordered(rows.filter(x=>ids.has(x.id)).map(x=>pick(x,RECORD)));}
+function restoreInvoices(rows,old,id){
+ const ids=new Set(old.map(x=>x.id)),byId=new Map(rows.map(x=>[x.id,x])),addedShares=new Set(projectInvoices(id,rows).filter(x=>x._invoiceProjectAllocation&&!ids.has(x.id)).map(x=>x.id));
+ const kept=rows.filter(x=>x.projectId!==id&&!ids.has(x.id)).map(x=>{if(!addedShares.has(x.id))return x;const restored={...x};delete restored.projectAllocations;return restored;});
+ return [...kept,...old.map(x=>({...byId.get(x.id),...copy(x)}))];
+}
 function inputs(p,baseline){
  const id=p.id,od=window.opsData||{},ops={};
  OPS.forEach(k=>ops[k]=related(od[k]||[],id,baseline?.ops?.[k]));
  const supplierIds=new Set([...ops.purchaseOrders.map(x=>x.supplierId),...(baseline?.suppliers||[]).map(x=>x.id)].filter(Boolean));
- return {project:pick(p,PROJECT),invoices:related(invs,id,baseline?.invoices),ops,progress:related(progress,id,baseline?.progress),suppliers:ordered((od.suppliers||[]).filter(x=>supplierIds.has(x.id)).map(x=>pick(x,['id','name','vat','phone','email','category','active','notes'])))};
+ return {project:pick(p,PROJECT),invoices:relatedInvoices(invs,id,baseline?.invoices),ops,progress:related(progress,id,baseline?.progress),suppliers:ordered((od.suppliers||[]).filter(x=>supplierIds.has(x.id)).map(x=>pick(x,['id','name','vat','phone','email','category','active','notes'])))};
 }
 function currentReport(p){return p?.closeout?.reports?.find(x=>x.id===p.closeout.currentId);}
 function remember(){projs.forEach(p=>{if(permit.has(p.id))return;if(p.closeout?.status==='closed'&&!registry.has(p.id)){const report=currentReport(p);if(report?.inputs)registry.set(p.id,{inputs:copy(report.inputs),meta:copy(p.closeout)});}});}
@@ -25,7 +34,7 @@ function restoreClosed(id,r,kind){
  if(kind==='project'){
   if(!p){p={...copy(r.inputs.project),closeout:copy(r.meta)};projs.push(p);}else{PROJECT.filter(k=>k!=='id').forEach(k=>{delete p[k];});Object.assign(p,copy(r.inputs.project));p.closeout=copy(r.meta);}
  }
- if(kind==='invoice')invs=restoreRows(invs,r.inputs.invoices,id);
+ if(kind==='invoice')invs=restoreInvoices(invs,r.inputs.invoices,id);
  if(kind==='progress')progress=restoreRows(progress,r.inputs.progress,id);
  if(kind==='ops'){
   OPS.forEach(k=>window.opsData[k]=restoreRows(window.opsData[k]||[],r.inputs.ops[k]||[],id));
@@ -45,11 +54,11 @@ function guard(kind){
 window.projectCloseAllows=function(id){remember();if(!id||!registry.has(id))return true;toast('المشروع مقفل ماليًا؛ أعد فتحه من شاشة الإقفال النهائي','er');return false;};
 function payable(x){return x.status==='paid'?0:Math.max(0,N(x.total)-N(x.paid));}
 function reportFor(p){
- const pl=projPL(p.id),od=window.opsData||{},bills=invs.filter(i=>i.projectId===p.id&&i.status!=='cancelled'),orders=(od.purchaseOrders||[]).filter(x=>x.projectId===p.id&&x.status!=='cancelled'),claims=(od.claims||[]).filter(x=>x.projectId===p.id&&x.partyType==='subcontractor'&&x.status!=='cancelled');
+ const pl=projPL(p.id),od=window.opsData||{},bills=projectInvoices(p.id).filter(i=>i.status!=='cancelled'),orders=(od.purchaseOrders||[]).filter(x=>x.projectId===p.id&&x.status!=='cancelled'),claims=(od.claims||[]).filter(x=>x.projectId===p.id&&x.partyType==='subcontractor'&&x.status!=='cancelled');
  const unlinked=o=>!(o.invoiceId&&invs.some(i=>i.id===o.invoiceId&&i.status!=='cancelled'));
  const tax=projectRecoverableVAT(p.id);
  let supplierDue=orders.filter(unlinked).reduce((s,x)=>s+payable(x),0),unknownBills=0;
- bills.filter(i=>i.type==='purchase').forEach(i=>{const linked=orders.find(o=>o.invoiceId===i.id);if(linked)supplierDue+=payable(linked);else if(i.status==='paid'||i.paid!==undefined)supplierDue+=payable(i);else unknownBills++;});
+ bills.filter(i=>i.type==='purchase').forEach(i=>{const linked=orders.find(o=>o.invoiceId===i.id);if(linked)supplierDue+=payable(linked);else if(i.status==='paid'||i.paid!==undefined){const master=invs.find(x=>x.id===i.id)||i,share=i._invoiceProjectAllocation&&N(master.total)>0?N(i.total)/N(master.total):1;supplierDue+=payable(master)*share;}else unknownBills++;});
  const subDue=claims.filter(x=>x.status!=='draft').reduce((s,x)=>s+payable(x),0);
  const netCost=Math.max(0,pl.cost-tax),qty=N(p.quantity),profit=pl.contract-netCost;
  const blockers=[];
@@ -69,23 +78,23 @@ function body(r,approved){
 }
 function vatChoices(p,readonly){
  const od=window.opsData||{},rows=[];
- invs.filter(i=>i.projectId===p.id&&i.status!=='cancelled'&&(i.type==='purchase'||i.type==='expense')).forEach(i=>rows.push({source:'invoice',record:i,label:'فاتورة مصروف / شراء'}));
+ projectInvoices(p.id).filter(i=>i.status!=='cancelled'&&(i.type==='purchase'||i.type==='expense')).forEach(i=>rows.push({source:'invoice',record:i,label:i._invoiceProjectAllocation?'حصة من فاتورة موزعة':'فاتورة مصروف / شراء'}));
  (od.purchaseOrders||[]).filter(o=>o.projectId===p.id&&o.status!=='cancelled'&&!(o.invoiceId&&invs.some(i=>i.id===o.invoiceId&&i.status!=='cancelled'))).forEach(o=>rows.push({source:'purchaseOrders',record:o,label:'شراء'}));
  (od.claims||[]).filter(c=>c.projectId===p.id&&c.partyType==='subcontractor'&&c.status!=='cancelled').forEach(c=>rows.push({source:'claims',record:c,label:'مستخلص باطن'}));
  if(!rows.length)return '';
- return '<section class="pc-checks"><h3>استرجاع ضريبة مصروفات المشروع — اختيارك يحدد الحساب</h3><div style="overflow:auto"><table style="width:100%;min-width:450px;text-align:right;font-size:12px;border-collapse:collapse"><thead><tr><th>المصدر / الرقم</th><th>المبلغ</th><th>الضريبة</th><th>استرجاع الضريبة</th></tr></thead><tbody>'+rows.map(({source,record:r,label})=>'<tr><td style="padding:9px">'+E(label)+' — '+E(r.number||r.id)+(source==='invoice'?'<br><button class="btn btn-o btn-sm" data-pc-review-id="'+E(r.id)+'">مراجعة المرفق والضريبة</button>':'')+'</td><td>'+M(r.total)+'</td><td>'+M(r.vat)+'</td><td><select data-pc-vat="'+source+'" data-pc-vat-id="'+E(r.id)+'" '+(readonly?'disabled':'')+'><option value="">غير محدد</option><option value="yes" '+(r.vatRecoverable===true?'selected':'')+'>نعم</option><option value="no" '+(r.vatRecoverable===false?'selected':'')+'>لا</option></select></td></tr>').join('')+'</tbody></table></div><p class="pc-note">تغيير الاختيار يحفظه ويعيد حساب الكشف. ضريبة المصروفات المجمعة اليدوية تُحدد من تعديل المشروع.</p></section>';
+ return '<section class="pc-checks"><h3>استرجاع ضريبة مصروفات المشروع — اختيارك يحدد الحساب</h3><div style="overflow:auto"><table style="width:100%;min-width:450px;text-align:right;font-size:12px;border-collapse:collapse"><thead><tr><th>المصدر / الرقم</th><th>المبلغ</th><th>الضريبة</th><th>استرجاع الضريبة</th></tr></thead><tbody>'+rows.map(({source,record:r,label})=>'<tr><td style="padding:9px">'+E(label)+' — '+E(r.number||r.id)+(source==='invoice'?'<br><button class="btn btn-o btn-sm" data-pc-review-id="'+E(r.id)+'">مراجعة المرفق والضريبة</button>':'')+'</td><td>'+M(r.total)+'</td><td>'+M(r.vat)+'</td><td><select data-pc-vat="'+source+'" data-pc-vat-id="'+E(r.id)+'" '+(readonly?'disabled':'')+'><option value="">غير محدد</option><option value="yes" '+(r.vatRecoverable===true?'selected':'')+'>نعم</option><option value="no" '+(r.vatRecoverable===false?'selected':'')+'>لا</option></select></td></tr>').join('')+'</tbody></table></div><p class="pc-note">تغيير الاختيار يحفظه ويعيد حساب الكشف. اختيار الفاتورة الموزعة يطبق على أصلها وجميع حصصها، والمبالغ هنا تخص هذا المشروع. ضريبة المصروفات المجمعة اليدوية تُحدد من تعديل المشروع.</p></section>';
 }
 window.setCloseoutVATChoice=async function(source,id,value){
  if(busy||!screen||screen.approved||!['invoice','purchaseOrders','claims'].includes(source)||!['yes','no'].includes(value))return false;
- const list=source==='invoice'?invs:(window.opsData?.[source]||[]),record=list.find(x=>x.id===id&&x.projectId===screen.id);if(!record||!projectCloseAllows(record.projectId))return false;
+ const list=source==='invoice'?invs:(window.opsData?.[source]||[]),record=list.find(x=>x.id===id&&(source==='invoice'?invoiceProjectIds(x).includes(screen.id):x.projectId===screen.id));if(!record)return false;const scope=source==='invoice'?invoiceProjectIds(record):[record.projectId];if(scope.some(pid=>!projectCloseAllows(pid)))return false;
  if(_isClosedDate(record.date)){toast('الفترة مقفلة؛ لا يمكن تغيير اختيار الضريبة','er');return false;}
- const previous=copy(record),i=list.indexOf(record);list[i]={...record,vatRecoverable:value==='yes'};
+ const candidate={...record,vatRecoverable:value==='yes'};if(source==='invoice'&&record.vatRecoveryAdjustment&&(typeof window.hasValidVATRecoveryAdjustment!=='function'||!window.hasValidVATRecoveryAdjustment(candidate))){toast('تحتاج التسوية الضريبية إلى مراجعة أو عكس قبل تغيير اختيار الاسترجاع','er');return false;}const previous=copy(record),i=list.indexOf(record);list[i]=candidate;
  const result=source==='invoice'?await svDetailed():await svOps(false);
  if(!result?.ok){list[i]=previous;toast('لم يُحفظ اختيار الضريبة','er');return false;}
  _syncInvJournals();logEvent('اختيار استرجاع ضريبة مصروف',source+' — '+id+' — '+value);renderDB();openProjectCloseout(screen.id);return true;
 };
 function owner(){return ['owner','admin','manager'].includes(window.HD_ROLE);}
-function host(){let el=document.getElementById('project-closeout-modal');if(el)return el;el=document.createElement('div');el.id='project-closeout-modal';el.className='pc-modal';el.innerHTML='<div class="pc-sheet"><header class="pc-modal-head"><strong>الإقفال النهائي للمشروع</strong><button type="button" data-pc-action="close">✕</button></header><div id="project-closeout-content"></div></div>';el.addEventListener('click',e=>{if(e.target===el){el.classList.remove('show');return;}const review=e.target.closest('[data-pc-review-id]');if(review){if(typeof openInvoiceVATReview==='function')openInvoiceVATReview(review.dataset.pcReviewId);return;}const b=e.target.closest('[data-pc-action]');if(!b)return;const a=b.dataset.pcAction;if(a==='close')el.classList.remove('show');if(a==='approve')window.approveProjectCloseout();if(a==='reopen')window.reopenProjectCloseout();if(a==='print')window.printProjectCloseout();});el.addEventListener('change',e=>{const select=e.target.closest('[data-pc-vat]');if(select)window.setCloseoutVATChoice(select.dataset.pcVat,select.dataset.pcVatId,select.value);});document.body.appendChild(el);return el;}
+function host(){let el=document.getElementById('project-closeout-modal');if(el)return el;el=document.createElement('div');el.id='project-closeout-modal';el.className='pc-modal';el.innerHTML='<div class="pc-sheet"><header class="pc-modal-head"><strong>الإقفال النهائي للمشروع</strong><button type="button" data-pc-action="close">✕</button></header><div id="project-closeout-content"></div></div>';el.addEventListener('click',e=>{if(e.target===el){el.classList.remove('show');return;}const review=e.target.closest('[data-pc-review-id]');if(review){if(typeof openInvoiceVATReview==='function')openInvoiceVATReview(review.dataset.pcReviewId,screen?.id);return;}const b=e.target.closest('[data-pc-action]');if(!b)return;const a=b.dataset.pcAction;if(a==='close')el.classList.remove('show');if(a==='approve')window.approveProjectCloseout();if(a==='reopen')window.reopenProjectCloseout();if(a==='print')window.printProjectCloseout();});el.addEventListener('change',e=>{const select=e.target.closest('[data-pc-vat]');if(select)window.setCloseoutVATChoice(select.dataset.pcVat,select.dataset.pcVatId,select.value);});document.body.appendChild(el);return el;}
 window.openProjectCloseout=function(id,reportId){
  remember();const p=projs.find(x=>x.id===id);if(!p)return;
  const saved=reportId?p.closeout?.reports?.find(r=>r.id===reportId):p.closeout?.status==='closed'?currentReport(p):null;
@@ -128,6 +137,6 @@ window.printProjectCloseout=function(){if(!screen)return;const w=window.open('',
 const render=window.renderDB;window.renderDB=function(...args){remember();return render.apply(this,args);};
 const show=window.showProj;window.showProj=function(...args){remember();return show.apply(this,args);};
 const style=document.createElement('style');style.id='project-closeout-style';style.textContent='.pc-modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:11000;padding:20px;overflow:auto;direction:rtl}.pc-modal.show{display:flex;align-items:flex-start;justify-content:center}.pc-sheet{width:min(100%,1050px);background:#f8fbff;border-radius:16px;padding:20px;box-sizing:border-box}.pc-modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.pc-modal-head button{border:0;background:#e2e8f0;border-radius:6px;padding:8px;cursor:pointer}.pc-report{color:#183b63;direction:rtl}.pc-report-head{background:linear-gradient(110deg,#3476ad,#244c77);padding:18px;border-radius:12px;color:white}.pc-report-head h2{margin:0 0 6px;font-size:22px}.pc-report-head p{font-size:12px;margin:6px 0}.pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.pc-grid section,.pc-checks{border:1px solid #dbe5ef;background:white;border-radius:12px;padding:16px;min-width:0}.pc-grid h3,.pc-checks h3{margin:0 0 12px;font-size:15px}.pc-row{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px dashed #dce5ef;padding:9px 0;font-size:12px}.pc-row strong{white-space:nowrap}.pc-note{font-size:11px;line-height:1.7;padding:10px;background:#edf7ff;border-radius:8px}.pc-checks{margin-top:16px}.pc-checks label{display:block;font-size:13px;margin:10px 0}.pc-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.pc-actions button[disabled]{opacity:.5;cursor:not-allowed}.pc-reason{display:block;font-size:13px}.pc-reason input{display:block;width:100%;box-sizing:border-box;padding:10px;border:1px solid #b5c9dc;border-radius:8px;margin-top:7px;font:inherit}.pc-blockers{background:#fff3d4;border:1px solid #f7cf75;border-radius:9px;padding:12px;font-size:12px;margin-top:12px;line-height:1.8}.pc-history{margin-top:12px;font-size:12px}.pc-history summary{cursor:pointer;font-weight:800}.pc-history button{margin:8px 4px}@media(max-width:650px){.pc-modal{padding:8px}.pc-sheet{padding:12px}.pc-grid{grid-template-columns:1fr}.pc-row{font-size:11.5px}.pc-report-head h2{font-size:19px}}';document.head.appendChild(style);
-window.addEventListener('invoice-vat-reviewed',event=>{if(screen&&!screen.approved&&screen.id===event.detail?.projectId&&document.getElementById('project-closeout-modal')?.classList.contains('show'))openProjectCloseout(screen.id);});
+window.addEventListener('invoice-vat-reviewed',event=>{if(screen&&!screen.approved&&(screen.id===event.detail?.projectId||(event.detail?.projectIds||[]).includes(screen.id))&&document.getElementById('project-closeout-modal')?.classList.contains('show'))openProjectCloseout(screen.id);});
 remember();
 })();
