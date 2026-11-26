@@ -2,6 +2,35 @@
 (function(){
 'use strict';
 const money=x=>toNum(x).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),active=x=>x&&x.status!=='cancelled';
+// ====== تظليل الخانة المعنية بالملاحظة بالأحمر عند فتح السجل ======
+// لكل نوع ملاحظة: الخانات التي يجب تعبئتها/تصحيحها في النموذج المفتوح
+const DQ_FIELDS={
+ amount:['f-sub','f-v','f-tot'], vatrate:['f-vr','f-v'], empty:['f-sub','f-tot'],
+ precision:['f-sub','f-v','f-tot'], future:['f-dt'], revenue:['f-proj'],
+ posting:['of-date','of-cat'], overpaid:['of-paid']
+};
+function _dqInjectStyle(){
+ if(document.getElementById('dq-focus-style'))return;
+ const s=document.createElement('style');s.id='dq-focus-style';
+ s.textContent='.dq-focus{border:2px solid #B91C1C!important;background:#FEF2F2!important;box-shadow:0 0 0 3px rgba(185,28,28,.15)!important;border-radius:8px!important}'
+  +'.dq-focus-note{color:#B91C1C;font-weight:700;font-size:12px;margin:4px 0;display:block}';
+ document.head.append(s);
+}
+function _dqClearFocus(){document.querySelectorAll('.dq-focus').forEach(e=>e.classList.remove('dq-focus'));document.querySelectorAll('.dq-focus-note').forEach(e=>e.remove());}
+// يطبّق التظليل بعد أن يُبنى النموذج (ينتظر ظهور الخانات حتى 1.5 ثانية)
+window._dqApplyFocus=function(fields,msg){
+ if(!fields||!fields.length)return; _dqInjectStyle();
+ let tries=0; const t=setInterval(()=>{
+  tries++; const found=fields.map(id=>document.getElementById(id)).filter(Boolean);
+  if(found.length||tries>15){
+   clearInterval(t); _dqClearFocus();
+   found.forEach((el,n)=>{const box=el.closest('.field,.ops-f,.fld,div')||el;el.classList.add('dq-focus');
+    if(n===0){const p=document.createElement('span');p.className='dq-focus-note';p.textContent='⚠️ '+(msg||'عبّئ/صحّح هذه الخانة');(box.parentNode||box).insertBefore(p,box);
+     el.scrollIntoView({behavior:'smooth',block:'center'});}});
+  }
+ },100);
+};
+function dqFocusAfter(kind,run){const f=DQ_FIELDS[kind]||[];run();if(f.length)window._dqApplyFocus(f,'هذه الخانة سبب الملاحظة — عبّئها أو صحّحها');}
 const norm=s=>String(s||'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/مشروع/g,'').replace(/\s+/g,'').trim();
 window.getDataQualityIssues=function(){
  const issues=[],add=(kind,title,detail,ref)=>issues.push({kind,title,detail,...ref});
@@ -12,7 +41,13 @@ window.getDataQualityIssues=function(){
   if(invoiceMoneyIssue(i))add('amount','مبالغ فاتورة تحتاج مراجعة','رقم '+i.number+': الإجمالي '+money(i.total)+'، الصافي '+money(i.subtotal)+'، الضريبة '+money(i.vat),{invoiceId:i.id});
   if(i.date>_todayStr())add('future','تاريخ فاتورة مستقبلي','رقم '+i.number+' بتاريخ '+i.date+'؛ تحقق من المستند.',{invoiceId:i.id});
   if(i.type==='revenue'&&!hasKnownProject(i)&&projs.some(p=>norm(p.name).length>3&&norm(i.notes).includes(norm(p.name))))add('revenue','إيراد عام يشير إلى مشروع','رقم '+i.number+' بمبلغ '+money(i.total)+'؛ راجع هل هو إيراد إضافي أم دفعة من عقد قائم قبل احتسابه مرتين.',{invoiceId:i.id});
+  // فحوص إضافية
+  if(toNum(i.subtotal)===0&&toNum(i.total)===0)add('empty','فاتورة فارغة بقيمة صفر','رقم '+i.number+'؛ سجل بلا مبلغ، راجعه أو احذفه.',{invoiceId:i.id});
+  else if(!invoiceMoneyIssue(i)){const r=toNum(i.vatRate),ex=Math.round(toNum(i.subtotal)*r/100*100),gv=Math.round(toNum(i.vat)*100);if(r>0&&Math.abs(ex-gv)>2)add('vatrate','ضريبة لا تطابق النسبة','رقم '+i.number+': صافي '+money(i.subtotal)+' بنسبة '+r+'٪ تتوقع ضريبة '+money(toNum(i.subtotal)*r/100)+'، والمسجّل '+money(i.vat)+'؛ حدّد الضريبة أو اجعل النسبة صفرًا.',{invoiceId:i.id});}
+  if(['subtotal','vat','total'].some(f=>Math.abs(Math.round(toNum(i[f])*100)-toNum(i[f])*100)>1e-6))add('precision','رقم يتجاوز منزلتين عشريتين','رقم '+i.number+': صافي '+i.subtotal+'، ضريبة '+i.vat+'، إجمالي '+i.total+'؛ يجب التقريب للهللة.',{invoiceId:i.id});
  });
+ const unlinked=invoices.filter(i=>!i.projectId&&(i.type==='purchase'||i.type==='expense'));
+ if(unlinked.length)add('unlinked','فواتير بلا مشروع للمراجعة',unlinked.length+' فاتورة بإجمالي '+money(unlinked.reduce((s,i)=>s+toNum(i.total),0))+' ر.س؛ تأكّد أنها مصروفات عامة لا تخص مشروعًا بعينه.',{});
  for(const [id,rows] of orphanGroups)add('orphan','فواتير مرتبطة بمشروع غير موجود',rows.length+' فاتورة، إجمالي '+money(rows.reduce((s,i)=>s+toNum(i.total),0))+' ر.س. مصروفاتها مدرجة في الرئيسية ضمن غير الموزع حتى تصحيح الربط.',{orphanId:id});
  findDupInvoices().forEach(g=>add('duplicate','فواتير متشابهة تحتاج مراجعة','رقم '+g[0].number+' — '+g.length+' نسخ بمبلغ '+money(g[0].total)+' للنسخة. لا تُحذف تلقائيًا.',{}));
  orders.forEach(o=>{
@@ -77,11 +112,11 @@ window.openDataQualityReview=function(){
   const row=document.createElement('article');row.style.cssText='border:1px solid #dbe8f3;border-radius:10px;padding:12px;margin:10px 0;overflow-wrap:anywhere';
   const title=document.createElement('strong');title.textContent=issue.title;
   const detail=document.createElement('p');detail.style.cssText='font-size:13px;line-height:1.8';detail.textContent=issue.detail;row.append(title,detail);
-  if(issue.invoiceId)row.append(button('مراجعة الفاتورة',()=>{close();goTab('add');revInv(issue.invoiceId);}));
+  if(issue.invoiceId)row.append(button('مراجعة الفاتورة',()=>{close();goTab('add');dqFocusAfter(issue.kind,()=>revInv(issue.invoiceId));}));
   if(issue.kind==='duplicate')row.append(button('مقارنة النسخ',()=>{close();openDupCheck();}));
   if(issue.orphanId)row.append(button('تصحيح ربط المجموعة',()=>openOrphanAssignment(issue.orphanId)));
   if(issue.accounting)row.append(button('مراجعة الترحيل',()=>{close();goTab('acc');}));
-  if(issue.purchaseId)row.append(button(issue.payment?'توثيق السداد السابق':'مراجعة الشراء',()=>{close();if(issue.payment)openBuyPayment(issue.purchaseId);else opsOpen('purchase',issue.purchaseId);}));
+  if(issue.purchaseId)row.append(button(issue.payment?'توثيق السداد السابق':'مراجعة الشراء',()=>{close();if(issue.payment)openBuyPayment(issue.purchaseId);else dqFocusAfter(issue.kind,()=>opsOpen('purchase',issue.purchaseId));}));
   if(issue.budgetId)row.append(button('توزيع الميزانية',()=>{close();opsOpen('budget',issue.budgetId,issue.projectId);}));
   else if(issue.projectId)row.append(button('مراجعة المشروع',()=>{close();curProjId=issue.projectId;editProj();}));
   panel.append(row);
