@@ -31,6 +31,21 @@ window._dqApplyFocus=function(fields,msg){
  },100);
 };
 function dqFocusAfter(kind,run){const f=DQ_FIELDS[kind]||[];run();if(f.length)window._dqApplyFocus(f,'هذه الخانة سبب الملاحظة — عبّئها أو صحّحها');}
+// حذف فاتورة فارغة مباشرة من الملاحظة، بنفس حماية الحذف المعتمدة
+window._dqDeleteInvoice=async function(id){
+ const inv=invs.find(i=>i.id===id); if(!inv)return;
+ if(typeof _canRemoveInvoice==='function'&&!_canRemoveInvoice(inv))return;
+ const ok=await confirm2({title:'حذف فاتورة فارغة',msg:'حذف الفاتورة <b>'+esc(inv.number||'')+'</b> بقيمة صفر؟<br><span style="font-size:11px;color:#6B7280">تنتقل إلى سلة المحذوفات ويمكن استرجاعها.</span>',ok:'حذف',danger:true});
+ if(!ok)return;
+ if(typeof toTrash==='function')toTrash('inv',inv);
+ if(typeof logEvent==='function')logEvent('حذف فاتورة فارغة',(inv.number||'')+' — '+(inv.vendor||''));
+ invs=invs.filter(i=>i.id!==id);
+ await sv();
+ if(typeof renderList==='function')renderList();
+ if(typeof renderDB==='function')renderDB();
+ if(typeof toast==='function')toast('تم الحذف','ok');
+ openDataQualityReview();
+};
 const norm=s=>String(s||'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/مشروع/g,'').replace(/\s+/g,'').trim();
 window.getDataQualityIssues=function(){
  const issues=[],add=(kind,title,detail,ref)=>issues.push({kind,title,detail,...ref});
@@ -113,6 +128,7 @@ window.openDataQualityReview=function(){
   const title=document.createElement('strong');title.textContent=issue.title;
   const detail=document.createElement('p');detail.style.cssText='font-size:13px;line-height:1.8';detail.textContent=issue.detail;row.append(title,detail);
   if(issue.invoiceId)row.append(button('مراجعة الفاتورة',()=>{close();goTab('add');dqFocusAfter(issue.kind,()=>revInv(issue.invoiceId));}));
+   if(issue.kind==='empty'&&issue.invoiceId)row.append(button('🗑️ حذف الفاتورة الفارغة',()=>_dqDeleteInvoice(issue.invoiceId)));
   if(issue.kind==='duplicate')row.append(button('مقارنة النسخ',()=>{close();openDupCheck();}));
   if(issue.orphanId)row.append(button('تصحيح ربط المجموعة',()=>openOrphanAssignment(issue.orphanId)));
   if(issue.accounting)row.append(button('مراجعة الترحيل',()=>{close();goTab('acc');}));
