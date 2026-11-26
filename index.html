@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-25-1155">
+<meta name="app-build" content="2026-11-26-1156">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1155">
+<link rel="manifest" href="manifest.json?v=1156">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -565,7 +565,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1155">
+<link rel="stylesheet" href="ops.css?v=1156">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -742,7 +742,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1155</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1156</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1576,7 +1576,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🔎 مراجعة ربط الفواتير</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1155</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1156</bdi></span></div>
   </div>
 </div>
 
@@ -1633,8 +1633,8 @@ window.opsData={
   <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="24" height="24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
 </button>
 <div class="toast" id="toast"></div>
-<script src="invoice-allocations.js?v=1155"></script>
-<script src="invoice-vat-adjustments.js?v=1155"></script>
+<script src="invoice-allocations.js?v=1156"></script>
+<script src="invoice-vat-adjustments.js?v=1156"></script>
 <script>
 /* ========== CONSTANTS ========== */
 
@@ -2997,6 +2997,7 @@ async function restoreTrash(id){
   if(_projectTrashBusy)return;
   const idx=trash.findIndex(x=>x.id===id);if(idx<0)return;
   const it=trash[idx];
+  if(it.restorationRequiresAccountingReview||_isApprovedExpenseArchive(it))return toast('هذه الفاتورة مؤرشفة بتسوية محاسبية؛ يلزم مراجعة المحاسب قبل استعادتها وعكس التسوية المرتبطة','er');
   if(it.type==='proj'){
     if(projs.some(p=>p.id===it.data.id))return toast('المشروع موجود بالفعل؛ بقيت نسخة المحذوفات للمراجعة','er');
     _projectTrashBusy=true;
@@ -3717,14 +3718,64 @@ function _canEditInvoice(inv,date){
   return true;
 }
 function _canRemoveInvoice(inv){
+ if(inv?.approvedExpenseRemainder||(inv?.approvedAllocationCoverage||[]).length){toast('هذه الفاتورة مرتبطة بمصاريف معتمدة؛ راجع التسوية قبل حذفها أو إلغائها','er');return false;}
  if(inv?.vatRecoveryAdjustment){toast('راجع عكس التسوية الضريبية قبل حذف الفاتورة أو إلغائها','er');return false;}
  return _canEditInvoice(inv,inv?.date);
 }
+// Approved expense corrections retain both the original posting and its exact inverse.
+function _isApprovedExpenseArchive(entry){return typeof entry?.archiveBatchId==='string'&&!!entry.archiveBatchId.trim();}
+function _isApprovedExpenseCorrection(j){return ['approvedExpenseBatch','discardedTrialEntry'].includes(j?.correctionKind)||
+ (typeof j?.archiveBatchId==='string'&&!!j.archiveBatchId.trim()&&(j.source==='reversal'||!!j.archiveEntryId));}
+function approvedExpenseCorrectionState(journal){
+ const result=(tagged,complete,reason='')=>({tagged,complete,reason});
+ if(!journal)return result(false,false);
+ const marked=_isApprovedExpenseCorrection(journal);
+ const related=journals.filter(j=>_isApprovedExpenseCorrection(j)&&j.reverses===journal.id);
+ const base=marked?journals.find(j=>j.id===journal.reverses):journal;
+ const archives=(trash||[]).filter(e=>_isApprovedExpenseArchive(e)&&
+  ((base?.sourceId&&e.data?.id===base.sourceId)||(Array.isArray(e.sourceJournals)&&e.sourceJournals.some(j=>j?.id===(base?.id||journal.reverses)))));
+ if(!marked&&!related.length&&!archives.length)return result(false,false);
+ const invalid=reason=>result(true,false,reason);
+ if(!base||base.source!=='inv'||!base.sourceId||journals.filter(j=>j.id===base.id).length!==1)return invalid('القيد الأصلي غير واضح');
+ const counters=journals.filter(j=>j.reverses===base.id);
+ if(counters.length!==1)return invalid('يلزم قيد عكس واحد فقط للقيد الأصلي');
+ const counter=counters[0],batch=counter.archiveBatchId,entryId=batch+':'+base.sourceId,trial=counter.correctionKind==='discardedTrialEntry';
+ if(counter.source!=='reversal'||!['approvedExpenseBatch','discardedTrialEntry'].includes(counter.correctionKind)||typeof batch!=='string'||!batch.trim()||
+  counter.sourceInvoiceId!==base.sourceId||counter.archiveEntryId!==entryId||
+  journals.filter(j=>j.id===counter.id).length!==1||journals.some(j=>j.reverses===counter.id))return invalid('مرجع قيد التسوية غير مطابق للأرشيف');
+ const validDate=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&
+  Number.isFinite(new Date(value+'T00:00:00Z').getTime())&&new Date(value+'T00:00:00Z').toISOString().slice(0,10)===value;
+ if(!validDate(base.date)||!validDate(counter.date)||counter.date<base.date)return invalid('تاريخ التسوية غير صالح');
+ if(invs.some(i=>i.id===base.sourceId))return invalid('الفاتورة المؤرشفة عادت إلى السجلات الحالية');
+ const entry=archives.find(e=>e.id===entryId);
+ if(archives.length!==1||!entry||entry.type!=='inv'||entry.archiveBatchId!==batch||entry.data?.id!==base.sourceId||
+  entry.restorationRequiresAccountingReview!==true||entry.data.date!==base.date||
+  !Array.isArray(entry.sourceJournals)||entry.sourceJournals.length!==1||!_hdSame(entry.sourceJournals[0],base)||
+  !Number.isFinite(entry.approvedReplacementCount)||!Number.isInteger(entry.approvedReplacementCount)||entry.approvedReplacementCount<(trial?0:1)||entry.approvedReplacementCount>1000||
+  (trial&&(entry.ownerConfirmedTrial!==true||entry.approvedReplacementCount!==0))||
+  !Array.isArray(entry.replacementIds)||entry.replacementIds.length!==entry.approvedReplacementCount||new Set(entry.replacementIds).size!==entry.approvedReplacementCount||
+  entry.replacementIds.some(id=>invs.filter(i=>i.id===id&&i.status!=='cancelled').length!==1))return invalid('نسخة الأرشيف أو مراجع البنود المعتمدة غير مطابقة');
+ const cents=value=>{if(value===null||value===undefined||value===''||typeof value==='boolean')return null;
+  const n=Number(value),c=Math.round(n*100);return Number.isFinite(n)&&n>=0&&Number.isSafeInteger(c)&&Math.abs(n*100-c)<1e-6?c:null;};
+ if(!Array.isArray(base.lines)||base.lines.length<2||!Array.isArray(counter.lines)||counter.lines.length!==base.lines.length)return invalid('سطور التسوية غير مكتملة');
+ let debit=0,credit=0;
+ for(let n=0;n<base.lines.length;n++){
+  const a=base.lines[n],b=counter.lines[n];if(!a||!b)return invalid('سطور التسوية غير مكتملة');
+  const ad=cents(a.debit),ac=cents(a.credit),bd=cents(b.debit),bc=cents(b.credit);
+  if(!a.acc||a.acc!==b.acc||[ad,ac,bd,bc].some(v=>v===null)||ad!==bc||ac!==bd)return invalid('سطور التسوية ليست عكس القيد الأصلي بالهللة');
+  debit+=ad;credit+=ac;
+ }
+ if(debit<=0||debit!==credit||cents(entry.data.total)!==debit)return invalid('القيد الأصلي لا يطابق مبلغ الأرشيف');
+ return result(true,true);
+}
+function approvedExpenseCorrectionProtected(journal){return approvedExpenseCorrectionState(journal).tagged;}
 let _journalSyncIssues=[];
 function _syncInvJournals(){
   const rows=_financialInvoices(),sources=new Map(rows.map(i=>[i._source+':'+i._sourceId,i]));
   let changed=0;_journalSyncIssues=[];
   journals=journals.filter(j=>{
+    const correction=approvedExpenseCorrectionState(j);
+    if(correction.tagged){if(!correction.complete)_journalSyncIssues.push('تسوية أرشفة المصروفات '+(j.desc||j.id)+' تحتاج مراجعة: '+correction.reason+'؛ حُفظ القيد دون تغيير');return true;}
     if(!['inv','purchase'].includes(j.source))return true;
     if(j.vatRecoverySourceProtected){const raw=invs.find(i=>i.id===j.sourceId);if(!raw||!hasValidVATRecoveryAdjustment(raw,j))_journalSyncIssues.push('تسوية ضريبة الفاتورة '+(raw?.number||j.sourceId)+' تحتاج مراجعة؛ حُفظ القيد الأصلي والتسوية');return true;}
     if(j.sourceLinkPendingReview){_journalSyncIssues.push('القيد '+(j.desc||j.id)+' يحتاج مراجعة ربطه وتصنيفه بعد أرشفة نسخة الفاتورة؛ بقيت حساباته ومبالغه كما هي');return true;}
@@ -3943,7 +3994,7 @@ function _accJE(){
   });
   return h;
 }
-function delJE(id){const j=journals.find(x=>x.id===id);if(!j)return;if(_isClosedDate(j.date))return toast('لا يمكن حذف قيد في فترة مقفلة','er');confirm2({title:'حذف قيد',msg:'حذف القيد «'+esc(j.desc||'')+'»؟',ok:'حذف',danger:true}).then(ok=>{if(!ok)return;journals=journals.filter(x=>x.id!==id);svJRN();logEvent('حذف قيد يدوي',j.desc||'');accGo('je');toast('تم الحذف','ok');});}
+function delJE(id){const j=journals.find(x=>x.id===id);if(!j)return;if(approvedExpenseCorrectionProtected(j))return toast('هذا القيد مرتبط بأرشفة مصروفات معتمدة؛ يلزم إجراء محاسبي مرتبط بدل الحذف المنفرد','er');if(_isClosedDate(j.date))return toast('لا يمكن حذف قيد في فترة مقفلة','er');confirm2({title:'حذف قيد',msg:'حذف القيد «'+esc(j.desc||'')+'»؟',ok:'حذف',danger:true}).then(ok=>{if(!ok)return;if(approvedExpenseCorrectionProtected(journals.find(x=>x.id===id)))return toast('أصبح القيد مرتبطًا بتسوية أرشفة؛ لم يُحذف','er');journals=journals.filter(x=>x.id!==id);svJRN();logEvent('حذف قيد يدوي',j.desc||'');accGo('je');toast('تم الحذف','ok');});}
 function _accTB(){
   const bal=_accBalances();let totD=0,totC=0;
   let h='<div class="acc-card" style="padding:0;overflow-x:auto"><table class="acc-tbl"><thead><tr><th>الحساب</th><th style="text-align:left">مدين</th><th style="text-align:left">دائن</th></tr></thead><tbody>';
@@ -7399,6 +7450,8 @@ function showProj(id){
   // P&L summary
   const pCls=pl.profit>=0?'prof':'prof neg';
   let html=`<div style="display:flex;gap:7px;margin-bottom:11px;flex-wrap:wrap;align-items:center"><span class="pcard-st st-${p.status}">${STL[p.status]||'نشط'}</span>${p.client?`<span style="color:var(--t2);font-size:12.5px">👤 ${esc(p.client)}</span>`:''}${p.code?`<span style="color:var(--t3);font-size:12px">${esc(p.code)}</span>`:''}</div>`;
+  if(p.approvedExpenseReconciliation){const approval=p.approvedExpenseReconciliation;html+='<div class="h1077-note" style="margin-bottom:9px">إجمالي المصروفات المعتمد: <b>'+fmt(approval.approvedTotalGross)+'</b> ر.س'+(toNum(approval.generalFuelGross)>0?'، منها محروقات عامة <b>'+fmt(approval.generalFuelGross)+'</b> ر.س؛ المحتسب على المشروع <b>'+fmt(approval.expectedProjectCostGross)+'</b> ر.س.':'.')+'</div>';}
+  if(p.approvedDesignReconciliation)html+='<div class="h1077-note" style="margin-bottom:9px">التصميم المعتمد <b>'+fmt(p.approvedDesignReconciliation.approvedTotalGross)+'</b> ر.س، ويشمل حصة الأندلسية <b>'+fmt(p.approvedDesignReconciliation.includedAmount)+'</b> ر.س.</div>';
   html+='<button class="btn btn-o btn-bl" style="margin-bottom:10px" onclick="openProjectCloseout(curProjId)">🔒 الإقفال النهائي للمشروع'+(p.closeout?.status==='closed'?' — مقفل ومعتمد':'')+'</button>';
   html+=`<button onclick="internalAudit('proj','${id}')" style="width:100%;margin-bottom:9px;background:linear-gradient(135deg,#4F46E5,#3730A3);color:#fff;border:none;border-radius:10px;padding:11px;font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;cursor:pointer">🔍 المدقق الداخلي — تدقيق المشروع (تقرير جديد)</button>`;
   {const _svs=(audits||[]).filter(a=>a.kind==='proj'&&a.refId===id).sort((a,b)=>(b.t||0)-(a.t||0));
@@ -10388,7 +10441,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1155',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1156',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10451,15 +10504,15 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1155"></script>
-<script src="ops.js?v=1155"></script>
+<script src="purchase-payments.js?v=1156"></script>
+<script src="ops.js?v=1156"></script>
 
-<script src="settings.js?v=1155"></script>
-<script src="project-closeout.js?v=1155"></script>
-<script src="invoice-vat-review.js?v=1155"></script>
-<script src="data-quality.js?v=1155"></script>
-<script src="purchase-classification.js?v=1155"></script>
-<script src="purchase-classification-save.js?v=1155"></script>
-<script src="invoice-allocation-save.js?v=1155"></script>
+<script src="settings.js?v=1156"></script>
+<script src="project-closeout.js?v=1156"></script>
+<script src="invoice-vat-review.js?v=1156"></script>
+<script src="data-quality.js?v=1156"></script>
+<script src="purchase-classification.js?v=1156"></script>
+<script src="purchase-classification-save.js?v=1156"></script>
+<script src="invoice-allocation-save.js?v=1156"></script>
 </body>
 </html>

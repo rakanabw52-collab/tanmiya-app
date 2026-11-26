@@ -23,6 +23,10 @@ window.getDataQualityIssues=function(){
   if(opening>0&&(!o.openingPayment||Math.abs(toNum(o.openingPayment.amount)-opening)>.01))add('payment','سداد سابق يحتاج تاريخًا وحساب دفع',label+' — '+money(opening)+' ر.س. أدخل بيانات المستند دون إضافة دفعة جديدة.',{purchaseId:o.id,payment:true});
  });
  projs.forEach(p=>{
+  const approved=p.approvedExpenseReconciliation;
+  if(approved&&Number.isFinite(Number(approved.expectedProjectCostGross))){const actual=projPL(p.id).cost,expected=Number(approved.expectedProjectCostGross);if(Math.abs(actual-expected)>.02)add('approvedExpense','مصروفات تغيرت بعد الاعتماد',p.name+': المعتمد على المشروع '+money(expected)+'، المسجل الآن '+money(actual)+' ر.س. راجع الإضافات أو حدّث الاعتماد من المستندات.',{projectId:p.id});}
+  const design=p.approvedDesignReconciliation;
+  if(design&&Number.isFinite(Number(design.approvedTotalGross))){const actual=toNum(projPL(p.id).byCat.design),expected=Number(design.approvedTotalGross);if(Math.abs(actual-expected)>.02)add('approvedDesign','التصميم يختلف عن الإجمالي المعتمد',p.name+': التصميم المعتمد '+money(expected)+'، المسجل الآن '+money(actual)+' ر.س.',{projectId:p.id});}
   if(toNum(p.siteExpensesTotal)>0&&!p.siteExpensesDate)add('costdate','مصروفات مجمّعة دون تاريخ',p.name+' — '+money(p.siteExpensesTotal)+' ر.س. التقارير السنوية أولية حتى توثيق التاريخ.',{projectId:p.id});
   if(p.status==='done'&&!p.actualEndDate)add('delivery','مشروع مكتمل دون تاريخ تسليم فعلي',p.name,{projectId:p.id});
  });

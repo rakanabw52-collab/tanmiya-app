@@ -31,6 +31,7 @@ function pinPosting(candidate,old,source){
 }
 window.preparePurchaseForSave=function(record,existing,options){
  if(record.type==='revenue')return {record,pending:false,changed:false};
+ if(existing?.approvedExpenseRemainder&&['subtotal','vat','total'].some(k=>Math.round(Number(record[k]||0)*100)!==Math.round(Number(existing[k]||0)*100)))return {record,pending:true,changed:false,reason:'هذا رصيد بند معتمد بعد تفصيل فاتورته؛ راجع اعتماد المصروفات قبل تغيير قيمته.'};
  if(existing?.vatRecoveryAdjustment&&!hasValidVATRecoveryAdjustment(record))return {record,pending:true,changed:false,reason:'لهذه الفاتورة تسوية ضريبية؛ راجع التسوية قبل تغيير المبالغ أو الضريبة أو التاريخ.'};
  if(record.projectAllocations?.length&&(!hasInvoiceProjectAllocations(record)||record.projectId))return {record,pending:true,changed:false,reason:'هذه الفاتورة موزعة على مشاريع؛ راجع توزيعها أو ألغِه قبل تغيير المبلغ أو الربط.'};
  const result=enforceFuelGeneral(record,{existing,manualCategory:options?.manualCategory===true});

@@ -11,6 +11,7 @@ window.saveInvoiceProjectAllocations=async function({id,expectedSnapshot,allocat
  if(!Array.isArray(allocations)||!_canEditInvoice(current,current.date))return {ok:false,error:'تعذر تعديل الفاتورة أو فترتها مقفلة.'};
  const next={...current,projectId:'',projectAllocations:allocations.map(a=>({...a}))};
  if(allocations.length&&!hasInvoiceProjectAllocations(next))return {ok:false,error:'تحقق من المشاريع ومطابقة مجموع الصافي والضريبة والإجمالي لأصل الفاتورة.'};
+ if((current.approvedAllocationCoverage||[]).some(link=>!allocations.some(a=>a.projectId===link.projectId&&Math.round(Number(a.total)*100)===Math.round(Number(link.total)*100))))return {ok:false,error:'هذه الحصة داخلة في مصروفات معتمدة؛ راجع تسوية البند المعتمد قبل تغيير توزيعها.'};
  const scope=[current.projectId,...validInvoiceAllocations(current).map(a=>a.projectId),...allocations.map(a=>a.projectId)].filter(Boolean);
  for(const pid of scope){
   const p=projs.find(p=>p.id===pid);
