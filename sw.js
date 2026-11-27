@@ -1,5 +1,5 @@
-// Service Worker - نظام هدف التنمية (إصدار 1158 - تحديث)
-const CACHE_NAME = 'hadaf-1158';
+// Service Worker - نظام هدف التنمية (إصدار 1159 - تحديث)
+const CACHE_NAME = 'hadaf-1159';
 const ASSETS = [
   './','./index.html','./manifest.json',
   './icon-192.png','./icon-512.png','./apple-touch-icon.png','./brand-logo.png',
@@ -46,6 +46,9 @@ self.addEventListener('fetch',e=>{
   const url=e.request.url;
   if(!url.startsWith('http'))return;
   if(url.includes('api.anthropic.com')||url.includes('supabase.co')||url.includes('supabase.in'))return;
+  // روابط فحص التحديث (?_u=…) فريدة في كل مرة؛ عدم تجاهلها كان يخزّن نسخة index.html
+  // بمفتاح مختلف في كل فحص فيتضخّم الكاش بلا حدود حتى يمتلئ ويُطرد تخزين الموقع (ومعه المرفقات).
+  if(url.includes('_u=')){e.respondWith(fetch(e.request,{cache:'no-store'}));return;}
   const isHTML=e.request.headers.get('accept')?.includes('text/html');
   if(isHTML){
     e.respondWith((async()=>{
@@ -68,4 +71,4 @@ self.addEventListener('fetch',e=>{
 });
 
 self.addEventListener('message',e=>{if(e.data?.type==='SKIP_WAITING')self.skipWaiting();});
-console.log('✓ هدف التنمية إصدار 1158 — تحديث إجباري + إعدادات مرتبة');
+console.log('✓ هدف التنمية إصدار 1159 — تحديث إجباري + إعدادات مرتبة');
