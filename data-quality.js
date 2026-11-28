@@ -63,6 +63,8 @@ window.getDataQualityIssues=function(){
  });
  const unlinked=invoices.filter(i=>!i.projectId&&(i.type==='purchase'||i.type==='expense'));
  if(unlinked.length)add('unlinked','فواتير بلا مشروع للمراجعة',unlinked.length+' فاتورة بإجمالي '+money(unlinked.reduce((s,i)=>s+toNum(i.total),0))+' ر.س؛ تأكّد أنها مصروفات عامة لا تخص مشروعًا بعينه.',{});
+ const vatOnlyList=invoices.filter(i=>i.vatOnly===true);
+ if(vatOnlyList.length)add('vatonly','فواتير «استرجاع ضريبة فقط» — للمراجعة',vatOnlyList.length+' فاتورة مُستبعدة من تكلفة المؤسسة مع استرجاع ضريبتها بإجمالي '+money(vatOnlyList.reduce((s,i)=>s+toNum(i.total),0))+' ر.س؛ تأكّد أنها فعلاً ليست مصروف مؤسسة وليست وسيلة لتضخيم الربح.',{});
  for(const [id,rows] of orphanGroups)add('orphan','فواتير مرتبطة بمشروع غير موجود',rows.length+' فاتورة، إجمالي '+money(rows.reduce((s,i)=>s+toNum(i.total),0))+' ر.س. مصروفاتها مدرجة في الرئيسية ضمن غير الموزع حتى تصحيح الربط.',{orphanId:id});
  findDupInvoices().forEach(g=>add('duplicate','فواتير متشابهة تحتاج مراجعة','رقم '+g[0].number+' — '+g.length+' نسخ بمبلغ '+money(g[0].total)+' للنسخة. لا تُحذف تلقائيًا.',{}));
  orders.forEach(o=>{
@@ -75,6 +77,9 @@ window.getDataQualityIssues=function(){
  projs.forEach(p=>{
   const approved=p.approvedExpenseReconciliation;
   if(approved&&Number.isFinite(Number(approved.expectedProjectCostGross))){const actual=projPL(p.id).cost,expected=Number(approved.expectedProjectCostGross);if(Math.abs(actual-expected)>.02)add('approvedExpense','مصروفات تغيرت بعد الاعتماد',p.name+': المعتمد على المشروع '+money(expected)+'، المسجل الآن '+money(actual)+' ر.س. راجع الإضافات أو حدّث الاعتماد من المستندات.',{projectId:p.id});}
+  // كشف ازدواج التحصيل: التحصيل يُجمع من دفعة يدوية + فواتير إيراد + مستخلصات عميل بلا منع ازدواج
+  {const _manual=toNum(p.paidAmount),_revInv=invs.filter(i=>i.projectId===p.id&&i.type==='revenue'&&i.status!=='cancelled').reduce((s,i)=>s+toNum(i.total),0),_clmPaid=(window.opsData?.claims||[]).filter(c=>c.projectId===p.id&&c.partyType==='client'&&c.status!=='cancelled').reduce((s,c)=>s+toNum(c.paid),0),_n=(_manual>0?1:0)+(_revInv>0?1:0)+(_clmPaid>0?1:0);
+  if(_n>1)add('collectdup','تحصيل من مصادر متعددة — راجع الازدواج',p.name+': دفعة يدوية '+money(_manual)+' + فواتير إيراد '+money(_revInv)+(_clmPaid>0?' + مستخلصات عميل '+money(_clmPaid):'')+'. تأكّد أن نفس المبلغ غير مُدخل أكثر من مرة.',{projectId:p.id});}
   const design=p.approvedDesignReconciliation;
   if(design&&Number.isFinite(Number(design.approvedTotalGross))){const actual=toNum(projPL(p.id).byCat.design),expected=Number(design.approvedTotalGross);if(Math.abs(actual-expected)>.02)add('approvedDesign','التصميم يختلف عن الإجمالي المعتمد',p.name+': التصميم المعتمد '+money(expected)+'، المسجل الآن '+money(actual)+' ر.س.',{projectId:p.id});}
   if(toNum(p.siteExpensesTotal)>0&&!p.siteExpensesDate)add('costdate','مصروفات مجمّعة دون تاريخ',p.name+' — '+money(p.siteExpensesTotal)+' ر.س. التقارير السنوية أولية حتى توثيق التاريخ.',{projectId:p.id});

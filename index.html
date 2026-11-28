@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#2771ab">
-<meta name="app-build" content="2026-11-28-1160">
+<meta name="app-build" content="2026-11-28-1161">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="هدف">
 <title>مؤسسة هدف التنمية للمقاولات — النظام الشامل</title>
 <!-- PWA -->
-<link rel="manifest" href="manifest.json?v=1160">
+<link rel="manifest" href="manifest.json?v=1161">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -565,7 +565,7 @@ body.hd-privacy #vt-iv,body.hd-privacy #vt-sn,body.hd-privacy #vt-pn{
 
 </style>
 
-<link rel="stylesheet" href="ops.css?v=1160">
+<link rel="stylesheet" href="ops.css?v=1161">
 <script>
 window.SOPS='hd-ops-v1';
 window.opsData={
@@ -742,7 +742,7 @@ window.opsData={
       </div>
     </div>
   </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1160</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:16px;line-height:1.8;padding-bottom:8px">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1161</bdi></span></div>
 </section>
 
 <!-- المشاريع -->
@@ -1576,7 +1576,7 @@ window.opsData={
       </div>
       <button class="btn btn-p btn-bl btn-sm" onclick="cleanOrphanInvs()" style="background:#B91C1C">🔎 مراجعة ربط الفواتير</button>
     </div>
-    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1160</bdi></span></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;margin-top:12px;line-height:1.8">هدف التنمية — النظام الشامل<br><span style="font-size:10.5px">© جميع حقوق الطبع محفوظة لدى هدف التنمية للمقاولات</span><br><span style="font-size:10.5px">إصدار التطبيق <bdi>1161</bdi></span></div>
   </div>
 </div>
 
@@ -1633,8 +1633,8 @@ window.opsData={
   <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="24" height="24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
 </button>
 <div class="toast" id="toast"></div>
-<script src="invoice-allocations.js?v=1160"></script>
-<script src="invoice-vat-adjustments.js?v=1160"></script>
+<script src="invoice-allocations.js?v=1161"></script>
+<script src="invoice-vat-adjustments.js?v=1161"></script>
 <script>
 /* ========== CONSTANTS ========== */
 
@@ -2310,7 +2310,7 @@ async function ld(){
   if(typeof _seedCOA==='function')_seedCOA();
   try{const r=await _stGet('hd-seed-ver');if(r&&r.value)storedVer=r.value;}catch(e){}
   const onlySeedProjs=projs.length>0&&projs.every(p=>['proj_otaim_1112','proj_rawabi','proj_jubail'].includes(p.id));
-  const needReseed=(!hasInv&&!hasProj)||(storedVer!==SEED_VER&&onlySeedProjs);
+  const needReseed=(!hasInv&&!hasProj)||(storedVer!==SEED_VER&&onlySeedProjs&&!hasInv);
   if(needReseed&&typeof SEED_DATA!=='undefined'){
     invs=SEED_DATA.invs||[];
     projs=SEED_DATA.projs||[];
@@ -3026,6 +3026,7 @@ async function restoreTrash(id){
   }
   const previous=it.type==='inv'?invs:lets;
   if(previous.some(x=>x.id===it.data.id))return toast('السجل موجود بالفعل؛ بقيت نسخة المحذوفات للمراجعة','er');
+  if(it.type==='inv'){const _k=invoiceDuplicateKey(it.data);if(_k&&invs.some(x=>x.status!=='cancelled'&&invoiceDuplicateKey(x)===_k))return toast('توجد فاتورة نشطة بنفس الرقم؛ تعذّرت الاستعادة لتجنّب تعطّل المزامنة السحابية','er');}
   const next=[_hdCopy(it.data),...previous],key=it.type==='inv'?SK:SL;
   if(!await _svRetry(key,JSON.stringify(next)))return toast('تعذر حفظ الاستعادة؛ بقي السجل في المحذوفات','er');
   if(it.type==='inv')invs=next;else lets=next;
@@ -3282,10 +3283,12 @@ function qNewInv(projId,type){
 async function delQe(){
   if(!qeId)return;
   const inv=invs.find(i=>i.id===qeId);
-  if(!inv)return;if(!_canEditInvoice(inv,inv.date))return;
+  if(!inv)return;if(!_canRemoveInvoice(inv))return;
+  if(_isClosedDate(inv.date))return toast('🔒 الفترة المحاسبية لهذه الفاتورة مقفلة','er');
   const ok=await confirm2({title:'حذف',msg:'<strong>'+esc(inv.number||inv.vendor)+'</strong><br>'+fmt(inv.total)+' ر.س',ok:'حذف'});
   if(!ok)return;
   const id=qeId;
+  toTrash('inv',inv);logEvent('حذف فاتورة',(inv.number||'')+' — '+(inv.vendor||''));
   invs=invs.filter(i=>i.id!==id);
   const r=await svDetailed();
   if(r.ok){
@@ -4706,11 +4709,11 @@ function projPL(pid){
   const invoicePur=pinvs.filter(i=>i.type==='purchase').reduce((s,i)=>s+(i.total||0),0);
   const exp=pinvs.filter(i=>i.type==='expense').reduce((s,i)=>s+(i.total||0),0);
   // مشتريات وحدة المشتريات (أوامر الشراء) محفوظة بمخزن منفصل — تُضاف للتكلفة الفعلية دائماً
-  const opsList=_OA('purchaseOrders').filter(o=>o&&o.projectId===pid&&o.status!=='cancelled'&&!(o.invoiceId&&invs.some(i=>i.id===o.invoiceId&&i.status!=='cancelled')));
+  const opsList=_OA('purchaseOrders').filter(o=>o&&o.projectId===pid&&o.status!=='cancelled'&&o.status!=='draft'&&!(o.invoiceId&&invs.some(i=>i.id===o.invoiceId&&i.status!=='cancelled')));
   const opsPur=opsList.reduce((s,o)=>s+(+o.total||0),0);
   const opsPurCount=opsList.length;
   // تكلفة مقاولي الباطن = مستخلصات الباطن غير الملغاة (العمل المعتمد)
-  const subCost=_OA('claims').filter(c=>c&&c.projectId===pid&&c.partyType==='subcontractor'&&c.status!=='cancelled').reduce((s,c)=>s+(+c.total||0),0);
+  const subCost=_OA('claims').filter(c=>c&&c.projectId===pid&&c.partyType==='subcontractor'&&c.status!=='cancelled'&&c.status!=='draft').reduce((s,c)=>s+(+c.total||0),0);
   const pur=invoicePur+opsPur;
   const invoicesTotal=invoicePur+exp;
   const siteTotal=toNum(proj?.siteExpensesTotal);
@@ -10361,14 +10364,16 @@ async function hdInitGate(){
 window.addEventListener('pagehide',()=>{try{if(!_cloudReplacing&&_pushTimer&&_cloudOn){clearTimeout(_pushTimer);cloudPushAll();}}catch(_){}});
 window.addEventListener('resize',()=>{if(typeof equalizeColumns==='function')clearTimeout(window._eqT),window._eqT=setTimeout(equalizeColumns,150);});
 (async()=>{
-  fillCats('purchase');
-  document.getElementById('f-dt').value=new Date().toISOString().slice(0,10);
-  await ld();
-  window._hdSettingsBase=JSON.stringify(sett);
-  [[invs,SK],[projs,SP],[lets,SL]].forEach(([r,k])=>_stampChanges(r,k));
-  fillProjSel();
-  renderDB();
-  hdInitGate();
+  try{
+    fillCats('purchase');
+    document.getElementById('f-dt').value=new Date().toISOString().slice(0,10);
+    await ld();
+    window._hdSettingsBase=JSON.stringify(sett);
+    [[invs,SK],[projs,SP],[lets,SL]].forEach(([r,k])=>_stampChanges(r,k));
+    fillProjSel();
+    renderDB();
+  }catch(e){console.error('خطأ أثناء التهيئة — سيستمر تركيب بوابة الدخول:',e);}
+  finally{try{hdInitGate();}catch(e){console.error('خطأ في تركيب بوابة الدخول:',e);}}
 })();
 
 /* ===== فحص الإصدار: شريط «نسخة جديدة» عند رفع رقم البناء ===== */
@@ -10414,7 +10419,7 @@ async function smartUpdateCheck(){
   }catch(e){}finally{_versionCheckBusy=false;}
 }
 /* ===== بانر «تم التحديث» فوق: يظهر مرة واحدة بعد أي رفع لرقم الإصدار ===== */
-const APP_UPD_NOTE='تصنيف جديد «استرجاع الضريبة فقط»: يسترجع ضريبة الفاتورة دون احتساب مبلغها كمصروف على المؤسسة — من شاشة تفاصيل الفاتورة';
+const APP_UPD_NOTE='إغلاق ملاحظات التدقيق: تحصين حذف الفاتورة بالسلة والسجل، منع طمس البيانات عند البذر، استثناء المسودات من التكلفة، توحيد حساب الربح، منع تكرار رقم الفاتورة عند الاسترجاع، وكشف ازدواج التحصيل';
 let _updatedBannerHandled=false;
 function showUpdatedBanner(){
   try{
@@ -10441,7 +10446,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)smartUpdat
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=1160',{updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=1161',{updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');})
       .catch(function(err){console.log('SW failed:',err);});
   });
@@ -10518,15 +10523,15 @@ if('serviceWorker' in navigator){
     <div class="ops-modal-actions"><button class="ops-cancel" onclick="opsCloseModal()">إلغاء</button><button class="ops-save" onclick="opsSaveForm()">حفظ</button></div>
   </div>
 </div>
-<script src="purchase-payments.js?v=1160"></script>
-<script src="ops.js?v=1160"></script>
+<script src="purchase-payments.js?v=1161"></script>
+<script src="ops.js?v=1161"></script>
 
-<script src="settings.js?v=1160"></script>
-<script src="project-closeout.js?v=1160"></script>
-<script src="invoice-vat-review.js?v=1160"></script>
-<script src="data-quality.js?v=1160"></script>
-<script src="purchase-classification.js?v=1160"></script>
-<script src="purchase-classification-save.js?v=1160"></script>
-<script src="invoice-allocation-save.js?v=1160"></script>
+<script src="settings.js?v=1161"></script>
+<script src="project-closeout.js?v=1161"></script>
+<script src="invoice-vat-review.js?v=1161"></script>
+<script src="data-quality.js?v=1161"></script>
+<script src="purchase-classification.js?v=1161"></script>
+<script src="purchase-classification-save.js?v=1161"></script>
+<script src="invoice-allocation-save.js?v=1161"></script>
 </body>
 </html>
